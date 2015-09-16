@@ -1,0 +1,400 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		41445DC91BA9DF6200FEB195 /* core.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DC61BA9DF6200FEB195 /* core.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41445DCA1BA9DF6200FEB195 /* mintomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DC71BA9DF6200FEB195 /* mintomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41445DCB1BA9DF6200FEB195 /* platform_detect.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DC81BA9DF6200FEB195 /* platform_detect.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41445DD21BA9DF6D00FEB195 /* core_gcc.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DCC1BA9DF6D00FEB195 /* core_gcc.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		41445DD31BA9DF6D00FEB195 /* core_msvc.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DCD1BA9DF6D00FEB195 /* core_msvc.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		41445DD41BA9DF6D00FEB195 /* mintomic_gcc_arm.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DCE1BA9DF6D00FEB195 /* mintomic_gcc_arm.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		41445DD51BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DCF1BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		41445DD61BA9DF6D00FEB195 /* mintomic_msvc.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DD01BA9DF6D00FEB195 /* mintomic_msvc.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		41445DD71BA9DF6D00FEB195 /* stdint.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DD11BA9DF6D00FEB195 /* stdint.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		41445DD91BA9DFB300FEB195 /* linkage.c in Sources */ = {isa = PBXBuildFile; fileRef = 4148856F1BA9B48D0050773A /* linkage.c */; };
+		414885721BA9B5910050773A /* mulle_atomic_mintomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 414885711BA9B4F90050773A /* mulle_atomic_mintomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		414885731BA9B5930050773A /* mulle_thread.h in Headers */ = {isa = PBXBuildFile; fileRef = 4148856D1BA9B35D0050773A /* mulle_thread.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		414885741BA9B5950050773A /* mulle_thread_pthreads.h in Headers */ = {isa = PBXBuildFile; fileRef = 4148856E1BA9B43C0050773A /* mulle_thread_pthreads.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		419795A41B6A52E2005417AA /* mulle_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 414785391ABAF326002DBAE4 /* mulle_atomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41F14FEA1B68F0AE002189F1 /* mintomic_gcc.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B94BF01ACAADFB00A51891 /* mintomic_gcc.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		41445DC41BA9DE3700FEB195 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 414785241ABAF290002DBAE4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 41445DB51BA9DE1700FEB195;
+			remoteInfo = mintomic;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		41198A7B1B6B7FB40033B390 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		41445DC21BA9DE1700FEB195 /* libmulle_mintomic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmulle_mintomic.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		41445DC61BA9DF6200FEB195 /* core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core.h; path = mulle_mintomic/include/mintomic/core.h; sourceTree = "<group>"; };
+		41445DC71BA9DF6200FEB195 /* mintomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic.h; path = mulle_mintomic/include/mintomic/mintomic.h; sourceTree = "<group>"; };
+		41445DC81BA9DF6200FEB195 /* platform_detect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = platform_detect.h; path = mulle_mintomic/include/mintomic/platform_detect.h; sourceTree = "<group>"; };
+		41445DCC1BA9DF6D00FEB195 /* core_gcc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core_gcc.h; path = mulle_mintomic/include/mintomic/private/core_gcc.h; sourceTree = "<group>"; };
+		41445DCD1BA9DF6D00FEB195 /* core_msvc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core_msvc.h; path = mulle_mintomic/include/mintomic/private/core_msvc.h; sourceTree = "<group>"; };
+		41445DCE1BA9DF6D00FEB195 /* mintomic_gcc_arm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic_gcc_arm.h; path = mulle_mintomic/include/mintomic/private/mintomic_gcc_arm.h; sourceTree = "<group>"; };
+		41445DCF1BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "mintomic_gcc_x86-64.h"; path = "mulle_mintomic/include/mintomic/private/mintomic_gcc_x86-64.h"; sourceTree = "<group>"; };
+		41445DD01BA9DF6D00FEB195 /* mintomic_msvc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic_msvc.h; path = mulle_mintomic/include/mintomic/private/mintomic_msvc.h; sourceTree = "<group>"; };
+		41445DD11BA9DF6D00FEB195 /* stdint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stdint.h; path = mulle_mintomic/include/mintomic/private/stdint.h; sourceTree = "<group>"; };
+		414785391ABAF326002DBAE4 /* mulle_atomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic.h; sourceTree = "<group>"; };
+		4148856D1BA9B35D0050773A /* mulle_thread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_thread.h; sourceTree = "<group>"; };
+		4148856E1BA9B43C0050773A /* mulle_thread_pthreads.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_thread_pthreads.h; sourceTree = "<group>"; };
+		4148856F1BA9B48D0050773A /* linkage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = linkage.c; sourceTree = "<group>"; };
+		414885711BA9B4F90050773A /* mulle_atomic_mintomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic_mintomic.h; sourceTree = "<group>"; };
+		41492C6E1B41898E00CD50E1 /* mintomic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mintomic; path = mulle_mintomic/include/mintomic; sourceTree = "<group>"; };
+		4158F6F81B5E982B00C5805C /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		41B94BF01ACAADFB00A51891 /* mintomic_gcc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mintomic_gcc.c; path = mulle_mintomic/src/mintomic/mintomic_gcc.c; sourceTree = "<group>"; };
+		41BE418C1B6BB0F7000C0DD4 /* BUILD.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BUILD.md; sourceTree = "<group>"; };
+		41F14FE61B68F098002189F1 /* libmulle_thread.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmulle_thread.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		41F14FF21B6902F9002189F1 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		41445DB81BA9DE1700FEB195 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41F14FE31B68F098002189F1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		41445DD81BA9DF7300FEB195 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				41445DCC1BA9DF6D00FEB195 /* core_gcc.h */,
+				41445DCD1BA9DF6D00FEB195 /* core_msvc.h */,
+				41445DCE1BA9DF6D00FEB195 /* mintomic_gcc_arm.h */,
+				41445DCF1BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h */,
+				41445DD01BA9DF6D00FEB195 /* mintomic_msvc.h */,
+				41445DD11BA9DF6D00FEB195 /* stdint.h */,
+				41445DC61BA9DF6200FEB195 /* core.h */,
+				41445DC71BA9DF6200FEB195 /* mintomic.h */,
+				41445DC81BA9DF6200FEB195 /* platform_detect.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		414785231ABAF290002DBAE4 = {
+			isa = PBXGroup;
+			children = (
+				41198A7B1B6B7FB40033B390 /* README.md */,
+				41BE418C1B6BB0F7000C0DD4 /* BUILD.md */,
+				41F14FF21B6902F9002189F1 /* LICENSE */,
+				4158F6F81B5E982B00C5805C /* CMakeLists.txt */,
+				41492C6E1B41898E00CD50E1 /* mintomic */,
+				41B94BF01ACAADFB00A51891 /* mintomic_gcc.c */,
+				4147852E1ABAF290002DBAE4 /* src */,
+				41445DD81BA9DF7300FEB195 /* include */,
+				4147852D1ABAF290002DBAE4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4147852D1ABAF290002DBAE4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				41F14FE61B68F098002189F1 /* libmulle_thread.a */,
+				41445DC21BA9DE1700FEB195 /* libmulle_mintomic.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4147852E1ABAF290002DBAE4 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				414785391ABAF326002DBAE4 /* mulle_atomic.h */,
+				414885711BA9B4F90050773A /* mulle_atomic_mintomic.h */,
+				4148856D1BA9B35D0050773A /* mulle_thread.h */,
+				4148856E1BA9B43C0050773A /* mulle_thread_pthreads.h */,
+				4148856F1BA9B48D0050773A /* linkage.c */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		41445DBA1BA9DE1700FEB195 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41445DC91BA9DF6200FEB195 /* core.h in Headers */,
+				41445DCA1BA9DF6200FEB195 /* mintomic.h in Headers */,
+				41445DCB1BA9DF6200FEB195 /* platform_detect.h in Headers */,
+				41445DD21BA9DF6D00FEB195 /* core_gcc.h in Headers */,
+				41445DD31BA9DF6D00FEB195 /* core_msvc.h in Headers */,
+				41445DD41BA9DF6D00FEB195 /* mintomic_gcc_arm.h in Headers */,
+				41445DD51BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h in Headers */,
+				41445DD61BA9DF6D00FEB195 /* mintomic_msvc.h in Headers */,
+				41445DD71BA9DF6D00FEB195 /* stdint.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41F14FE41B68F098002189F1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				419795A41B6A52E2005417AA /* mulle_atomic.h in Headers */,
+				414885721BA9B5910050773A /* mulle_atomic_mintomic.h in Headers */,
+				414885731BA9B5930050773A /* mulle_thread.h in Headers */,
+				414885741BA9B5950050773A /* mulle_thread_pthreads.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		41445DB51BA9DE1700FEB195 /* mulle_mintomic */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41445DBF1BA9DE1700FEB195 /* Build configuration list for PBXNativeTarget "mulle_mintomic" */;
+			buildPhases = (
+				41445DB61BA9DE1700FEB195 /* Sources */,
+				41445DB81BA9DE1700FEB195 /* Frameworks */,
+				41445DBA1BA9DE1700FEB195 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = mulle_mintomic;
+			productName = mulle_aba;
+			productReference = 41445DC21BA9DE1700FEB195 /* libmulle_mintomic.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		41F14FE51B68F098002189F1 /* mulle_thread */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41F14FE71B68F098002189F1 /* Build configuration list for PBXNativeTarget "mulle_thread" */;
+			buildPhases = (
+				41F14FE21B68F098002189F1 /* Sources */,
+				41F14FE31B68F098002189F1 /* Frameworks */,
+				41F14FE41B68F098002189F1 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				41445DC51BA9DE3700FEB195 /* PBXTargetDependency */,
+			);
+			name = mulle_thread;
+			productName = mulle_aba;
+			productReference = 41F14FE61B68F098002189F1 /* libmulle_thread.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		414785241ABAF290002DBAE4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0620;
+				ORGANIZATIONNAME = "Mulle kybernetiK";
+				TargetAttributes = {
+					41F14FE51B68F098002189F1 = {
+						CreatedOnToolsVersion = 6.2;
+					};
+				};
+			};
+			buildConfigurationList = 414785271ABAF290002DBAE4 /* Build configuration list for PBXProject "mulle-thread" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 414785231ABAF290002DBAE4;
+			productRefGroup = 4147852D1ABAF290002DBAE4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				41F14FE51B68F098002189F1 /* mulle_thread */,
+				41445DB51BA9DE1700FEB195 /* mulle_mintomic */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		41445DB61BA9DE1700FEB195 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41F14FE21B68F098002189F1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41F14FEA1B68F0AE002189F1 /* mintomic_gcc.c in Sources */,
+				41445DD91BA9DFB300FEB195 /* linkage.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		41445DC51BA9DE3700FEB195 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 41445DB51BA9DE1700FEB195 /* mulle_mintomic */;
+			targetProxy = 41445DC41BA9DE3700FEB195 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		41445DC01BA9DE1700FEB195 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRIVATE_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}/private";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
+			};
+			name = Debug;
+		};
+		41445DC11BA9DE1700FEB195 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRIVATE_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}/private";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
+			};
+			name = Release;
+		};
+		414785311ABAF290002DBAE4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu89;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					./mintomic/include,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+			};
+			name = Debug;
+		};
+		414785321ABAF290002DBAE4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu89;
+				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					./mintomic/include,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+			};
+			name = Release;
+		};
+		41F14FE81B68F098002189F1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					./mulle_mintomic/include,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
+			};
+			name = Debug;
+		};
+		41F14FE91B68F098002189F1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					./mulle_mintomic/include,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		41445DBF1BA9DE1700FEB195 /* Build configuration list for PBXNativeTarget "mulle_mintomic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41445DC01BA9DE1700FEB195 /* Debug */,
+				41445DC11BA9DE1700FEB195 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		414785271ABAF290002DBAE4 /* Build configuration list for PBXProject "mulle-thread" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				414785311ABAF290002DBAE4 /* Debug */,
+				414785321ABAF290002DBAE4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		41F14FE71B68F098002189F1 /* Build configuration list for PBXNativeTarget "mulle_thread" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41F14FE81B68F098002189F1 /* Debug */,
+				41F14FE91B68F098002189F1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 414785241ABAF290002DBAE4 /* Project object */;
+}
