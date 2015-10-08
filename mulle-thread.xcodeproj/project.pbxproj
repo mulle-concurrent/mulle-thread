@@ -15,12 +15,13 @@
 		41445DD41BA9DF6D00FEB195 /* mintomic_gcc_arm.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DCE1BA9DF6D00FEB195 /* mintomic_gcc_arm.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		41445DD51BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DCF1BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		41445DD61BA9DF6D00FEB195 /* mintomic_msvc.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DD01BA9DF6D00FEB195 /* mintomic_msvc.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		41445DD71BA9DF6D00FEB195 /* stdint.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DD11BA9DF6D00FEB195 /* stdint.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		41445DD71BA9DF6D00FEB195 /* mintomic_stdint.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DD11BA9DF6D00FEB195 /* mintomic_stdint.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		41445DD91BA9DFB300FEB195 /* linkage.c in Sources */ = {isa = PBXBuildFile; fileRef = 4148856F1BA9B48D0050773A /* linkage.c */; };
 		414885721BA9B5910050773A /* mulle_atomic_mintomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 414885711BA9B4F90050773A /* mulle_atomic_mintomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		414885731BA9B5930050773A /* mulle_thread.h in Headers */ = {isa = PBXBuildFile; fileRef = 4148856D1BA9B35D0050773A /* mulle_thread.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		414885741BA9B5950050773A /* mulle_thread_pthreads.h in Headers */ = {isa = PBXBuildFile; fileRef = 4148856E1BA9B43C0050773A /* mulle_thread_pthreads.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		419795A41B6A52E2005417AA /* mulle_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 414785391ABAF326002DBAE4 /* mulle_atomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41D57B491BAD75890003EE33 /* mintomic_gcc.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B94BF01ACAADFB00A51891 /* mintomic_gcc.c */; };
 		41F14FEA1B68F0AE002189F1 /* mintomic_gcc.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B94BF01ACAADFB00A51891 /* mintomic_gcc.c */; };
 /* End PBXBuildFile section */
 
@@ -45,7 +46,7 @@
 		41445DCE1BA9DF6D00FEB195 /* mintomic_gcc_arm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic_gcc_arm.h; path = mulle_mintomic/include/mintomic/private/mintomic_gcc_arm.h; sourceTree = "<group>"; };
 		41445DCF1BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "mintomic_gcc_x86-64.h"; path = "mulle_mintomic/include/mintomic/private/mintomic_gcc_x86-64.h"; sourceTree = "<group>"; };
 		41445DD01BA9DF6D00FEB195 /* mintomic_msvc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic_msvc.h; path = mulle_mintomic/include/mintomic/private/mintomic_msvc.h; sourceTree = "<group>"; };
-		41445DD11BA9DF6D00FEB195 /* stdint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stdint.h; path = mulle_mintomic/include/mintomic/private/stdint.h; sourceTree = "<group>"; };
+		41445DD11BA9DF6D00FEB195 /* mintomic_stdint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic_stdint.h; path = mulle_mintomic/include/mintomic/private/mintomic_stdint.h; sourceTree = "<group>"; };
 		414785391ABAF326002DBAE4 /* mulle_atomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic.h; sourceTree = "<group>"; };
 		4148856D1BA9B35D0050773A /* mulle_thread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_thread.h; sourceTree = "<group>"; };
 		4148856E1BA9B43C0050773A /* mulle_thread_pthreads.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_thread_pthreads.h; sourceTree = "<group>"; };
@@ -60,13 +61,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		41445DB81BA9DE1700FEB195 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		41F14FE31B68F098002189F1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -85,7 +79,7 @@
 				41445DCE1BA9DF6D00FEB195 /* mintomic_gcc_arm.h */,
 				41445DCF1BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h */,
 				41445DD01BA9DF6D00FEB195 /* mintomic_msvc.h */,
-				41445DD11BA9DF6D00FEB195 /* stdint.h */,
+				41445DD11BA9DF6D00FEB195 /* mintomic_stdint.h */,
 				41445DC61BA9DF6200FEB195 /* core.h */,
 				41445DC71BA9DF6200FEB195 /* mintomic.h */,
 				41445DC81BA9DF6200FEB195 /* platform_detect.h */,
@@ -144,7 +138,7 @@
 				41445DD41BA9DF6D00FEB195 /* mintomic_gcc_arm.h in Headers */,
 				41445DD51BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h in Headers */,
 				41445DD61BA9DF6D00FEB195 /* mintomic_msvc.h in Headers */,
-				41445DD71BA9DF6D00FEB195 /* stdint.h in Headers */,
+				41445DD71BA9DF6D00FEB195 /* mintomic_stdint.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,8 +160,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 41445DBF1BA9DE1700FEB195 /* Build configuration list for PBXNativeTarget "mulle_mintomic" */;
 			buildPhases = (
-				41445DB61BA9DE1700FEB195 /* Sources */,
-				41445DB81BA9DE1700FEB195 /* Frameworks */,
+				41D57B481BAD75860003EE33 /* Sources */,
 				41445DBA1BA9DE1700FEB195 /* Headers */,
 			);
 			buildRules = (
@@ -230,10 +223,11 @@
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		41445DB61BA9DE1700FEB195 /* Sources */ = {
+		41D57B481BAD75860003EE33 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41D57B491BAD75890003EE33 /* mintomic_gcc.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -263,6 +257,7 @@
 				PRIVATE_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}/private";
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -272,6 +267,7 @@
 				PRIVATE_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}/private";
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -295,9 +291,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					./mulle_mintomic/include,
 					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					./mintomic/include,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -326,9 +321,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					./mulle_mintomic/include,
 					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					./mintomic/include,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -340,11 +334,6 @@
 			buildSettings = {
 				EXECUTABLE_PREFIX = lib;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					./mulle_mintomic/include,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
 			};
@@ -354,11 +343,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EXECUTABLE_PREFIX = lib;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					./mulle_mintomic/include,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
 			};

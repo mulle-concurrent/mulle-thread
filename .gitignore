@@ -2,6 +2,6 @@
 *[Bb]uild/
 .idea/
 mulle_mintomic/
-
+.repos/
 xcuserdata/
 project.xcworkspace/
