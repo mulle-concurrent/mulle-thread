@@ -121,7 +121,7 @@ static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
 
 static inline void  _mulle_atomic_write_pointer( mulle_atomic_ptr_t *adress, void *value)
 {
-   return( mint_store_ptr_relaxed( adress, value));
+   mint_store_ptr_relaxed( adress, value);
 }
 
 
@@ -130,25 +130,5 @@ static inline void   mulle_atomic_memory_barrier( void)
    mint_thread_fence_seq_cst();
 }
 
-// move this away
-
-# pragma mark -
-# pragma mark spinlock building on primitives
-
-
-// yay a small spinlock...
-typedef mulle_atomic_ptr_t   mulle_spinlock_t;
-
-static inline void   _mulle_spinlock_lock( mulle_spinlock_t *adress)
-{
-   while( ! _mulle_atomic_compare_and_swap_pointer( adress, (void *) 1, (void *) 0));
-}
-
-
-static inline void   _mulle_spinlock_unlock( mulle_spinlock_t *adress)
-{
-   assert( _mulle_atomic_read_pointer( adress) == (void *) 1);
-   adress->_nonatomic = 0;
-}
 
 #endif

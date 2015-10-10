@@ -41,6 +41,7 @@
 typedef pthread_mutex_t   mulle_thread_mutex_t;
 typedef pthread_key_t     mulle_thread_key_t;
 typedef pthread_t         mulle_thread_t;
+typedef void *            mulle_thread_rval_t;
 
 
 #pragma mark -
@@ -53,7 +54,7 @@ static inline mulle_thread_t  mulle_thread_self( void)
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_create( void *(*f)(void *), void *arg, pthread_t *thread)
+static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *), void *arg, pthread_t *thread)
 {
    return( pthread_create( thread, NULL, f, arg));
 }
