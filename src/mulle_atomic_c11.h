@@ -1,9 +1,9 @@
 //
-//  mulle_atomic_mintomic.h
+//  mulle_atomic_c11.h
 //  mulle-thread
 //
-//  Created by Nat! on 16/09/15.
-//  Copyright (c) 2015 Mulle kybernetiK. All rights reserved.
+//  Created by Nat! on 09/10/15.
+//  Copyright © 2015 Mulle kybernetiK. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -32,44 +32,40 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef mulle_atomic_mintomic_h__
-#define mulle_atomic_mintomic_h__
+#ifndef mulle_atomic_c11_h
+#define mulle_atomic_c11_h
 
 #include <stdint.h>
 #include <assert.h>
 #include <stdio.h>
+#include <stdatomic.h>
 
-#include <mulle_mintomic/mintomic.h>
+typedef struct { _Atomic void *_nonatomic; } mint_atomicPtr_t;
 
-//
-// just some stand-in code for later
-// the mulle code just provides a subset of mintomic and exposes its own
-// type, in case mintomic goes away
-//
-
-typedef mint_atomicPtr_t   mulle_atomic_ptr_t;
 
 # pragma mark -
 # pragma mark primitive code
 static inline void   *__mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *adress,
-                                                              void *value,
-                                                              void *expect)
+                                                               void *value,
+                                                               void *expect)
 {
-   void    *result;
+   _Bool   result; // that hated bool type
+   void    param;
    
-   result = mint_compare_exchange_strong_ptr_relaxed( adress, expect, value);
+   param  = value;
+   result = atomic_compare_exchange_weak( adress, &param, *expect);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
       char          *decor;
       
       decor = "";
-      if( result != expect )
+      if( param != expect)
          decor = "FAILED to";
-      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n", pthread_name(), decor, adress, expect, value, result);
+      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n", pthread_name(), decor, adress, expect, value, param);
    }
 #endif
-   return( result);
+   return( param);
 }
 
 
@@ -87,20 +83,20 @@ static inline int   _mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *
 
 static inline void   *_mulle_atomic_increment_pointer( mulle_atomic_ptr_t *adress)
 {
-   return( mint_fetch_add_ptr_relaxed( adress, 1));
+   return( atomic_fetch_add_explicit( adress, 1, memory_order_relaxed);
 }
 
 
 static inline void  *_mulle_atomic_decrement_pointer( mulle_atomic_ptr_t *adress)
 {
-   return( mint_fetch_add_ptr_relaxed( adress, -1));
+   return( atomic_fetch_add_explicit( adress, -1, memory_order_relaxed);
 }
 
 
 // returns the result, not the previous value like increment/decrement
 static inline void  *_mulle_atomic_add_pointer( mulle_atomic_ptr_t *adress, intptr_t diff)
 {
-   return( (void *) ((intptr_t) mint_fetch_add_ptr_relaxed( adress, diff) + diff));
+   return( (void *) ((intptr_t) atomic_fetch_add_explicit( adress, diff, memory_order_relaxed) + diff));
 }
 
 
@@ -108,7 +104,7 @@ static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
 {
    void   *result;
    
-   result = mint_load_ptr_relaxed( adress);
+   result = atomic_load_explicit( adress, memory_order_relaxed);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
@@ -119,9 +115,10 @@ static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
    return( result);
 }
 
+          
 static inline void  _mulle_atomic_write_pointer( mulle_atomic_ptr_t *adress, void *value)
 {
-   mint_store_ptr_relaxed( adress, value);
+   atomic_store_explicit( address, value, memory_order_relaxed);
 }
 
 
@@ -130,5 +127,4 @@ static inline void   mulle_atomic_memory_barrier( void)
    mint_thread_fence_seq_cst();
 }
 
-
-#endif
+#endif /* mulle_atomic_c11_h */

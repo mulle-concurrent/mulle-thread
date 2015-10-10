@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		411AB1081BC7FC990089AA49 /* mulle_atomic_c11.h in Headers */ = {isa = PBXBuildFile; fileRef = 411AB1061BC7F0280089AA49 /* mulle_atomic_c11.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		411AB1091BC7FC9B0089AA49 /* mulle_atomic_spinlock.h in Headers */ = {isa = PBXBuildFile; fileRef = 411AB1071BC7F5570089AA49 /* mulle_atomic_spinlock.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		411AB10F1BC817430089AA49 /* mulle_thread_c11.h in Headers */ = {isa = PBXBuildFile; fileRef = 411AB10A1BC7FD8F0089AA49 /* mulle_thread_c11.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41445DC91BA9DF6200FEB195 /* core.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DC61BA9DF6200FEB195 /* core.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41445DCA1BA9DF6200FEB195 /* mintomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DC71BA9DF6200FEB195 /* mintomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41445DCB1BA9DF6200FEB195 /* platform_detect.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DC81BA9DF6200FEB195 /* platform_detect.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -21,8 +24,8 @@
 		414885731BA9B5930050773A /* mulle_thread.h in Headers */ = {isa = PBXBuildFile; fileRef = 4148856D1BA9B35D0050773A /* mulle_thread.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		414885741BA9B5950050773A /* mulle_thread_pthreads.h in Headers */ = {isa = PBXBuildFile; fileRef = 4148856E1BA9B43C0050773A /* mulle_thread_pthreads.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		419795A41B6A52E2005417AA /* mulle_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 414785391ABAF326002DBAE4 /* mulle_atomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		41D57B491BAD75890003EE33 /* mintomic_gcc.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B94BF01ACAADFB00A51891 /* mintomic_gcc.c */; };
-		41F14FEA1B68F0AE002189F1 /* mintomic_gcc.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B94BF01ACAADFB00A51891 /* mintomic_gcc.c */; };
+		419FC8A61BC95494002D75B9 /* mintomic_empty.c in Sources */ = {isa = PBXBuildFile; fileRef = 419FC8A51BC95494002D75B9 /* mintomic_empty.c */; };
+		419FC8A71BC954C8002D75B9 /* mintomic_empty.c in Sources */ = {isa = PBXBuildFile; fileRef = 419FC8A51BC95494002D75B9 /* mintomic_empty.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +40,9 @@
 
 /* Begin PBXFileReference section */
 		41198A7B1B6B7FB40033B390 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		411AB1061BC7F0280089AA49 /* mulle_atomic_c11.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic_c11.h; sourceTree = "<group>"; };
+		411AB1071BC7F5570089AA49 /* mulle_atomic_spinlock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic_spinlock.h; sourceTree = "<group>"; };
+		411AB10A1BC7FD8F0089AA49 /* mulle_thread_c11.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_thread_c11.h; sourceTree = "<group>"; };
 		41445DC21BA9DE1700FEB195 /* libmulle_mintomic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmulle_mintomic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		41445DC61BA9DF6200FEB195 /* core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core.h; path = mulle_mintomic/include/mintomic/core.h; sourceTree = "<group>"; };
 		41445DC71BA9DF6200FEB195 /* mintomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic.h; path = mulle_mintomic/include/mintomic/mintomic.h; sourceTree = "<group>"; };
@@ -54,6 +60,7 @@
 		414885711BA9B4F90050773A /* mulle_atomic_mintomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic_mintomic.h; sourceTree = "<group>"; };
 		41492C6E1B41898E00CD50E1 /* mintomic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mintomic; path = mulle_mintomic/include/mintomic; sourceTree = "<group>"; };
 		4158F6F81B5E982B00C5805C /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		419FC8A51BC95494002D75B9 /* mintomic_empty.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mintomic_empty.c; sourceTree = "<group>"; };
 		41B94BF01ACAADFB00A51891 /* mintomic_gcc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mintomic_gcc.c; path = mulle_mintomic/src/mintomic/mintomic_gcc.c; sourceTree = "<group>"; };
 		41BE418C1B6BB0F7000C0DD4 /* BUILD.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BUILD.md; sourceTree = "<group>"; };
 		41F14FE61B68F098002189F1 /* libmulle_thread.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmulle_thread.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,10 +122,14 @@
 			isa = PBXGroup;
 			children = (
 				414785391ABAF326002DBAE4 /* mulle_atomic.h */,
+				411AB1061BC7F0280089AA49 /* mulle_atomic_c11.h */,
 				414885711BA9B4F90050773A /* mulle_atomic_mintomic.h */,
+				411AB1071BC7F5570089AA49 /* mulle_atomic_spinlock.h */,
 				4148856D1BA9B35D0050773A /* mulle_thread.h */,
 				4148856E1BA9B43C0050773A /* mulle_thread_pthreads.h */,
+				411AB10A1BC7FD8F0089AA49 /* mulle_thread_c11.h */,
 				4148856F1BA9B48D0050773A /* linkage.c */,
+				419FC8A51BC95494002D75B9 /* mintomic_empty.c */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -147,8 +158,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				419795A41B6A52E2005417AA /* mulle_atomic.h in Headers */,
+				411AB1081BC7FC990089AA49 /* mulle_atomic_c11.h in Headers */,
 				414885721BA9B5910050773A /* mulle_atomic_mintomic.h in Headers */,
+				411AB1091BC7FC9B0089AA49 /* mulle_atomic_spinlock.h in Headers */,
 				414885731BA9B5930050773A /* mulle_thread.h in Headers */,
+				411AB10F1BC817430089AA49 /* mulle_thread_c11.h in Headers */,
 				414885741BA9B5950050773A /* mulle_thread_pthreads.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -160,8 +174,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 41445DBF1BA9DE1700FEB195 /* Build configuration list for PBXNativeTarget "mulle_mintomic" */;
 			buildPhases = (
-				41D57B481BAD75860003EE33 /* Sources */,
 				41445DBA1BA9DE1700FEB195 /* Headers */,
+				419FC8A41BC9546F002D75B9 /* Sources */,
 			);
 			buildRules = (
 			);
@@ -223,11 +237,11 @@
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		41D57B481BAD75860003EE33 /* Sources */ = {
+		419FC8A41BC9546F002D75B9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				41D57B491BAD75890003EE33 /* mintomic_gcc.c in Sources */,
+				419FC8A71BC954C8002D75B9 /* mintomic_empty.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,8 +249,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				41F14FEA1B68F0AE002189F1 /* mintomic_gcc.c in Sources */,
 				41445DD91BA9DFB300FEB195 /* linkage.c in Sources */,
+				419FC8A61BC95494002D75B9 /* mintomic_empty.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,7 +296,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu89;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -313,7 +327,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu89;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
