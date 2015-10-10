@@ -35,7 +35,12 @@
 #ifndef mulle_thread_h__
 #define mulle_thread_h__
 
-// or ifdef some other library in
-#include "mulle_thread_pthreads.h"
+// or ifdef some other library in, clang lies
+#if __STDC_VERSION__ < 201112L || defined( __STDC_NO_THREADS__)
+# pragma message( "Using pthreads for threads")
+# include "mulle_thread_pthreads.h"
+#else
+# include "mulle_thread_c11.h"
+#endif
 
 #endif

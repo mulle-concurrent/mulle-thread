@@ -1,9 +1,9 @@
 //
-//  mulle_thread_pthreads.h
+//  mulle_thread_c11.h
 //  mulle-thread
 //
-//  Created by Nat! on 16/09/15.
-//  Copyright (c) 2015 Mulle kybernetiK. All rights reserved.
+//  Created by Nat! on 09/10/15.
+//  Copyright © 2015 Mulle kybernetiK. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -32,31 +32,29 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef mulle_thread_pthreads_h__
-#define mulle_thread_pthreads_h__
+#ifndef mulle_thread_c11_h
+#define mulle_thread_c11_h
 
-#include <pthread.h>
+#include <threads.h>
 
-
-typedef pthread_mutex_t   mulle_thread_mutex_t;
-typedef pthread_key_t     mulle_thread_key_t;
-typedef pthread_t         mulle_thread_t;
-typedef void *            mulle_thread_rval_t;
-
+typedef mtx_t    mulle_thread_mutex_t;
+typedef tss_t    mulle_thread_key_t;
+typedef thrd_t   mulle_thread_t;
+typedef int      mulle_thread_rval_t;
 
 #pragma mark -
 #pragma Threads
 
 static inline mulle_thread_t  mulle_thread_self( void)
 {
-   return( pthread_self());
+   return( thrd_current());
 }
 
 
 // parameters different to pthreads!
 static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *), void *arg, mulle_thread_t *thread)
 {
-   return( pthread_create( thread, NULL, f, arg));
+   return( thrd_create( thread, f, arg));
 }
 
 
@@ -67,32 +65,33 @@ static inline int   mulle_thread_join( mulle_thread_t thread)
 }
 
 
+
 #pragma mark -
 #pragma mark Lock
 
 
-// parameters different to pthreads!
+// parameters different to mtx!
 static inline int  mulle_thread_mutex_init( mulle_thread_mutex_t *lock)
 {
-   return( pthread_mutex_init( lock, NULL));
+   return( mtx_init( lock, mtx_plain));
 }
 
 
 static inline int  mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 {
-   return( pthread_mutex_lock( lock));
+   return( mtx_lock( lock));
 }
 
 
 static inline int  mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock)
 {
-   return( pthread_mutex_unlock( lock));
+   return( mtx_unlock( lock));
 }
 
 
 static inline int  mulle_thread_mutex_destroy( mulle_thread_mutex_t *lock)
 {
-   return( pthread_mutex_destroy( lock));
+   return( mtx_destroy( lock));
 }
 
 
@@ -102,19 +101,20 @@ static inline int  mulle_thread_mutex_destroy( mulle_thread_mutex_t *lock)
 
 static inline int   mulle_thread_key_create( mulle_thread_key_t *key, void (*f)( void *))
 {
-   return( pthread_key_create( key, f));
+   return( tss_create( key, f));
 }
 
 
 static inline void   *mulle_thread_getspecific( mulle_thread_key_t key)
 {
-   return( pthread_getspecific( key));
+   return( tss_get( key));
 }
 
 
 static inline int  mulle_thread_setspecific( mulle_thread_key_t key, void *userdata)
 {
-   return( pthread_setspecific( key, userdata));
+   return( tss_set( key, userdata));
 }
+
 
 #endif
