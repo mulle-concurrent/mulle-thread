@@ -65,7 +65,7 @@ static inline void   *__mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_
       char          *decor;
       
       decor = "";
-      if( actual != expect)
+      if( ! result)
          decor = "FAILED to";
       fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n", pthread_name(), decor, adress, expect, value, actual);
    }
@@ -92,7 +92,7 @@ static inline int   _mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *
       char          *decor;
       
       decor = "";
-      if( actual != expect)
+      if( ! result)
          decor = "FAILED to";
       fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n", pthread_name(), decor, adress, expect, value, actual);
    }

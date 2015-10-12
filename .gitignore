@@ -5,3 +5,5 @@ mulle_mintomic/
 .repos/
 xcuserdata/
 project.xcworkspace/
+mulle_mintomic
+*.old
