@@ -25,7 +25,7 @@ static inline void   _mulle_spinlock_lock( mulle_spinlock_t *adress)
 static inline void   _mulle_spinlock_unlock( mulle_spinlock_t *adress)
 {
    assert( _mulle_atomic_read_pointer( adress) == (void *) 1);
-   adress->_nonatomic = 0;
+   adress->_nonatomic = (void *) 0;
 }
 
 #endif /* mulle_atomic_spinlock_h */

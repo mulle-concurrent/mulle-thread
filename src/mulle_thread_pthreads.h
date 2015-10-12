@@ -49,12 +49,12 @@ typedef void *            mulle_thread_rval_t;
 
 static inline mulle_thread_t  mulle_thread_self( void)
 {
-   return( mulle_thread_self());
+   return( pthread_self());
 }
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *), void *arg, pthread_t *thread)
+static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *), void *arg, mulle_thread_t *thread)
 {
    return( pthread_create( thread, NULL, f, arg));
 }

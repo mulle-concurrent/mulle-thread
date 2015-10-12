@@ -40,7 +40,10 @@
 #include <stdio.h>
 #include <stdatomic.h>
 
-typedef struct { _Atomic void *_nonatomic; } mint_atomicPtr_t;
+//
+// this is due to the mintomic heritage
+//
+typedef struct { _Atomic( void *) _nonatomic; }   mulle_atomic_ptr_t;
 
 
 # pragma mark -
@@ -50,22 +53,24 @@ static inline void   *__mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_
                                                                void *expect)
 {
    _Bool   result; // that hated bool type
-   void    param;
+   void    *actual;
    
-   param  = value;
-   result = atomic_compare_exchange_weak( adress, &param, *expect);
+   assert( value != expect);
+   
+   actual = expect;
+   result = atomic_compare_exchange_weak_explicit( &adress->_nonatomic, &actual, value, memory_order_relaxed, memory_order_relaxed);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
       char          *decor;
       
       decor = "";
-      if( param != expect)
+      if( actual != expect)
          decor = "FAILED to";
-      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n", pthread_name(), decor, adress, expect, value, param);
+      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n", pthread_name(), decor, adress, expect, value, actual);
    }
 #endif
-   return( param);
+   return( actual);
 }
 
 
@@ -73,30 +78,45 @@ static inline int   _mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *
                                                             void *value,
                                                             void *expect)
 {
-   void  *result;
-   
-   result = __mulle_atomic_compare_and_swap_pointer( adress, value, expect);
-   return( result == expect);
-}
+   _Bool   result; // that hated bool type
+   void    *actual;
 
+   assert( value != expect);
+   
+   actual = expect;
+   result = atomic_compare_exchange_weak_explicit( &adress->_nonatomic, &actual, value, memory_order_relaxed, memory_order_relaxed);
+
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+      char          *decor;
+      
+      decor = "";
+      if( actual != expect)
+         decor = "FAILED to";
+      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n", pthread_name(), decor, adress, expect, value, actual);
+   }
+#endif
+   return( result);
+}
 
 
 static inline void   *_mulle_atomic_increment_pointer( mulle_atomic_ptr_t *adress)
 {
-   return( atomic_fetch_add_explicit( adress, 1, memory_order_relaxed);
+   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) &adress->_nonatomic, 1, memory_order_relaxed));
 }
 
 
 static inline void  *_mulle_atomic_decrement_pointer( mulle_atomic_ptr_t *adress)
 {
-   return( atomic_fetch_add_explicit( adress, -1, memory_order_relaxed);
+   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) &adress->_nonatomic, -1, memory_order_relaxed));
 }
 
 
 // returns the result, not the previous value like increment/decrement
 static inline void  *_mulle_atomic_add_pointer( mulle_atomic_ptr_t *adress, intptr_t diff)
 {
-   return( (void *) ((intptr_t) atomic_fetch_add_explicit( adress, diff, memory_order_relaxed) + diff));
+   return( (void *) ((intptr_t) atomic_fetch_add_explicit( (atomic_intptr_t *) &adress->_nonatomic, diff, memory_order_relaxed) + diff));
 }
 
 
@@ -104,7 +124,7 @@ static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
 {
    void   *result;
    
-   result = atomic_load_explicit( adress, memory_order_relaxed);
+   result = atomic_load_explicit( &adress->_nonatomic, memory_order_relaxed);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
@@ -118,13 +138,13 @@ static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
           
 static inline void  _mulle_atomic_write_pointer( mulle_atomic_ptr_t *adress, void *value)
 {
-   atomic_store_explicit( address, value, memory_order_relaxed);
+   atomic_store_explicit( &adress->_nonatomic, value, memory_order_relaxed);
 }
 
 
 static inline void   mulle_atomic_memory_barrier( void)
 {
-   mint_thread_fence_seq_cst();
+   atomic_signal_fence( memory_order_seq_cst);
 }
 
 #endif /* mulle_atomic_c11_h */
