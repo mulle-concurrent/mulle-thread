@@ -213,7 +213,6 @@
 		414785231ABAF290002DBAE4 = {
 			isa = PBXGroup;
 			children = (
-				417A8B491BCBCAFE00884077 /* UIKit.framework */,
 				41198A7B1B6B7FB40033B390 /* README.md */,
 				41BE418C1B6BB0F7000C0DD4 /* BUILD.md */,
 				41F14FF21B6902F9002189F1 /* LICENSE */,
@@ -261,6 +260,7 @@
 		417A8B2F1BCBCAAE00884077 /* run-on-ipad */ = {
 			isa = PBXGroup;
 			children = (
+				417A8B491BCBCAFE00884077 /* UIKit.framework */,
 				417A8B331BCBCAAE00884077 /* AppDelegate.h */,
 				417A8B341BCBCAAE00884077 /* AppDelegate.m */,
 				417A8B361BCBCAAE00884077 /* ViewController.h */,
@@ -853,6 +853,7 @@
 				417A8B441BCBCAAE00884077 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		417E673F1BCBB0B900AA0322 /* Build configuration list for PBXNativeTarget "test-atomic-add" */ = {
 			isa = XCConfigurationList;
