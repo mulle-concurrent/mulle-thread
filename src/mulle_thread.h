@@ -43,4 +43,6 @@
 # include "mulle_thread_c11.h"
 #endif
 
+#include "mulle_atomic.h"
+
 #endif
