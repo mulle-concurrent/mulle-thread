@@ -46,6 +46,4 @@
 # include "mulle_atomic_c11.h"
 #endif
 
-#include "mulle_atomic_spinlock.h"
-
 #endif

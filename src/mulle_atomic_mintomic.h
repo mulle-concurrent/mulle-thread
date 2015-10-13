@@ -130,5 +130,4 @@ static inline void   mulle_atomic_memory_barrier( void)
    mint_thread_fence_seq_cst();
 }
 
-
 #endif
