@@ -61,9 +61,14 @@ static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *), void 
 // parameters different to pthreads!
 static inline int   mulle_thread_join( mulle_thread_t thread)
 {
-   return( pthread_join( thread, NULL));
+   return( thrd_join( thread, NULL));
 }
 
+
+static inline int   mulle_thread_cancel( void)
+{
+   return( thrd_exit( -1));
+}
 
 
 #pragma mark -
@@ -115,6 +120,5 @@ static inline int  mulle_thread_setspecific( mulle_thread_key_t key, void *userd
 {
    return( tss_set( key, userdata));
 }
-
 
 #endif

@@ -35,15 +35,27 @@
 #ifndef mulle_atomic_h__
 #define mulle_atomic_h__
 
+#ifndef HAVE_C11_STDATOMIC
+# ifdef __clang__
+#  if __has_include(<stdatomic.h>)
+#    define HAVE_C11_STDATOMIC 1
+#  endif
+# else
+#  if __STDC_VERSION__ < 201112L || defined( __STDC_NO_ATOMICS__)
+#   define HAVE_C11_STDATOMIC  1
+#  endif
+# endif
+#endif
+
 //
 // http://stackoverflow.com/questions/11805636/how-do-i-check-by-using-stdc-version-if-is-std-c1x-in-use
 // http://en.cppreference.com/w/c/atomic
 //
-#if __STDC_VERSION__ < 201112L || defined( __STDC_NO_ATOMICS__)
+#if HAVE_C11_STDATOMIC
+# include "mulle_atomic_c11.h"
+#else
 # pragma message( "Using mintomic for atomics")
 # include "mulle_atomic_mintomic.h"
-#else
-# include "mulle_atomic_c11.h"
 #endif
 
 #endif
