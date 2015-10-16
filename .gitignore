@@ -7,3 +7,6 @@ xcuserdata/
 project.xcworkspace/
 mulle_mintomic
 *.old
+.bootstrap.auto/
+.bootstrap.local/
+dependencies/

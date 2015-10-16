@@ -17,8 +17,11 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -g -DNDEBUG")
 set(HEADERS
 src/mulle_atomic.h
 src/mulle_atomic_mintomic.h
+src/mulle_atomic_c11.h
 src/mulle_thread.h
-src/mulle_thread_pthreads.h)
+src/mulle_thread_pthreads.h
+src/mulle_thread_c11.h
+)
 
 set(MINTOMIC_HEADERS
 mulle_mintomic/include/mintomic/core.h
@@ -31,23 +34,21 @@ mulle_mintomic/include/mintomic/private/core_msvc.h
 mulle_mintomic/include/mintomic/private/mintomic_gcc_arm.h
 mulle_mintomic/include/mintomic/private/mintomic_gcc_x86-64.h
 mulle_mintomic/include/mintomic/private/mintomic_msvc.h
-mulle_mintomic/include/mintomic/private/stdint.h
+mulle_mintomic/include/mintomic/private/mintomic_stdint.h
 )
 
 add_library(mulle_thread
 src/linkage.c
-mulle_mintomic/src/mintomic/mintomic_gcc.c
 )
 
 
-include_directories( AFTER SYSTEM mintomic/include)
+include_directories( AFTER SYSTEM mulle_mintomic/include)
 target_include_directories( mulle_thread PUBLIC mulle_mintomic/include)
 
 link_directories(${CMAKE_BINARY_DIR})
 target_link_libraries( mulle_thread LINK_PUBLIC pthread)
 
 INSTALL(TARGETS mulle_thread DESTINATION "lib")
-
 INSTALL(FILES ${HEADERS} DESTINATION "include/mulle_thread")
 
 # to avoid conflict with another mintomic installation

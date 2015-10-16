@@ -138,7 +138,6 @@
 		417E67541BCBB5BE00AA0322 /* test-atomic-cas */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "test-atomic-cas"; sourceTree = BUILT_PRODUCTS_DIR; };
 		417E67571BCBB68A00AA0322 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		419FC8A51BC95494002D75B9 /* mintomic_empty.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mintomic_empty.c; sourceTree = "<group>"; };
-		41B94BF01ACAADFB00A51891 /* mintomic_gcc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mintomic_gcc.c; path = mulle_mintomic/src/mintomic/mintomic_gcc.c; sourceTree = "<group>"; };
 		41BE418C1B6BB0F7000C0DD4 /* BUILD.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BUILD.md; sourceTree = "<group>"; };
 		41F14FE61B68F098002189F1 /* libmulle_thread.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmulle_thread.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		41F14FF21B6902F9002189F1 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -213,7 +212,6 @@
 				41F14FF21B6902F9002189F1 /* LICENSE */,
 				4158F6F81B5E982B00C5805C /* CMakeLists.txt */,
 				41492C6E1B41898E00CD50E1 /* mintomic */,
-				41B94BF01ACAADFB00A51891 /* mintomic_gcc.c */,
 				4147852E1ABAF290002DBAE4 /* src */,
 				41445DD81BA9DF7300FEB195 /* include */,
 				417E673A1BCBB0B900AA0322 /* test-atomic-add */,
@@ -645,7 +643,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -676,7 +674,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -758,7 +756,6 @@
 		417E673D1BCBB0B900AA0322 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CFLAGS = "-D__STDC_NO_THREADS__";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -766,7 +763,6 @@
 		417E673E1BCBB0B900AA0322 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CFLAGS = "-D__STDC_NO_THREADS__";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -774,7 +770,6 @@
 		417E67521BCBB5BE00AA0322 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CFLAGS = "-D__STDC_NO_THREADS__";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -782,7 +777,6 @@
 		417E67531BCBB5BE00AA0322 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CFLAGS = "-D__STDC_NO_THREADS__";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

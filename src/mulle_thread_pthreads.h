@@ -67,6 +67,13 @@ static inline int   mulle_thread_join( mulle_thread_t thread)
 }
 
 
+static inline int   mulle_thread_cancel( void)
+{
+   return( pthread_cancel( mulle_thread_self()));
+}
+
+
+
 #pragma mark -
 #pragma mark Lock
 
