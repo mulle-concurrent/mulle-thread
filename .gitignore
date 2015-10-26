@@ -10,3 +10,6 @@ mulle_mintomic
 .bootstrap.auto/
 .bootstrap.local/
 dependencies/
+mintomic/
+https://github.com/mulle-nat/mintomic/
+mulle-configuration/

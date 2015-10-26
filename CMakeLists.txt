@@ -24,17 +24,17 @@ src/mulle_thread_c11.h
 )
 
 set(MINTOMIC_HEADERS
-mulle_mintomic/include/mintomic/core.h
-mulle_mintomic/include/mintomic/mintomic.h
-mulle_mintomic/include/mintomic/platform_detect.h)
+mintomic/include/mintomic/core.h
+mintomic/include/mintomic/mintomic.h
+mintomic/include/mintomic/platform_detect.h)
 
 set(MINTOMIC_PRIVATE_HEADERS
-mulle_mintomic/include/mintomic/private/core_gcc.h
-mulle_mintomic/include/mintomic/private/core_msvc.h
-mulle_mintomic/include/mintomic/private/mintomic_gcc_arm.h
-mulle_mintomic/include/mintomic/private/mintomic_gcc_x86-64.h
-mulle_mintomic/include/mintomic/private/mintomic_msvc.h
-mulle_mintomic/include/mintomic/private/mintomic_stdint.h
+mintomic/include/mintomic/private/core_gcc.h
+mintomic/include/mintomic/private/core_msvc.h
+mintomic/include/mintomic/private/mintomic_gcc_arm.h
+mintomic/include/mintomic/private/mintomic_gcc_x86-64.h
+mintomic/include/mintomic/private/mintomic_msvc.h
+mintomic/include/mintomic/private/mintomic_stdint.h
 )
 
 add_library(mulle_thread
@@ -42,8 +42,8 @@ src/linkage.c
 )
 
 
-include_directories( AFTER SYSTEM mulle_mintomic/include)
-target_include_directories( mulle_thread PUBLIC mulle_mintomic/include)
+include_directories( AFTER SYSTEM mintomic/include)
+target_include_directories( mulle_thread PUBLIC mintomic/include)
 
 link_directories(${CMAKE_BINARY_DIR})
 target_link_libraries( mulle_thread LINK_PUBLIC pthread)
@@ -54,5 +54,5 @@ INSTALL(FILES ${HEADERS} DESTINATION "include/mulle_thread")
 # to avoid conflict with another mintomic installation
 # use mulle_mintomic as include subdir
 
-INSTALL(FILES ${MINTOMIC_HEADERS} DESTINATION "include/mulle_mintomic")
-INSTALL(FILES ${MINTOMIC_PRIVATE_HEADERS} DESTINATION "include/mulle_mintomic/private")
+INSTALL(FILES ${MINTOMIC_HEADERS} DESTINATION "include/mintomic")
+INSTALL(FILES ${MINTOMIC_PRIVATE_HEADERS} DESTINATION "include/mintomic/private")
