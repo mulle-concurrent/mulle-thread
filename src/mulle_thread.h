@@ -35,19 +35,20 @@
 #ifndef mulle_thread_h__
 #define mulle_thread_h__
 
+// clang lies about __STDC_NO_THREADS__
+
 #ifndef HAVE_C11_THREADS
 # ifdef __clang__
 #  if __has_include(<threads.h>)
 #    define HAVE_C11_THREADS 1
 #  endif
 # else
-#  if __STDC_VERSION__ < 201112L || defined( __STDC_NO_THREADS__)
+#  if __STDC_VERSION__ >= 201112L && ! defined( __STDC_NO_THREADS__)
 #   define HAVE_C11_THREADS  1
 #  endif
 # endif
 #endif
 
-// or ifdef some other library in, clang lies
 #if HAVE_C11_THREADS
 # include "mulle_thread_c11.h"
 #else

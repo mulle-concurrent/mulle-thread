@@ -58,7 +58,11 @@ static inline void   *__mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_
    assert( value != expect);
    
    actual = expect;
-   result = atomic_compare_exchange_weak_explicit( &adress->_nonatomic, &actual, value, memory_order_relaxed, memory_order_relaxed);
+   result = atomic_compare_exchange_weak_explicit( &adress->_nonatomic,
+                                                   &actual,
+                                                   value,
+                                                   memory_order_relaxed,
+                                                   memory_order_relaxed);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
@@ -67,7 +71,8 @@ static inline void   *__mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_
       decor = "";
       if( ! result)
          decor = "FAILED to";
-      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n", pthread_name(), decor, adress, expect, value, actual);
+      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n",
+         pthread_name(), decor, adress, expect, value, actual);
    }
 #endif
    return( actual);
@@ -84,7 +89,11 @@ static inline int   _mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *
    assert( value != expect);
    
    actual = expect;
-   result = atomic_compare_exchange_weak_explicit( &adress->_nonatomic, &actual, value, memory_order_relaxed, memory_order_relaxed);
+   result = atomic_compare_exchange_weak_explicit( &adress->_nonatomic,
+                                                   &actual,
+                                                   value,
+                                                   memory_order_relaxed,
+                                                   memory_order_relaxed);
 
 #if MULLE_ATOMIC_TRACE
    {
@@ -94,7 +103,8 @@ static inline int   _mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *
       decor = "";
       if( ! result)
          decor = "FAILED to";
-      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n", pthread_name(), decor, adress, expect, value, actual);
+      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n",
+         pthread_name(), decor, adress, expect, value, actual);
    }
 #endif
    return( result);

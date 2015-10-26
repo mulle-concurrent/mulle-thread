@@ -39,7 +39,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include <mulle_mintomic/mintomic.h>
+#include <mintomic/mintomic.h>
 
 //
 // just some stand-in code for later
@@ -66,7 +66,8 @@ static inline void   *__mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_
       decor = "";
       if( result != expect )
          decor = "FAILED to";
-      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n", pthread_name(), decor, adress, expect, value, result);
+      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n",
+          pthread_name(), decor, adress, expect, value, result);
    }
 #endif
    return( result);
@@ -98,7 +99,8 @@ static inline void  *_mulle_atomic_decrement_pointer( mulle_atomic_ptr_t *adress
 
 
 // returns the result, not the previous value like increment/decrement
-static inline void  *_mulle_atomic_add_pointer( mulle_atomic_ptr_t *adress, intptr_t diff)
+static inline void  *_mulle_atomic_add_pointer( mulle_atomic_ptr_t *adress,
+                                                intptr_t diff)
 {
    return( (void *) ((intptr_t) mint_fetch_add_ptr_relaxed( adress, diff) + diff));
 }
@@ -119,7 +121,8 @@ static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
    return( result);
 }
 
-static inline void  _mulle_atomic_write_pointer( mulle_atomic_ptr_t *adress, void *value)
+static inline void  _mulle_atomic_write_pointer( mulle_atomic_ptr_t *adress,
+                                                 void *value)
 {
    mint_store_ptr_relaxed( adress, value);
 }

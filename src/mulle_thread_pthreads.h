@@ -54,7 +54,9 @@ static inline mulle_thread_t  mulle_thread_self( void)
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *), void *arg, mulle_thread_t *thread)
+static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *),
+                                         void *arg,
+                                         mulle_thread_t *thread)
 {
    return( pthread_create( thread, NULL, f, arg));
 }
@@ -91,6 +93,12 @@ static inline int  mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 }
 
 
+static inline int  mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
+{
+   return( pthread_mutex_trylock( lock));
+}
+
+
 static inline int  mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock)
 {
    return( pthread_mutex_unlock( lock));
@@ -107,7 +115,8 @@ static inline int  mulle_thread_mutex_destroy( mulle_thread_mutex_t *lock)
 #pragma mark Thread Local Storage
 
 
-static inline int   mulle_thread_key_create( mulle_thread_key_t *key, void (*f)( void *))
+static inline int   mulle_thread_key_create( mulle_thread_key_t *key,
+                                             void (*f)( void *))
 {
    return( pthread_key_create( key, f));
 }
@@ -119,7 +128,8 @@ static inline void   *mulle_thread_getspecific( mulle_thread_key_t key)
 }
 
 
-static inline int  mulle_thread_setspecific( mulle_thread_key_t key, void *userdata)
+static inline int  mulle_thread_setspecific( mulle_thread_key_t key,
+                                             void *userdata)
 {
    return( pthread_setspecific( key, userdata));
 }

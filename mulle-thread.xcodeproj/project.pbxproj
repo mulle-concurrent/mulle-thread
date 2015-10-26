@@ -39,9 +39,9 @@
 		417A8B4A1BCBCAFE00884077 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 417A8B491BCBCAFE00884077 /* UIKit.framework */; };
 		417A8B4B1BCBCCF200884077 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 417E67571BCBB68A00AA0322 /* main.c */; };
 		417E673C1BCBB0B900AA0322 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 417E673B1BCBB0B900AA0322 /* main.c */; };
-		417E67441BCBB0C800AA0322 /* libmulle_mintomic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41445DC21BA9DE1700FEB195 /* libmulle_mintomic.a */; };
+		417E67441BCBB0C800AA0322 /* libmintomic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41445DC21BA9DE1700FEB195 /* libmintomic.a */; };
 		417E67451BCBB0C800AA0322 /* libmulle_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41F14FE61B68F098002189F1 /* libmulle_thread.a */; };
-		417E674E1BCBB5BE00AA0322 /* libmulle_mintomic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41445DC21BA9DE1700FEB195 /* libmulle_mintomic.a */; };
+		417E674E1BCBB5BE00AA0322 /* libmintomic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41445DC21BA9DE1700FEB195 /* libmintomic.a */; };
 		417E674F1BCBB5BE00AA0322 /* libmulle_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41F14FE61B68F098002189F1 /* libmulle_thread.a */; };
 		417E67581BCBB68A00AA0322 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 417E67571BCBB68A00AA0322 /* main.c */; };
 		419795A41B6A52E2005417AA /* mulle_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 414785391ABAF326002DBAE4 /* mulle_atomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -104,22 +104,21 @@
 		41198A7B1B6B7FB40033B390 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		411AB1061BC7F0280089AA49 /* mulle_atomic_c11.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic_c11.h; sourceTree = "<group>"; };
 		411AB10A1BC7FD8F0089AA49 /* mulle_thread_c11.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_thread_c11.h; sourceTree = "<group>"; };
-		41445DC21BA9DE1700FEB195 /* libmulle_mintomic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmulle_mintomic.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		41445DC61BA9DF6200FEB195 /* core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core.h; path = mulle_mintomic/include/mintomic/core.h; sourceTree = "<group>"; };
-		41445DC71BA9DF6200FEB195 /* mintomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic.h; path = mulle_mintomic/include/mintomic/mintomic.h; sourceTree = "<group>"; };
-		41445DC81BA9DF6200FEB195 /* platform_detect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = platform_detect.h; path = mulle_mintomic/include/mintomic/platform_detect.h; sourceTree = "<group>"; };
-		41445DCC1BA9DF6D00FEB195 /* core_gcc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core_gcc.h; path = mulle_mintomic/include/mintomic/private/core_gcc.h; sourceTree = "<group>"; };
-		41445DCD1BA9DF6D00FEB195 /* core_msvc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core_msvc.h; path = mulle_mintomic/include/mintomic/private/core_msvc.h; sourceTree = "<group>"; };
-		41445DCE1BA9DF6D00FEB195 /* mintomic_gcc_arm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic_gcc_arm.h; path = mulle_mintomic/include/mintomic/private/mintomic_gcc_arm.h; sourceTree = "<group>"; };
-		41445DCF1BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "mintomic_gcc_x86-64.h"; path = "mulle_mintomic/include/mintomic/private/mintomic_gcc_x86-64.h"; sourceTree = "<group>"; };
-		41445DD01BA9DF6D00FEB195 /* mintomic_msvc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic_msvc.h; path = mulle_mintomic/include/mintomic/private/mintomic_msvc.h; sourceTree = "<group>"; };
-		41445DD11BA9DF6D00FEB195 /* mintomic_stdint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic_stdint.h; path = mulle_mintomic/include/mintomic/private/mintomic_stdint.h; sourceTree = "<group>"; };
+		41445DC21BA9DE1700FEB195 /* libmintomic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmintomic.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		41445DC61BA9DF6200FEB195 /* core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core.h; path = ../mintomic/include/mintomic/core.h; sourceTree = "<group>"; };
+		41445DC71BA9DF6200FEB195 /* mintomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic.h; path = ../mintomic/include/mintomic/mintomic.h; sourceTree = "<group>"; };
+		41445DC81BA9DF6200FEB195 /* platform_detect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = platform_detect.h; path = ../mintomic/include/mintomic/platform_detect.h; sourceTree = "<group>"; };
+		41445DCC1BA9DF6D00FEB195 /* core_gcc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core_gcc.h; path = ../mintomic/include/mintomic/private/core_gcc.h; sourceTree = "<group>"; };
+		41445DCD1BA9DF6D00FEB195 /* core_msvc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core_msvc.h; path = ../mintomic/include/mintomic/private/core_msvc.h; sourceTree = "<group>"; };
+		41445DCE1BA9DF6D00FEB195 /* mintomic_gcc_arm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic_gcc_arm.h; path = ../mintomic/include/mintomic/private/mintomic_gcc_arm.h; sourceTree = "<group>"; };
+		41445DCF1BA9DF6D00FEB195 /* mintomic_gcc_x86-64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "mintomic_gcc_x86-64.h"; path = "../mintomic/include/mintomic/private/mintomic_gcc_x86-64.h"; sourceTree = "<group>"; };
+		41445DD01BA9DF6D00FEB195 /* mintomic_msvc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic_msvc.h; path = ../mintomic/include/mintomic/private/mintomic_msvc.h; sourceTree = "<group>"; };
+		41445DD11BA9DF6D00FEB195 /* mintomic_stdint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic_stdint.h; path = ../mintomic/include/mintomic/private/mintomic_stdint.h; sourceTree = "<group>"; };
 		414785391ABAF326002DBAE4 /* mulle_atomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic.h; sourceTree = "<group>"; };
 		4148856D1BA9B35D0050773A /* mulle_thread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_thread.h; sourceTree = "<group>"; };
 		4148856E1BA9B43C0050773A /* mulle_thread_pthreads.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_thread_pthreads.h; sourceTree = "<group>"; };
 		4148856F1BA9B48D0050773A /* linkage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = linkage.c; sourceTree = "<group>"; };
 		414885711BA9B4F90050773A /* mulle_atomic_mintomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic_mintomic.h; sourceTree = "<group>"; };
-		41492C6E1B41898E00CD50E1 /* mintomic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mintomic; path = mulle_mintomic/include/mintomic; sourceTree = "<group>"; };
 		4158F6F81B5E982B00C5805C /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		417A8B291BCBCA5000884077 /* libmulle_thread (iOS).a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libmulle_thread (iOS).a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		417A8B2E1BCBCAAE00884077 /* run-on-ipad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "run-on-ipad.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -133,6 +132,15 @@
 		417A8B3F1BCBCAAE00884077 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		417A8B411BCBCAAE00884077 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		417A8B491BCBCAFE00884077 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.1.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		417C02591BD83972005A3751 /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
+		417C025A1BD83972005A3751 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		417C025B1BD83972005A3751 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		417C025D1BD83A44005A3751 /* StaticLibrary.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = StaticLibrary.xcconfig; sourceTree = "<group>"; };
+		417C025E1BD83AAB005A3751 /* StaticLibraryIOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = StaticLibraryIOS.xcconfig; sourceTree = "<group>"; };
+		417C025F1BD83ABD005A3751 /* IOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = IOS.xcconfig; sourceTree = "<group>"; };
+		417C02601BD83AC5005A3751 /* OSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = OSX.xcconfig; sourceTree = "<group>"; };
+		417C02611BD83B47005A3751 /* StaticLibraryOSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = StaticLibraryOSX.xcconfig; sourceTree = "<group>"; };
+		417C02621BD83C6F005A3751 /* ToolOSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ToolOSX.xcconfig; sourceTree = "<group>"; };
 		417E67391BCBB0B900AA0322 /* test-atomic-add */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "test-atomic-add"; sourceTree = BUILT_PRODUCTS_DIR; };
 		417E673B1BCBB0B900AA0322 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		417E67541BCBB5BE00AA0322 /* test-atomic-cas */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "test-atomic-cas"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,7 +172,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				417E67441BCBB0C800AA0322 /* libmulle_mintomic.a in Frameworks */,
+				417E67441BCBB0C800AA0322 /* libmintomic.a in Frameworks */,
 				417E67451BCBB0C800AA0322 /* libmulle_thread.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -173,7 +181,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				417E674E1BCBB5BE00AA0322 /* libmulle_mintomic.a in Frameworks */,
+				417E674E1BCBB5BE00AA0322 /* libmintomic.a in Frameworks */,
 				417E674F1BCBB5BE00AA0322 /* libmulle_thread.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -207,11 +215,11 @@
 		414785231ABAF290002DBAE4 = {
 			isa = PBXGroup;
 			children = (
+				417C025C1BD83977005A3751 /* mulle-configuration */,
 				41198A7B1B6B7FB40033B390 /* README.md */,
 				41BE418C1B6BB0F7000C0DD4 /* BUILD.md */,
 				41F14FF21B6902F9002189F1 /* LICENSE */,
 				4158F6F81B5E982B00C5805C /* CMakeLists.txt */,
-				41492C6E1B41898E00CD50E1 /* mintomic */,
 				4147852E1ABAF290002DBAE4 /* src */,
 				41445DD81BA9DF7300FEB195 /* include */,
 				417E673A1BCBB0B900AA0322 /* test-atomic-add */,
@@ -225,7 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				41F14FE61B68F098002189F1 /* libmulle_thread.a */,
-				41445DC21BA9DE1700FEB195 /* libmulle_mintomic.a */,
+				41445DC21BA9DE1700FEB195 /* libmintomic.a */,
 				417E67391BCBB0B900AA0322 /* test-atomic-add */,
 				417E67541BCBB5BE00AA0322 /* test-atomic-cas */,
 				417A8B291BCBCA5000884077 /* libmulle_thread (iOS).a */,
@@ -272,6 +280,22 @@
 				417A8B311BCBCAAE00884077 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		417C025C1BD83977005A3751 /* mulle-configuration */ = {
+			isa = PBXGroup;
+			children = (
+				417C025D1BD83A44005A3751 /* StaticLibrary.xcconfig */,
+				417C025E1BD83AAB005A3751 /* StaticLibraryIOS.xcconfig */,
+				417C02611BD83B47005A3751 /* StaticLibraryOSX.xcconfig */,
+				417C02621BD83C6F005A3751 /* ToolOSX.xcconfig */,
+				417C02591BD83972005A3751 /* Common.xcconfig */,
+				417C025A1BD83972005A3751 /* Debug.xcconfig */,
+				417C025B1BD83972005A3751 /* Release.xcconfig */,
+				417C025F1BD83ABD005A3751 /* IOS.xcconfig */,
+				417C02601BD83AC5005A3751 /* OSX.xcconfig */,
+			);
+			path = "mulle-configuration";
 			sourceTree = "<group>";
 		};
 		417E673A1BCBB0B900AA0322 /* test-atomic-add */ = {
@@ -338,9 +362,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		41445DB51BA9DE1700FEB195 /* mulle_mintomic */ = {
+		41445DB51BA9DE1700FEB195 /* mintomic */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 41445DBF1BA9DE1700FEB195 /* Build configuration list for PBXNativeTarget "mulle_mintomic" */;
+			buildConfigurationList = 41445DBF1BA9DE1700FEB195 /* Build configuration list for PBXNativeTarget "mintomic" */;
 			buildPhases = (
 				41445DBA1BA9DE1700FEB195 /* Headers */,
 				419FC8A41BC9546F002D75B9 /* Sources */,
@@ -349,9 +373,9 @@
 			);
 			dependencies = (
 			);
-			name = mulle_mintomic;
+			name = mintomic;
 			productName = mulle_aba;
-			productReference = 41445DC21BA9DE1700FEB195 /* libmulle_mintomic.a */;
+			productReference = 41445DC21BA9DE1700FEB195 /* libmintomic.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		417A8B171BCBCA5000884077 /* mulle_thread (iOS) */ = {
@@ -478,7 +502,7 @@
 			projectRoot = "";
 			targets = (
 				41F14FE51B68F098002189F1 /* mulle_thread */,
-				41445DB51BA9DE1700FEB195 /* mulle_mintomic */,
+				41445DB51BA9DE1700FEB195 /* mintomic */,
 				417E67381BCBB0B900AA0322 /* test-atomic-add */,
 				417E67461BCBB5BE00AA0322 /* test-atomic-cas */,
 				417A8B171BCBCA5000884077 /* mulle_thread (iOS) */,
@@ -557,12 +581,12 @@
 /* Begin PBXTargetDependency section */
 		41445DC51BA9DE3700FEB195 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 41445DB51BA9DE1700FEB195 /* mulle_mintomic */;
+			target = 41445DB51BA9DE1700FEB195 /* mintomic */;
 			targetProxy = 41445DC41BA9DE3700FEB195 /* PBXContainerItemProxy */;
 		};
 		417A8B181BCBCA5000884077 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 41445DB51BA9DE1700FEB195 /* mulle_mintomic */;
+			target = 41445DB51BA9DE1700FEB195 /* mintomic */;
 			targetProxy = 417A8B191BCBCA5000884077 /* PBXContainerItemProxy */;
 		};
 		417A8B471BCBCAEC00884077 /* PBXTargetDependency */ = {
@@ -577,7 +601,7 @@
 		};
 		417E67431BCBB0C100AA0322 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 41445DB51BA9DE1700FEB195 /* mulle_mintomic */;
+			target = 41445DB51BA9DE1700FEB195 /* mintomic */;
 			targetProxy = 417E67421BCBB0C100AA0322 /* PBXContainerItemProxy */;
 		};
 		417E67471BCBB5BE00AA0322 /* PBXTargetDependency */ = {
@@ -587,7 +611,7 @@
 		};
 		417E67491BCBB5BE00AA0322 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 41445DB51BA9DE1700FEB195 /* mulle_mintomic */;
+			target = 41445DB51BA9DE1700FEB195 /* mintomic */;
 			targetProxy = 417E674A1BCBB5BE00AA0322 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -614,104 +638,53 @@
 /* Begin XCBuildConfiguration section */
 		41445DC01BA9DE1700FEB195 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C025D1BD83A44005A3751 /* StaticLibrary.xcconfig */;
 			buildSettings = {
-				PRIVATE_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}/private";
-				PRODUCT_NAME = "${TARGET_NAME}";
-				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		41445DC11BA9DE1700FEB195 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C025D1BD83A44005A3751 /* StaticLibrary.xcconfig */;
 			buildSettings = {
-				PRIVATE_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}/private";
-				PRODUCT_NAME = "${TARGET_NAME}";
-				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
 		414785311ABAF290002DBAE4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C025A1BD83972005A3751 /* Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					./mulle_mintomic/include,
+					./mintomic/include,
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
 		414785321ABAF290002DBAE4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C025B1BD83972005A3751 /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					./mulle_mintomic/include,
+					./mintomic/include,
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				MTL_ENABLE_DEBUG_INFO = NO;
 			};
 			name = Release;
 		};
 		417A8B271BCBCA5000884077 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C025E1BD83AAB005A3751 /* StaticLibraryIOS.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
-				EXECUTABLE_PREFIX = lib;
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
 		417A8B281BCBCA5000884077 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C025E1BD83AAB005A3751 /* StaticLibraryIOS.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
-				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
 		};
@@ -755,55 +728,50 @@
 		};
 		417E673D1BCBB0B900AA0322 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C02621BD83C6F005A3751 /* ToolOSX.xcconfig */;
 			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
 		417E673E1BCBB0B900AA0322 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C02621BD83C6F005A3751 /* ToolOSX.xcconfig */;
 			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
 		417E67521BCBB5BE00AA0322 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C02621BD83C6F005A3751 /* ToolOSX.xcconfig */;
 			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
 		417E67531BCBB5BE00AA0322 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C02621BD83C6F005A3751 /* ToolOSX.xcconfig */;
 			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
 		41F14FE81B68F098002189F1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C02611BD83B47005A3751 /* StaticLibraryOSX.xcconfig */;
 			buildSettings = {
-				EXECUTABLE_PREFIX = lib;
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
 			};
 			name = Debug;
 		};
 		41F14FE91B68F098002189F1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 417C02611BD83B47005A3751 /* StaticLibraryOSX.xcconfig */;
 			buildSettings = {
-				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "/usr/local/include/${PRODUCT_NAME}";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		41445DBF1BA9DE1700FEB195 /* Build configuration list for PBXNativeTarget "mulle_mintomic" */ = {
+		41445DBF1BA9DE1700FEB195 /* Build configuration list for PBXNativeTarget "mintomic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				41445DC01BA9DE1700FEB195 /* Debug */,
