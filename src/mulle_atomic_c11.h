@@ -43,11 +43,53 @@
 //
 // this is due to the mintomic heritage
 //
-typedef struct { _Atomic( void *) _nonatomic; }   mulle_atomic_ptr_t;
+typedef _Atomic( void *)   mulle_atomic_ptr_t;
+
+
+# pragma mark -
+# pragma mark set and get
+
+__attribute__((always_inline))
+static inline void   *_mulle_atomic_nonatomic_read_pointer( mulle_atomic_ptr_t *p)
+{
+   return( *(void **) p);
+}
+
+
+__attribute__((always_inline))
+static inline void   _mulle_atomic_nonatomic_write_pointer( mulle_atomic_ptr_t *p, void *value)
+{
+   *(void **) p = value;
+}
+
+
+__attribute__((always_inline))
+static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
+{
+   void   *result;
+   
+   result = atomic_load_explicit( adress, memory_order_relaxed);
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+      
+      fprintf( stderr, "%s: read %p -> %p\n", pthread_name(), adress, result);
+   }
+#endif
+   return( result);
+}
+
+
+__attribute__((always_inline))
+static inline void  _mulle_atomic_write_pointer( mulle_atomic_ptr_t *adress, void *value)
+{
+   atomic_store_explicit( adress, value, memory_order_relaxed);
+}
 
 
 # pragma mark -
 # pragma mark primitive code
+
 static inline void   *__mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *adress,
                                                                void *value,
                                                                void *expect)
@@ -58,7 +100,7 @@ static inline void   *__mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_
    assert( value != expect);
    
    actual = expect;
-   result = atomic_compare_exchange_weak_explicit( &adress->_nonatomic,
+   result = atomic_compare_exchange_weak_explicit( adress,
                                                    &actual,
                                                    value,
                                                    memory_order_relaxed,
@@ -89,7 +131,7 @@ static inline int   _mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *
    assert( value != expect);
    
    actual = expect;
-   result = atomic_compare_exchange_weak_explicit( &adress->_nonatomic,
+   result = atomic_compare_exchange_weak_explicit( adress,
                                                    &actual,
                                                    value,
                                                    memory_order_relaxed,
@@ -113,48 +155,28 @@ static inline int   _mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *
 
 static inline void   *_mulle_atomic_increment_pointer( mulle_atomic_ptr_t *adress)
 {
-   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) &adress->_nonatomic, 1, memory_order_relaxed));
+   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) adress, 1, memory_order_relaxed));
 }
 
 
 static inline void  *_mulle_atomic_decrement_pointer( mulle_atomic_ptr_t *adress)
 {
-   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) &adress->_nonatomic, -1, memory_order_relaxed));
+   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) adress, -1, memory_order_relaxed));
 }
 
 
 // returns the result, not the previous value like increment/decrement
 static inline void  *_mulle_atomic_add_pointer( mulle_atomic_ptr_t *adress, intptr_t diff)
 {
-   return( (void *) ((intptr_t) atomic_fetch_add_explicit( (atomic_intptr_t *) &adress->_nonatomic, diff, memory_order_relaxed) + diff));
+   return( (void *) ((intptr_t) atomic_fetch_add_explicit( (atomic_intptr_t *) adress, diff, memory_order_relaxed) + diff));
 }
 
 
-static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
-{
-   void   *result;
-   
-   result = atomic_load_explicit( &adress->_nonatomic, memory_order_relaxed);
-#if MULLE_ATOMIC_TRACE
-   {
-      extern char   *pthread_name( void);
-      
-      fprintf( stderr, "%s: read %p -> %p\n", pthread_name(), adress, result);
-   }
-#endif
-   return( result);
-}
-
-          
-static inline void  _mulle_atomic_write_pointer( mulle_atomic_ptr_t *adress, void *value)
-{
-   atomic_store_explicit( &adress->_nonatomic, value, memory_order_relaxed);
-}
-
-
+__attribute__((always_inline))
 static inline void   mulle_atomic_memory_barrier( void)
 {
    atomic_signal_fence( memory_order_seq_cst);
 }
+
 
 #endif /* mulle_atomic_c11_h */
