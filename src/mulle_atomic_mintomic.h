@@ -49,6 +49,45 @@
 
 typedef mint_atomicPtr_t   mulle_atomic_ptr_t;
 
+
+__attribute__((always_inline))
+static inline void   *_mulle_atomic_nonatomic_read_pointer( mulle_atomic_ptr_t *p)
+{
+   return( p->_nonatomic);
+}
+
+
+__attribute__((always_inline))
+static inline void   _mulle_atomic_nonatomic_write_pointer( mulle_atomic_ptr_t *p, void *value)
+{
+   p->_nonatomic = value;
+}
+
+
+__attribute__((always_inline))
+static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
+{
+   void   *result;
+   
+   result = mint_load_ptr_relaxed( adress);
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+      
+      fprintf( stderr, "%s: read %p -> %p\n", pthread_name(), adress, result);
+   }
+#endif
+   return( result);
+}
+
+__attribute__((always_inline))
+static inline void  _mulle_atomic_write_pointer( mulle_atomic_ptr_t *adress,
+                                                void *value)
+{
+   mint_store_ptr_relaxed( adress, value);
+}
+
+
 # pragma mark -
 # pragma mark primitive code
 static inline void   *__mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *adress,
@@ -103,28 +142,6 @@ static inline void  *_mulle_atomic_add_pointer( mulle_atomic_ptr_t *adress,
                                                 intptr_t diff)
 {
    return( (void *) ((intptr_t) mint_fetch_add_ptr_relaxed( adress, diff) + diff));
-}
-
-
-static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
-{
-   void   *result;
-   
-   result = mint_load_ptr_relaxed( adress);
-#if MULLE_ATOMIC_TRACE
-   {
-      extern char   *pthread_name( void);
-      
-      fprintf( stderr, "%s: read %p -> %p\n", pthread_name(), adress, result);
-   }
-#endif
-   return( result);
-}
-
-static inline void  _mulle_atomic_write_pointer( mulle_atomic_ptr_t *adress,
-                                                 void *value)
-{
-   mint_store_ptr_relaxed( adress, value);
 }
 
 
