@@ -39,7 +39,7 @@
 
 
 typedef pthread_mutex_t   mulle_thread_mutex_t;
-typedef pthread_key_t     mulle_thread_key_t;
+typedef pthread_key_t     mulle_thread_tss_t;
 typedef pthread_t         mulle_thread_t;
 typedef void *            mulle_thread_rval_t;
 
@@ -115,20 +115,20 @@ static inline int  mulle_thread_mutex_destroy( mulle_thread_mutex_t *lock)
 #pragma mark Thread Local Storage
 
 
-static inline int   mulle_thread_key_create( mulle_thread_key_t *key,
+static inline int   mulle_thread_tss_create( mulle_thread_tss_t *key,
                                              void (*f)( void *))
 {
    return( pthread_key_create( key, f));
 }
 
 
-static inline void   *mulle_thread_getspecific( mulle_thread_key_t key)
+static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 {
    return( pthread_getspecific( key));
 }
 
 
-static inline int  mulle_thread_setspecific( mulle_thread_key_t key,
+static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
                                              void *userdata)
 {
    return( pthread_setspecific( key, userdata));
