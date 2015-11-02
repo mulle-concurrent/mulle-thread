@@ -48,11 +48,11 @@ extern void   mulle_aba_print( void);
 # define mulle_aba_print()
 #endif
 
-static mulle_thread_key_t   timestamp_thread_key;
+static mulle_thread_tss_t   timestamp_thread_key;
 char  *mulle_aba_thread_name( void);
 
 
-static mulle_atomic_ptr_t    central;
+static mulle_atomic_pointer_t    central;
 
 #pragma mark -
 #pragma mark run test
@@ -63,7 +63,7 @@ static void    run_atomic_add_test( void)
    
    for( i = 0; i < LOOPS; i++)
    {
-      _mulle_atomic_increment_pointer( &central);
+      _mulle_atomic_pointer_increment( &central);
    }
 }
 
@@ -77,10 +77,10 @@ void  multi_threaded_test_each_thread()
 }
 
 
-static void   _wait_around( mulle_atomic_ptr_t *n_threads)
+static void   _wait_around( mulle_atomic_pointer_t *n_threads)
 {
    // wait for all threads to materialize
-   _mulle_atomic_decrement_pointer( n_threads);
+   _mulle_atomic_pointer_decrement( n_threads);
    while( _mulle_atomic_read_pointer( n_threads) != 0)
       sched_yield();
 }
@@ -89,13 +89,13 @@ static void   _wait_around( mulle_atomic_ptr_t *n_threads)
 struct thread_info
 {
    char                  name[ 64];
-   mulle_atomic_ptr_t    *n_threads;
+   mulle_atomic_pointer_t    *n_threads;
 };
 
 
 static mulle_thread_rval_t   run_test( struct thread_info *info)
 {
-   mulle_thread_setspecific( timestamp_thread_key, strdup( info->name));
+   mulle_thread_tss_set( timestamp_thread_key, strdup( info->name));
    
    _wait_around( info->n_threads);
    multi_threaded_test_each_thread();
@@ -114,7 +114,7 @@ void  multi_threaded_test( intptr_t n)
    int                  i;
    mulle_thread_t       *threads;
    struct thread_info   *info;
-   mulle_atomic_ptr_t   n_threads;
+   mulle_atomic_pointer_t   n_threads;
    
 #if MULLE_ABA_TRACE
    fprintf( stderr, "////////////////////////////////\n");
@@ -160,7 +160,7 @@ void  multi_threaded_test( intptr_t n)
 
 char  *mulle_aba_thread_name( void)
 {
-   return( mulle_thread_getspecific( timestamp_thread_key));
+   return( mulle_thread_tss_get( timestamp_thread_key));
 }
 
 
@@ -185,10 +185,10 @@ int   _main(int argc, const char * argv[])
    
    srand( (unsigned int) time( NULL));
    
-   rval = mulle_thread_key_create( &timestamp_thread_key, free);
+   rval = mulle_thread_tss_create( &timestamp_thread_key, free);
    assert( ! rval);
    
-   rval = mulle_thread_setspecific( timestamp_thread_key, strdup( "main"));
+   rval = mulle_thread_tss_set( timestamp_thread_key, strdup( "main"));
    assert( ! rval);
    
 #if MULLE_ABA_TRACE

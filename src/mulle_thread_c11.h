@@ -38,7 +38,7 @@
 #include <threads.h>
 
 typedef mtx_t    mulle_thread_mutex_t;
-typedef tss_t    mulle_thread_key_t;
+typedef tss_t    mulle_thread_tss_t;
 typedef thrd_t   mulle_thread_t;
 typedef int      mulle_thread_rval_t;
 
@@ -118,20 +118,20 @@ static inline int  mulle_thread_mutex_destroy( mulle_thread_mutex_t *lock)
 #pragma mark Thread Local Storage
 
 
-static inline int   mulle_thread_key_create( mulle_thread_key_t *key,
+static inline int   mulle_thread_tss_create( mulle_thread_tss_t *key,
                                              void (*f)( void *))
 {
    return( tss_create( key, f));
 }
 
 
-static inline void   *mulle_thread_getspecific( mulle_thread_key_t key)
+static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 {
    return( tss_get( key));
 }
 
 
-static inline int  mulle_thread_setspecific( mulle_thread_key_t key,
+static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
                                              void *userdata)
 {
    return( tss_set( key, userdata));

@@ -43,28 +43,28 @@
 //
 // this is due to the mintomic heritage
 //
-typedef _Atomic( void *)   mulle_atomic_ptr_t;
+typedef _Atomic( void *)   mulle_atomic_pointer_t;
 
 
 # pragma mark -
 # pragma mark set and get
 
 __attribute__((always_inline))
-static inline void   *_mulle_atomic_nonatomic_read_pointer( mulle_atomic_ptr_t *p)
+static inline void   *_mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *p)
 {
    return( *(void **) p);
 }
 
 
 __attribute__((always_inline))
-static inline void   _mulle_atomic_nonatomic_write_pointer( mulle_atomic_ptr_t *p, void *value)
+static inline void   _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *p, void *value)
 {
    *(void **) p = value;
 }
 
 
 __attribute__((always_inline))
-static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
+static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *adress)
 {
    void   *result;
    
@@ -81,7 +81,7 @@ static inline void  *_mulle_atomic_read_pointer( mulle_atomic_ptr_t *adress)
 
 
 __attribute__((always_inline))
-static inline void  _mulle_atomic_write_pointer( mulle_atomic_ptr_t *adress, void *value)
+static inline void  _mulle_atomic_pointer_write( mulle_atomic_pointer_t *adress, void *value)
 {
    atomic_store_explicit( adress, value, memory_order_relaxed);
 }
@@ -90,7 +90,7 @@ static inline void  _mulle_atomic_write_pointer( mulle_atomic_ptr_t *adress, voi
 # pragma mark -
 # pragma mark primitive code
 
-static inline void   *__mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *adress,
+static inline void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *adress,
                                                                void *value,
                                                                void *expect)
 {
@@ -121,7 +121,7 @@ static inline void   *__mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_
 }
 
 
-static inline int   _mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *adress,
+static inline int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *adress,
                                                             void *value,
                                                             void *expect)
 {
@@ -153,20 +153,20 @@ static inline int   _mulle_atomic_compare_and_swap_pointer( mulle_atomic_ptr_t *
 }
 
 
-static inline void   *_mulle_atomic_increment_pointer( mulle_atomic_ptr_t *adress)
+static inline void   *_mulle_atomic_pointer_increment( mulle_atomic_pointer_t *adress)
 {
    return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) adress, 1, memory_order_relaxed));
 }
 
 
-static inline void  *_mulle_atomic_decrement_pointer( mulle_atomic_ptr_t *adress)
+static inline void  *_mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *adress)
 {
    return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) adress, -1, memory_order_relaxed));
 }
 
 
 // returns the result, not the previous value like increment/decrement
-static inline void  *_mulle_atomic_add_pointer( mulle_atomic_ptr_t *adress, intptr_t diff)
+static inline void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *adress, intptr_t diff)
 {
    return( (void *) ((intptr_t) atomic_fetch_add_explicit( (atomic_intptr_t *) adress, diff, memory_order_relaxed) + diff));
 }
