@@ -36,7 +36,6 @@
 #define mulle_atomic_mintomic_h__
 
 #include <stdint.h>
-#include <assert.h>
 #include <stdio.h>
 
 #include <mintomic/mintomic.h>
