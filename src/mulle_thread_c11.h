@@ -69,7 +69,8 @@ static inline int   mulle_thread_join( mulle_thread_t thread)
 
 static inline int   mulle_thread_cancel( void)
 {
-   return( thrd_exit( -1));
+   thrd_exit( -1);
+   return( 0);  // never returns anyway
 }
 
 
