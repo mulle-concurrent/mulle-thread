@@ -52,7 +52,9 @@
 #if HAVE_C11_THREADS
 # include "mulle_thread_c11.h"
 #else
-# pragma message( "Using pthreads for threads")
+# if TRACE_INCLUDE
+#  pragma message( "Using pthreads for threads")
+# endif
 # include "mulle_thread_pthreads.h"
 #endif
 

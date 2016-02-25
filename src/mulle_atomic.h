@@ -54,7 +54,9 @@
 #if HAVE_C11_STDATOMIC
 # include "mulle_atomic_c11.h"
 #else
-# pragma message( "Using mintomic for atomics")
+# if TRACE_INCLUDE
+#  pragma message( "Using mintomic for atomics")
+# endif
 # include "mulle_atomic_mintomic.h"
 #endif
 
