@@ -64,38 +64,38 @@ static inline void   _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer
 
 
 __attribute__((always_inline))
-static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *adress)
+static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address)
 {
    void   *result;
    
-   result = mint_load_ptr_relaxed( adress);
+   result = mint_load_ptr_relaxed( address);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
       
-      fprintf( stderr, "%s: read %p -> %p\n", pthread_name(), adress, result);
+      fprintf( stderr, "%s: read %p -> %p\n", pthread_name(), address, result);
    }
 #endif
    return( result);
 }
 
 __attribute__((always_inline))
-static inline void  _mulle_atomic_pointer_write( mulle_atomic_pointer_t *adress,
+static inline void  _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address,
                                                 void *value)
 {
-   mint_store_ptr_relaxed( adress, value);
+   mint_store_ptr_relaxed( address, value);
 }
 
 
 # pragma mark -
 # pragma mark primitive code
-static inline void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *adress,
+static inline void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
                                                                void *value,
                                                                void *expect)
 {
    void    *result;
    
-   result = mint_compare_exchange_strong_ptr_relaxed( adress, expect, value);
+   result = mint_compare_exchange_strong_ptr_relaxed( address, expect, value);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
@@ -105,42 +105,42 @@ static inline void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_poin
       if( result != expect )
          decor = "FAILED to";
       fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n",
-          pthread_name(), decor, adress, expect, value, result);
+          pthread_name(), decor, address, expect, value, result);
    }
 #endif
    return( result);
 }
 
 
-static inline int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *adress,
+static inline int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
                                                             void *value,
                                                             void *expect)
 {
    void  *result;
    
-   result = __mulle_atomic_pointer_compare_and_swap( adress, value, expect);
+   result = __mulle_atomic_pointer_compare_and_swap( address, value, expect);
    return( result == expect);
 }
 
 
 
-static inline void   *_mulle_atomic_pointer_increment( mulle_atomic_pointer_t *adress)
+static inline void   *_mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
 {
-   return( mint_fetch_add_ptr_relaxed( adress, 1));
+   return( mint_fetch_add_ptr_relaxed( address, 1));
 }
 
 
-static inline void  *_mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *adress)
+static inline void  *_mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *address)
 {
-   return( mint_fetch_add_ptr_relaxed( adress, -1));
+   return( mint_fetch_add_ptr_relaxed( address, -1));
 }
 
 
 // returns the result, not the previous value like increment/decrement
-static inline void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *adress,
+static inline void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *address,
                                                 intptr_t diff)
 {
-   return( (void *) ((intptr_t) mint_fetch_add_ptr_relaxed( adress, diff) + diff));
+   return( (void *) ((intptr_t) mint_fetch_add_ptr_relaxed( address, diff) + diff));
 }
 
 
