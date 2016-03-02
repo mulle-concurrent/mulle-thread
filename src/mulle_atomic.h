@@ -51,7 +51,7 @@
 // http://stackoverflow.com/questions/11805636/how-do-i-check-by-using-stdc-version-if-is-std-c1x-in-use
 // http://en.cppreference.com/w/c/atomic
 //
-#if HAVE_C11_STDATOMIC
+#if HAVE_C11_STDATOMIC && ! defined( MULLE_THREAD_USE_MINTOMIC)
 # include "mulle_atomic_c11.h"
 #else
 # if TRACE_INCLUDE

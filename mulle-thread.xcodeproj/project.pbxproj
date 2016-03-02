@@ -104,6 +104,7 @@
 		41198A7B1B6B7FB40033B390 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		411AB1061BC7F0280089AA49 /* mulle_atomic_c11.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic_c11.h; sourceTree = "<group>"; };
 		411AB10A1BC7FD8F0089AA49 /* mulle_thread_c11.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_thread_c11.h; sourceTree = "<group>"; };
+		41399A661C8363B10006D700 /* RELEASENOTES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = RELEASENOTES.md; sourceTree = "<group>"; };
 		41445DC21BA9DE1700FEB195 /* libmintomic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmintomic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		41445DC61BA9DF6200FEB195 /* core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core.h; path = ../mintomic/include/mintomic/core.h; sourceTree = "<group>"; };
 		41445DC71BA9DF6200FEB195 /* mintomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic.h; path = ../mintomic/include/mintomic/mintomic.h; sourceTree = "<group>"; };
@@ -217,6 +218,7 @@
 			children = (
 				417C025C1BD83977005A3751 /* mulle-configuration */,
 				41198A7B1B6B7FB40033B390 /* README.md */,
+				41399A661C8363B10006D700 /* RELEASENOTES.md */,
 				41BE418C1B6BB0F7000C0DD4 /* BUILD.md */,
 				41F14FF21B6902F9002189F1 /* LICENSE */,
 				4158F6F81B5E982B00C5805C /* CMakeLists.txt */,
@@ -656,6 +658,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 417C025A1BD83972005A3751 /* Debug.xcconfig */;
 			buildSettings = {
+				CURRENT_PROJECT_VERSION = 0.1;
 				HEADER_SEARCH_PATHS = (
 					./mintomic/include,
 					"$(inherited)",
@@ -667,6 +670,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 417C025B1BD83972005A3751 /* Release.xcconfig */;
 			buildSettings = {
+				CURRENT_PROJECT_VERSION = 0.1;
 				HEADER_SEARCH_PATHS = (
 					./mintomic/include,
 					"$(inherited)",

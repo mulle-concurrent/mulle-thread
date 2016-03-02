@@ -33,7 +33,9 @@
 //
 
 #ifndef mulle_thread_h__
-#define mulle_thread_h__
+#define mulle_thread_h__ 
+
+#define MULLE_THREAD_VERSION  ((0 << 20) | (2 << 8) | 0)
 
 // clang lies about __STDC_NO_THREADS__
 
@@ -49,7 +51,7 @@
 # endif
 #endif
 
-#if HAVE_C11_THREADS
+#if HAVE_C11_THREADS && ! defined( MULLE_THREAD_USE_PTHREADS)
 # include "mulle_thread_c11.h"
 #else
 # if TRACE_INCLUDE

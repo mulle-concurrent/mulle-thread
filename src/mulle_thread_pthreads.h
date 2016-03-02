@@ -47,6 +47,7 @@ typedef void *            mulle_thread_rval_t;
 #pragma mark -
 #pragma Threads
 
+__attribute__((const, returns_nonnull))
 static inline mulle_thread_t  mulle_thread_self( void)
 {
    return( pthread_self());
@@ -119,6 +120,12 @@ static inline int   mulle_thread_tss_create( mulle_thread_tss_t *key,
                                              void (*f)( void *))
 {
    return( pthread_key_create( key, f));
+}
+
+
+static inline void   mulle_thread_tss_delete( mulle_thread_tss_t key)
+{
+   pthread_key_delete( key);
 }
 
 
