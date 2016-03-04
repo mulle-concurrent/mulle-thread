@@ -96,8 +96,6 @@ static inline void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_poin
 {
    void    *actual;
    
-   assert( value != expect);
-   
    actual = expect;
 #if MULLE_ATOMIC_TRACE
    {

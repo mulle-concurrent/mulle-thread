@@ -70,11 +70,25 @@ static inline int   mulle_thread_join( mulle_thread_t thread)
 }
 
 
+
+static inline int   mulle_thread_detach( mulle_thread_t thread)
+{
+   return( pthread_detach( thread));
+}
+
+
 static inline int   mulle_thread_cancel( void)
 {
    return( pthread_cancel( mulle_thread_self()));
 }
 
+
+static inline void   mulle_thread_yield( void)
+{
+   extern int   sched_yield( void);  // POSIX... don't want the header though
+   
+   sched_yield();
+}
 
 
 #pragma mark -
@@ -115,9 +129,8 @@ static inline int  mulle_thread_mutex_destroy( mulle_thread_mutex_t *lock)
 #pragma mark -
 #pragma mark Thread Local Storage
 
-
-static inline int   mulle_thread_tss_create( mulle_thread_tss_t *key,
-                                             void (*f)( void *))
+// different parameters, rval always last
+static inline int   mulle_thread_tss_create( void (*f)( void *), mulle_thread_tss_t *key)
 {
    return( pthread_key_create( key, f));
 }
@@ -136,7 +149,7 @@ static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 
 
 static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
-                                             void *userdata)
+                                         void *userdata)
 {
    return( pthread_setspecific( key, userdata));
 }

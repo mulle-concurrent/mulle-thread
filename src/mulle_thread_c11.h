@@ -69,11 +69,24 @@ static inline int   mulle_thread_join( mulle_thread_t thread)
 }
 
 
+static inline int   mulle_thread_detach( mulle_thread_t thread)
+{
+   return( thrd_detach( thread));
+}
+
+
 static inline int   mulle_thread_cancel( void)
 {
    thrd_exit( -1);
    return( 0);  // never returns anyway
 }
+
+
+static inline void   mulle_thread_yield( void)
+{
+   thrd_yield();
+}
+
 
 
 #pragma mark -
@@ -121,8 +134,8 @@ static inline int  mulle_thread_mutex_destroy( mulle_thread_mutex_t *lock)
 #pragma mark Thread Local Storage
 
 
-static inline int   mulle_thread_tss_create( mulle_thread_tss_t *key,
-                                             void (*f)( void *))
+// different parameters, rval always last
+static inline int   mulle_thread_tss_create( void (*f)( void *), mulle_thread_tss_t *key)
 {
    return( tss_create( key, f));
 }
@@ -141,7 +154,7 @@ static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 
 
 static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
-                                             void *userdata)
+                                         void *userdata)
 {
    return( tss_set( key, userdata));
 }

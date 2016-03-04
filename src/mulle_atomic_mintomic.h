@@ -79,6 +79,7 @@ static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address
    return( result);
 }
 
+
 __attribute__((always_inline))
 static inline void  _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address,
                                                 void *value)
@@ -121,7 +122,6 @@ static inline int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer
    result = __mulle_atomic_pointer_compare_and_swap( address, value, expect);
    return( result == expect);
 }
-
 
 
 static inline void   *_mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
