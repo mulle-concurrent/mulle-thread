@@ -141,7 +141,7 @@ static inline int   mulle_thread_tss_create( void (*f)( void *), mulle_thread_ts
 }
 
 
-static inline void   mulle_thread_tss_delete( mulle_thread_tss_t *key)
+static inline void   mulle_thread_tss_delete( mulle_thread_tss_t key)
 {
    tss_delete( key);
 }
