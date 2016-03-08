@@ -211,6 +211,7 @@
 				41445DC81BA9DF6200FEB195 /* platform_detect.h */,
 			);
 			name = include;
+			path = mintomic;
 			sourceTree = "<group>";
 		};
 		414785231ABAF290002DBAE4 = {
