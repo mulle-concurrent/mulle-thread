@@ -32,8 +32,8 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef mulle_atomic_c11_h
-#define mulle_atomic_c11_h
+#ifndef mulle_atomic_c11_h__
+#define mulle_atomic_c11_h__
 
 #include <stdint.h>
 #include <assert.h>
