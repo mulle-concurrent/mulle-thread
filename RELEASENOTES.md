@@ -1,3 +1,9 @@
+1.1
+===
+
+* `returns_nonnull` does not mean `returns_nonzero` for some compilers,
+making them throw an error. Moronic...
+
 1.0
 ===
 * Moved return value parameter to the back of `mulle_thread_tss_create`.
