@@ -47,7 +47,7 @@ typedef void *            mulle_thread_rval_t;
 #pragma mark -
 #pragma Threads
 
-__attribute__((const, returns_nonnull))
+__attribute__((const))
 static inline mulle_thread_t  mulle_thread_self( void)
 {
    return( pthread_self());
