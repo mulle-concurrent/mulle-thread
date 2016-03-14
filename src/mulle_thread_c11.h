@@ -32,8 +32,8 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef mulle_thread_c11_h
-#define mulle_thread_c11_h
+#ifndef mulle_thread_c11_h__
+#define mulle_thread_c11_h__
 
 #include <threads.h>
 #include <assert.h>
