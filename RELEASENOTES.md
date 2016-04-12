@@ -1,3 +1,8 @@
+2.0
+===
+* renamed _destroy and _delete functions to be orthogonal with other mulle 
+  functions (sorry) to _free and _done.
+
 1.1
 ===
 
