@@ -2,17 +2,15 @@ cmake_minimum_required (VERSION 3.0)
 
 project (mulle-thread)
 
-#
-# dont forget to wipe all cmake produced files before
-# changing this
-#
-
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-   set (CMAKE_C_FLAGS "-Wno-parantheses")
+set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/mulle-configuration)
+message(STATUS "CMAKE_MODULE_PATH is ${CMAKE_MODULE_PATH}")
+message(STATUS "CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
+if( "${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+  include( Debug)
+else()
+  include( Release)
 endif()
 
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -g -DDEBUG -DMULLE_ATOMIC_TRACE")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -g -DNDEBUG")
 
 set(HEADERS
 src/mulle_atomic.h
