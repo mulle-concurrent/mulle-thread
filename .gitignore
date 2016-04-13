@@ -13,3 +13,7 @@ dependencies/
 mintomic/
 https://github.com/mulle-nat/mintomic/
 mulle-configuration/
+old/
+tmp/
+*.dSYM/
+*.exe
