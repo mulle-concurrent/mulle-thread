@@ -35,8 +35,9 @@
 #ifndef mulle_thread_c11_h__
 #define mulle_thread_c11_h__
 
-#include <threads.h>
 #include <assert.h>
+#include <threads.h>
+
 
 typedef mtx_t    mulle_thread_mutex_t;
 typedef tss_t    mulle_thread_tss_t;

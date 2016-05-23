@@ -35,10 +35,10 @@
 #ifndef mulle_atomic_c11_h__
 #define mulle_atomic_c11_h__
 
-#include <stdint.h>
 #include <assert.h>
-#include <stdio.h>
 #include <stdatomic.h>
+#include <stdint.h>
+#include <stdio.h>
 
 //
 // this is due to the mintomic heritage
