@@ -30,8 +30,9 @@
 //
 #include "mulle_atomic.h"
 #include "mulle_thread.h"
-#include <stdio.h>
+#include <assert.h>
 #include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
