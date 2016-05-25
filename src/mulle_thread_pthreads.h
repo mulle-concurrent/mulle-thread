@@ -36,6 +36,7 @@
 #define mulle_thread_pthreads_h__
 
 #include <pthread.h>
+#include <errno.h>
 
 
 typedef pthread_mutex_t   mulle_thread_mutex_t;
@@ -110,7 +111,11 @@ static inline int  mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 
 static inline int  mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
 {
-   return( pthread_mutex_trylock( lock));
+   if( ! pthread_mutex_trylock( lock))
+      return( 0);
+   if( errno == EBUSY)
+      return( 1);
+   return( -1);
 }
 
 
