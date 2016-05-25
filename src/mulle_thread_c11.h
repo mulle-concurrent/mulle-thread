@@ -59,20 +59,20 @@ static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *),
                                          void *arg,
                                          mulle_thread_t *thread)
 {
-   return( thrd_create( thread, f, arg));
+   return( thrd_create( thread, f, arg) == thrd_success ? 0 : -1);
 }
 
 
 // parameters different to pthreads!
 static inline int   mulle_thread_join( mulle_thread_t thread)
 {
-   return( thrd_join( thread, NULL));
+   return( thrd_join( thread, NULL) == thrd_success ? 0 : -1);
 }
 
 
 static inline int   mulle_thread_detach( mulle_thread_t thread)
 {
-   return( thrd_detach( thread));
+   return( thrd_detach( thread) == thrd_success ? 0 : -1);
 }
 
 
@@ -93,34 +93,35 @@ static inline void   mulle_thread_yield( void)
 #pragma mark -
 #pragma mark Lock
 
-
+// moronic FreeBSD <threads.h> 
 // parameters different to mtx!
 static inline int  mulle_thread_mutex_init( mulle_thread_mutex_t *lock)
 {
-   assert( ! thrd_success);
-   return( mtx_init( lock, mtx_plain));
+   return( mtx_init( lock, mtx_plain) == thrd_success ? 0 : -1);
 }
 
 
 static inline int  mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 {
-   assert( ! thrd_success);
-   return( mtx_lock( lock));
+   return( mtx_lock( lock) == thrd_success ? 0 : -1);
 }
 
 
 static inline int  mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
 {
-   assert( ! thrd_success);
-   return( mtx_trylock( lock));  // negate 4 pthread
+   switch( mtx_trylock( lock))
+   {
+   case thrd_success : return( 0) ;
+   case thrd_busy    : return( 1);
+   default           : return( -1);
+   }
 }
 
 
 
 static inline int  mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock)
 {
-   assert( ! thrd_success);
-   return( mtx_unlock( lock));
+   return( mtx_unlock( lock) == thrd_success ? 0 : -1);
 }
 
 
@@ -138,9 +139,8 @@ static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 // different parameters, rval always last
 static inline int   mulle_thread_tss_create( void (*f)( void *), mulle_thread_tss_t *key)
 {
-   assert( ! thrd_success);
    assert( key);
-   return( tss_create( key, f));
+   return( tss_create( key, f)  == thrd_success ? 0 : -1);
 }
 
 
@@ -161,10 +161,7 @@ static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
                                          void *userdata)
 {
-   assert( ! thrd_success);
-   assert( key);
-   
-   return( tss_set( key, userdata));
+   return( tss_set( key, userdata) == thrd_success ? 0 : -1);
 }
 
 #endif
