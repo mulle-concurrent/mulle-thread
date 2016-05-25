@@ -138,6 +138,8 @@ static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 // different parameters, rval always last
 static inline int   mulle_thread_tss_create( void (*f)( void *), mulle_thread_tss_t *key)
 {
+   assert( ! thrd_success);
+   assert( key);
    return( tss_create( key, f));
 }
 
@@ -150,6 +152,8 @@ static inline void   mulle_thread_tss_free( mulle_thread_tss_t key)
 
 static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 {
+   assert( key);
+
    return( tss_get( key));
 }
 
@@ -157,6 +161,9 @@ static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
                                          void *userdata)
 {
+   assert( ! thrd_success);
+   assert( key);
+   
    return( tss_set( key, userdata));
 }
 
