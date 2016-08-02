@@ -1,3 +1,10 @@
+2.1
+===
+
+* add function pointer atomicity. Why is a function pointer different to a void 
+pointer ? Imagine a machine with 64 KB ram. Data pointers could be 16 bit. Now
+imagine it having a ROM of 4 MB, function pointers could be 32 bit.
+
 2.0
 ===
 * renamed _destroy and _delete functions to be orthogonal with other mulle 
