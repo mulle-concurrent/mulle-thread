@@ -10,6 +10,30 @@ become useless. In the meantime though it's a convenient abstraction on threads
 and atomic operations.
 
 
+### Platforms
+
+* OS X
+* iOS
+* Linux
+* FreeBSD
+* Windows
+
+### Compilers
+
+* clang
+* gcc
+* MSVC
+
+### Architectures
+
+If **not** using proper C11
+
+* x86
+* x86_64
+* arm
+
+
+
 ## mintomic
 
 This was the original source for atomic operations, unfortunately it's not

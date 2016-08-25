@@ -168,37 +168,54 @@ static void   destructor_table_execute_destructors( struct destructor_table  *ta
 #pragma mark -
 #pragma mark "API"
 
-static LONG                inited;
-static CRITICAL_SECTION    lock;
-struct destructor_table    *table;
+static LONG                       inited;
+static CRITICAL_SECTION           lock;
+static struct destructor_table    *table;
 
 
-void   mulle_thread_tss_init( void)
+static void   mulle_thread_tss_init( void)
 {
-   if( InterlockedIncrement( &inited) != 1)
-      return;
-
-   InitializeCriticalSection( &lock);
+   for(;;)
+   {
+      switch( InterlockedIncrement( &inited))
+      {
+      case 1 :  InitializeCriticalSection( &lock);
+                InterlockedIncrement( &inited);  // move one up
+                return;
+            
+      case 2 :  InterlockedDecrement( &inited);  // competing initalizer, undo
+                mulle_thread_yield();            // and wait
+                continue;
+   
+      default : return;
+      }
+   }
 }
 
 
-void   mulle_thread_tss_done( void)
+static void   mulle_thread_tss_done( void)
 {
-   if( InterlockedDecrement( &inited) != 0)
-      return;
-
-   // assume we are single threaded at this point
-    
-   DeleteCriticalSection( &lock);
-
-   free( table);
-   table = NULL;
+   for(;;)
+   {
+      switch( InterlockedDecrement( &inited))
+      {
+      case 0 :  assert( 0 && "mulle_thread_tss_done called too often");
+      case 1 :  mulle_thread_yield();
+                DeleteCriticalSection( &lock);
+                free( table);
+                table = NULL;
+                InterlockedDecrement( &inited);
+      default : return;
+      }
+   }
 }
 
 
 int  mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *))
 {
    int   rval;
+
+   mulle_thread_tss_init();
 
    EnterCriticalSection( &lock);
    {
@@ -207,22 +224,29 @@ int  mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *))
    LeaveCriticalSection( &lock);
 
    // rval == -1 is actually catastrophic/leaky
+   assert( ! rval);
    return( rval);
 }
 
 
 void  mulle_thread_windows_remove_tss( mulle_thread_tss_t key)
 {
+   assert( inited);
+
    EnterCriticalSection( &lock);
    {
       destructor_table_remove_destructor_for_key( table, key);
    }
    LeaveCriticalSection( &lock);
+   
+   mulle_thread_tss_done();
 }
 
 
 void  mulle_thread_windows_destroy_tss( void)
 {
+   assert( inited);
+
    EnterCriticalSection( &lock);
    {
       //
