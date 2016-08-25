@@ -180,14 +180,12 @@ static void   mulle_thread_tss_init( void)
       switch( InterlockedIncrement( &inited))
       {
       case 1 :  InitializeCriticalSection( &lock);
-                InterlockedIncrement( &inited);  // move one up
-                return;
+                InterlockedIncrement( &inited);  // done
+      default : return;
             
       case 2 :  InterlockedDecrement( &inited);  // competing initalizer, undo
                 mulle_thread_yield();            // and wait
                 continue;
-   
-      default : return;
       }
    }
 }
@@ -200,6 +198,7 @@ static void   mulle_thread_tss_done( void)
       switch( InterlockedDecrement( &inited))
       {
       case 0 :  assert( 0 && "mulle_thread_tss_done called too often");
+                return;
       case 1 :  mulle_thread_yield();
                 DeleteCriticalSection( &lock);
                 free( table);
