@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		411AB1081BC7FC990089AA49 /* mulle_atomic_c11.h in Headers */ = {isa = PBXBuildFile; fileRef = 411AB1061BC7F0280089AA49 /* mulle_atomic_c11.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		411AB10F1BC817430089AA49 /* mulle_thread_c11.h in Headers */ = {isa = PBXBuildFile; fileRef = 411AB10A1BC7FD8F0089AA49 /* mulle_thread_c11.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4126EA141D6F51F300031F33 /* mulle_thread_windows.c in Sources */ = {isa = PBXBuildFile; fileRef = 4126EA121D6F51F300031F33 /* mulle_thread_windows.c */; };
+		4126EA151D6F51F300031F33 /* mulle_thread_windows.c in Sources */ = {isa = PBXBuildFile; fileRef = 4126EA121D6F51F300031F33 /* mulle_thread_windows.c */; };
+		4126EA161D6F51F300031F33 /* mulle_thread_windows.h in Headers */ = {isa = PBXBuildFile; fileRef = 4126EA131D6F51F300031F33 /* mulle_thread_windows.h */; };
+		4126EA171D6F51F300031F33 /* mulle_thread_windows.h in Headers */ = {isa = PBXBuildFile; fileRef = 4126EA131D6F51F300031F33 /* mulle_thread_windows.h */; };
 		41445DC91BA9DF6200FEB195 /* core.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DC61BA9DF6200FEB195 /* core.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41445DCA1BA9DF6200FEB195 /* mintomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DC71BA9DF6200FEB195 /* mintomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41445DCB1BA9DF6200FEB195 /* platform_detect.h in Headers */ = {isa = PBXBuildFile; fileRef = 41445DC81BA9DF6200FEB195 /* platform_detect.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -104,6 +108,8 @@
 		41198A7B1B6B7FB40033B390 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		411AB1061BC7F0280089AA49 /* mulle_atomic_c11.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic_c11.h; sourceTree = "<group>"; };
 		411AB10A1BC7FD8F0089AA49 /* mulle_thread_c11.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_thread_c11.h; sourceTree = "<group>"; };
+		4126EA121D6F51F300031F33 /* mulle_thread_windows.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mulle_thread_windows.c; sourceTree = "<group>"; };
+		4126EA131D6F51F300031F33 /* mulle_thread_windows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mulle_thread_windows.h; sourceTree = "<group>"; };
 		41399A661C8363B10006D700 /* RELEASENOTES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = RELEASENOTES.md; sourceTree = "<group>"; };
 		41445DC21BA9DE1700FEB195 /* libmintomic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmintomic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		41445DC61BA9DF6200FEB195 /* core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core.h; path = ../mintomic/include/mintomic/core.h; sourceTree = "<group>"; };
@@ -254,6 +260,8 @@
 				4148856D1BA9B35D0050773A /* mulle_thread.h */,
 				4148856E1BA9B43C0050773A /* mulle_thread_pthreads.h */,
 				411AB10A1BC7FD8F0089AA49 /* mulle_thread_c11.h */,
+				4126EA131D6F51F300031F33 /* mulle_thread_windows.h */,
+				4126EA121D6F51F300031F33 /* mulle_thread_windows.c */,
 				4148856F1BA9B48D0050773A /* linkage.c */,
 				419FC8A51BC95494002D75B9 /* mintomic_empty.c */,
 			);
@@ -341,6 +349,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				417A8B1F1BCBCA5000884077 /* mulle_atomic.h in Headers */,
+				4126EA171D6F51F300031F33 /* mulle_thread_windows.h in Headers */,
 				417A8B201BCBCA5000884077 /* mulle_atomic_c11.h in Headers */,
 				417A8B211BCBCA5000884077 /* mulle_atomic_mintomic.h in Headers */,
 				417A8B231BCBCA5000884077 /* mulle_thread.h in Headers */,
@@ -354,6 +363,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				419795A41B6A52E2005417AA /* mulle_atomic.h in Headers */,
+				4126EA161D6F51F300031F33 /* mulle_thread_windows.h in Headers */,
 				411AB1081BC7FC990089AA49 /* mulle_atomic_c11.h in Headers */,
 				414885721BA9B5910050773A /* mulle_atomic_mintomic.h in Headers */,
 				414885731BA9B5930050773A /* mulle_thread.h in Headers */,
@@ -533,6 +543,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				417A8B1B1BCBCA5000884077 /* linkage.c in Sources */,
+				4126EA151D6F51F300031F33 /* mulle_thread_windows.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -576,6 +587,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				41445DD91BA9DFB300FEB195 /* linkage.c in Sources */,
+				4126EA141D6F51F300031F33 /* mulle_thread_windows.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -659,7 +671,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 417C025A1BD83972005A3751 /* Debug.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 2.1;
+				CURRENT_PROJECT_VERSION = 3.0.0;
 				HEADER_SEARCH_PATHS = (
 					./mintomic/include,
 					"$(inherited)",
@@ -671,7 +683,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 417C025B1BD83972005A3751 /* Release.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 2.1;
+				CURRENT_PROJECT_VERSION = 3.0.0;
 				HEADER_SEARCH_PATHS = (
 					./mintomic/include,
 					"$(inherited)",
@@ -735,7 +747,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 417C02621BD83C6F005A3751 /* ToolOSX.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 2.2;
 			};
 			name = Debug;
 		};
@@ -743,7 +754,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 417C02621BD83C6F005A3751 /* ToolOSX.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 2.2;
 			};
 			name = Release;
 		};

@@ -17,8 +17,9 @@ src/mulle_atomic.h
 src/mulle_atomic_mintomic.h
 src/mulle_atomic_c11.h
 src/mulle_thread.h
-src/mulle_thread_pthreads.h
 src/mulle_thread_c11.h
+src/mulle_thread_pthreads.h
+src/mulle_thread_windows.h
 )
 
 set(MINTOMIC_HEADERS
@@ -37,6 +38,8 @@ mintomic/include/mintomic/private/mintomic_stdint.h
 
 add_library(mulle_thread
 src/linkage.c
+src/mulle_thread_windows.c
+${HEADERS}  # for IDEs
 )
 
 
