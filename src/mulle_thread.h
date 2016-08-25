@@ -35,7 +35,7 @@
 #ifndef mulle_thread_h__
 #define mulle_thread_h__ 
 
-#define MULLE_THREAD_VERSION  ((2 << 20) | (2 << 8) | 0)
+#define MULLE_THREAD_VERSION  ((3 << 20) | (0 << 8) | 0)
 
 // clang lies about __STDC_NO_THREADS__
 
@@ -54,10 +54,17 @@
 #if HAVE_C11_THREADS && ! defined( MULLE_THREAD_USE_PTHREADS)
 # include "mulle_thread_c11.h"
 #else
-# if TRACE_INCLUDE
-#  pragma message( "Using pthreads for threads")
+# ifdef _WIN32
+#  if TRACE_INCLUDE
+#   pragma message( "Using windows threads for threads")
+#  endif
+#  include "mulle_thread_windows.h"
+# else
+#  if TRACE_INCLUDE
+#   pragma message( "Using pthreads for threads")
+#  endif
+#  include "mulle_thread_pthreads.h"
 # endif
-# include "mulle_thread_pthreads.h"
 #endif
 
 #include "mulle_atomic.h"

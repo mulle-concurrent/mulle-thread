@@ -76,10 +76,9 @@ static inline int   mulle_thread_detach( mulle_thread_t thread)
 }
 
 
-static inline int   mulle_thread_cancel( void)
+static inline void   mulle_thread_exit( void)
 {
-   thrd_exit( -1);
-   return( 0);  // never returns anyway
+   thrd_exit( 0);
 }
 
 
