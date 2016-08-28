@@ -50,7 +50,7 @@ typedef int               mulle_thread_rval_t;
 #pragma mark -
 #pragma Threads
 
-MULLE_CONST_VALUE_RETURN
+MULLE_C_VALUE_RETURN
 static inline mulle_thread_t  mulle_thread_self(void)
 {
 	return( GetCurrentThread());
