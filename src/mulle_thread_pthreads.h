@@ -35,6 +35,7 @@
 #ifndef mulle_thread_pthreads_h__
 #define mulle_thread_pthreads_h__
 
+#include <mulle_c11/mulle_c11.h>
 #include <pthread.h>
 #include <errno.h>
 
@@ -48,7 +49,7 @@ typedef void *            mulle_thread_rval_t;
 #pragma mark -
 #pragma Threads
 
-__attribute__((const))
+MULLE_C_CONST_VALUE_RETURN
 static inline mulle_thread_t  mulle_thread_self( void)
 {
    return( pthread_self());

@@ -35,10 +35,12 @@
 #ifndef mulle_atomic_c11_h__
 #define mulle_atomic_c11_h__
 
+#include <mulle_c11/mulle_c11.h>
 #include <assert.h>
 #include <stdatomic.h>
 #include <stdint.h>
 #include <stdio.h>
+
 
 //
 // this is due to the mintomic heritage
@@ -51,21 +53,21 @@ typedef _Atomic( mulle_functionpointer_t)   mulle_atomic_functionpointer_t;
 # pragma mark -
 # pragma mark function pointer set and get
 
-__attribute__((always_inline))
+MULLE_C_ALWAYS_INLINE
 static inline mulle_functionpointer_t   _mulle_atomic_functionpointer_nonatomic_read( mulle_atomic_functionpointer_t *p)
 {
    return( *(mulle_functionpointer_t *) p);
 }
 
 
-__attribute__((always_inline))
+MULLE_C_ALWAYS_INLINE
 static inline void   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *p, void (*value)())
 {
    *(mulle_functionpointer_t *) p = value;
 }
 
 
-__attribute__((always_inline))
+MULLE_C_ALWAYS_INLINE
 static inline mulle_functionpointer_t  _mulle_atomic_functionpointer_read( mulle_atomic_functionpointer_t *address)
 {
    mulle_functionpointer_t   result;
@@ -82,7 +84,7 @@ static inline mulle_functionpointer_t  _mulle_atomic_functionpointer_read( mulle
 }
 
 
-__attribute__((always_inline))
+MULLE_C_ALWAYS_INLINE
 static inline void  _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address, mulle_functionpointer_t value)
 {
    atomic_store_explicit( address, value, memory_order_relaxed);
@@ -169,21 +171,21 @@ static inline int   _mulle_atomic_functionpointer_compare_and_swap( mulle_atomic
 # pragma mark -
 # pragma mark pointer set and get
 
-__attribute__((always_inline))
+MULLE_C_ALWAYS_INLINE
 static inline void   *_mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *p)
 {
    return( *(void **) p);
 }
 
 
-__attribute__((always_inline))
+MULLE_C_ALWAYS_INLINE
 static inline void   _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *p, void *value)
 {
    *(void **) p = value;
 }
 
 
-__attribute__((always_inline))
+MULLE_C_ALWAYS_INLINE
 static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address)
 {
    void   *result;
@@ -201,7 +203,7 @@ static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address
 }
 
 
-__attribute__((always_inline))
+MULLE_C_ALWAYS_INLINE
 static inline void  _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address, void *value)
 {
    atomic_store_explicit( address, value, memory_order_relaxed);
@@ -305,7 +307,7 @@ static inline void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *address,
 }
 
 
-__attribute__((always_inline))
+MULLE_C_ALWAYS_INLINE
 static inline void   mulle_atomic_memory_barrier( void)
 {
    atomic_signal_fence( memory_order_seq_cst);

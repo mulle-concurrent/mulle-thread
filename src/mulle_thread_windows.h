@@ -39,22 +39,12 @@
 #include <windows.h>
 #include <process.h>
 #include <errno.h>
+#include <mulle_c11/mulle_c11.h>
 
 typedef CRITICAL_SECTION  mulle_thread_mutex_t;
 typedef DWORD             mulle_thread_tss_t;
 typedef HANDLE            mulle_thread_t;
 typedef int               mulle_thread_rval_t;
-
-
-#if ! defined( __clang__) && ! defined( __GNUC__)
-# ifndef MULLE_CONST_VALUE_RETURN
-#  define MULLE_CONST_VALUE_RETURN   __attribute__(( const))
-# endif
-#else
-# ifndef MULLE_CONST_VALUE_RETURN
-#  define MULLE_CONST_VALUE_RETURN
-# endif
-#endif
 
 
 #pragma mark -
