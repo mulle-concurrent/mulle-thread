@@ -47,14 +47,20 @@ typedef int               mulle_thread_rval_t;
 
 
 #if ! defined( __clang__) && ! defined( __GNUC__)
-# define __attribute__( x)
+# ifndef MULLE_CONST_VALUE_RETURN
+#  define MULLE_CONST_VALUE_RETURN   __attribute__(( const))
+# endif
+#else
+# ifndef MULLE_CONST_VALUE_RETURN
+#  define MULLE_CONST_VALUE_RETURN
+# endif
 #endif
 
 
 #pragma mark -
 #pragma Threads
 
-__attribute__((const))
+MULLE_CONST_VALUE_RETURN
 static inline mulle_thread_t  mulle_thread_self(void)
 {
 	return( GetCurrentThread());
