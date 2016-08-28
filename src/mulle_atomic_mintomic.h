@@ -55,24 +55,25 @@ typedef void   (*mulle_functionpointer_t)();
 
 
 
+
 #pragma mark -
 #pragma mark value pointers
 
-__attribute__((always_inline))
+MULLE_CONST_ALWAYS_INLINE
 static inline void   *_mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *address)
 {
    return( address->_nonatomic);
 }
 
 
-__attribute__((always_inline))
+MULLE_CONST_ALWAYS_INLINE
 static inline void   _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *address, void *value)
 {
    address->_nonatomic = value;
 }
 
 
-__attribute__((always_inline))
+MULLE_CONST_ALWAYS_INLINE
 static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address)
 {
    void   *result;
@@ -89,7 +90,7 @@ static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address
 }
 
 
-__attribute__((always_inline))
+MULLE_CONST_ALWAYS_INLINE
 static inline void  _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address,
                                                 void *value)
 {
@@ -135,7 +136,7 @@ static inline int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer
 #pragma mark -
 #pragma mark function pointers
 
-__attribute__((always_inline))
+MULLE_CONST_ALWAYS_INLINE
 static inline mulle_functionpointer_t   _mulle_atomic_functionpointer_nonatomic_read( mulle_atomic_functionpointer_t *address)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
@@ -144,7 +145,7 @@ static inline mulle_functionpointer_t   _mulle_atomic_functionpointer_nonatomic_
 }
 
 
-__attribute__((always_inline))
+MULLE_CONST_ALWAYS_INLINE
 static inline void   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *address, mulle_functionpointer_t value)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
@@ -153,7 +154,7 @@ static inline void   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic
 }
 
 
-__attribute__((always_inline))
+MULLE_CONST_ALWAYS_INLINE
 static inline mulle_functionpointer_t   _mulle_atomic_functionpointer_read( mulle_atomic_functionpointer_t *address)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
@@ -162,7 +163,7 @@ static inline mulle_functionpointer_t   _mulle_atomic_functionpointer_read( mull
 }
 
 
-__attribute__((always_inline))
+MULLE_CONST_ALWAYS_INLINE
 static inline void  _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address,
                                                          mulle_functionpointer_t value)
 {

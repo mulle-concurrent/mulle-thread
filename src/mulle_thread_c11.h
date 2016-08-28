@@ -37,6 +37,7 @@
 
 #include <assert.h>
 #include <threads.h>
+#include <mulle_c11/mulle_c11.h>
 
 
 typedef mtx_t    mulle_thread_mutex_t;
@@ -47,7 +48,7 @@ typedef int      mulle_thread_rval_t;
 #pragma mark -
 #pragma Threads
 
-__attribute__((const))
+MULLE_C_CONST_VALUE_RETURN
 static inline mulle_thread_t  mulle_thread_self( void)
 {
    return( thrd_current());
@@ -115,7 +116,6 @@ static inline int  mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
    default           : return( -1);
    }
 }
-
 
 
 static inline int  mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock)
