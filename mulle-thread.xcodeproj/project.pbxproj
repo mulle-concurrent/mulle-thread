@@ -39,14 +39,14 @@
 		417A8B3B1BCBCAAE00884077 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 417A8B391BCBCAAE00884077 /* Main.storyboard */; };
 		417A8B3D1BCBCAAE00884077 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 417A8B3C1BCBCAAE00884077 /* Assets.xcassets */; };
 		417A8B401BCBCAAE00884077 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 417A8B3E1BCBCAAE00884077 /* LaunchScreen.storyboard */; };
-		417A8B481BCBCAF300884077 /* libmulle_thread (iOS).a in Frameworks */ = {isa = PBXBuildFile; fileRef = 417A8B291BCBCA5000884077 /* libmulle_thread (iOS).a */; };
+		417A8B481BCBCAF300884077 /* lib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 417A8B291BCBCA5000884077 /* lib.a */; };
 		417A8B4A1BCBCAFE00884077 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 417A8B491BCBCAFE00884077 /* UIKit.framework */; };
 		417A8B4B1BCBCCF200884077 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 417E67571BCBB68A00AA0322 /* main.c */; };
 		417E673C1BCBB0B900AA0322 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 417E673B1BCBB0B900AA0322 /* main.c */; };
-		417E67441BCBB0C800AA0322 /* libmintomic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41445DC21BA9DE1700FEB195 /* libmintomic.a */; };
-		417E67451BCBB0C800AA0322 /* libmulle_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41F14FE61B68F098002189F1 /* libmulle_thread.a */; };
-		417E674E1BCBB5BE00AA0322 /* libmintomic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41445DC21BA9DE1700FEB195 /* libmintomic.a */; };
-		417E674F1BCBB5BE00AA0322 /* libmulle_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41F14FE61B68F098002189F1 /* libmulle_thread.a */; };
+		417E67441BCBB0C800AA0322 /* lib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41445DC21BA9DE1700FEB195 /* lib.a */; };
+		417E67451BCBB0C800AA0322 /* lib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41F14FE61B68F098002189F1 /* lib.a */; };
+		417E674E1BCBB5BE00AA0322 /* lib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41445DC21BA9DE1700FEB195 /* lib.a */; };
+		417E674F1BCBB5BE00AA0322 /* lib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41F14FE61B68F098002189F1 /* lib.a */; };
 		417E67581BCBB68A00AA0322 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 417E67571BCBB68A00AA0322 /* main.c */; };
 		419795A41B6A52E2005417AA /* mulle_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 414785391ABAF326002DBAE4 /* mulle_atomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		419FC8A71BC954C8002D75B9 /* mintomic_empty.c in Sources */ = {isa = PBXBuildFile; fileRef = 419FC8A51BC95494002D75B9 /* mintomic_empty.c */; };
@@ -111,7 +111,7 @@
 		4126EA121D6F51F300031F33 /* mulle_thread_windows.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mulle_thread_windows.c; sourceTree = "<group>"; };
 		4126EA131D6F51F300031F33 /* mulle_thread_windows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mulle_thread_windows.h; sourceTree = "<group>"; };
 		41399A661C8363B10006D700 /* RELEASENOTES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = RELEASENOTES.md; sourceTree = "<group>"; };
-		41445DC21BA9DE1700FEB195 /* libmintomic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmintomic.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		41445DC21BA9DE1700FEB195 /* lib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = lib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		41445DC61BA9DF6200FEB195 /* core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core.h; path = ../mintomic/include/mintomic/core.h; sourceTree = "<group>"; };
 		41445DC71BA9DF6200FEB195 /* mintomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mintomic.h; path = ../mintomic/include/mintomic/mintomic.h; sourceTree = "<group>"; };
 		41445DC81BA9DF6200FEB195 /* platform_detect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = platform_detect.h; path = ../mintomic/include/mintomic/platform_detect.h; sourceTree = "<group>"; };
@@ -127,7 +127,7 @@
 		4148856F1BA9B48D0050773A /* linkage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = linkage.c; sourceTree = "<group>"; };
 		414885711BA9B4F90050773A /* mulle_atomic_mintomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mulle_atomic_mintomic.h; sourceTree = "<group>"; };
 		4158F6F81B5E982B00C5805C /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		417A8B291BCBCA5000884077 /* libmulle_thread (iOS).a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libmulle_thread (iOS).a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		417A8B291BCBCA5000884077 /* lib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = lib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		417A8B2E1BCBCAAE00884077 /* run-on-ipad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "run-on-ipad.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		417A8B311BCBCAAE00884077 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		417A8B331BCBCAAE00884077 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -154,7 +154,7 @@
 		417E67571BCBB68A00AA0322 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		419FC8A51BC95494002D75B9 /* mintomic_empty.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mintomic_empty.c; sourceTree = "<group>"; };
 		41BE418C1B6BB0F7000C0DD4 /* BUILD.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BUILD.md; sourceTree = "<group>"; };
-		41F14FE61B68F098002189F1 /* libmulle_thread.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmulle_thread.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		41F14FE61B68F098002189F1 /* lib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = lib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		41F14FF21B6902F9002189F1 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -171,7 +171,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				417A8B4A1BCBCAFE00884077 /* UIKit.framework in Frameworks */,
-				417A8B481BCBCAF300884077 /* libmulle_thread (iOS).a in Frameworks */,
+				417A8B481BCBCAF300884077 /* lib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,8 +179,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				417E67441BCBB0C800AA0322 /* libmintomic.a in Frameworks */,
-				417E67451BCBB0C800AA0322 /* libmulle_thread.a in Frameworks */,
+				417E67441BCBB0C800AA0322 /* lib.a in Frameworks */,
+				417E67451BCBB0C800AA0322 /* lib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,8 +188,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				417E674E1BCBB5BE00AA0322 /* libmintomic.a in Frameworks */,
-				417E674F1BCBB5BE00AA0322 /* libmulle_thread.a in Frameworks */,
+				417E674E1BCBB5BE00AA0322 /* lib.a in Frameworks */,
+				417E674F1BCBB5BE00AA0322 /* lib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,11 +241,11 @@
 		4147852D1ABAF290002DBAE4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				41F14FE61B68F098002189F1 /* libmulle_thread.a */,
-				41445DC21BA9DE1700FEB195 /* libmintomic.a */,
+				41F14FE61B68F098002189F1 /* lib.a */,
+				41445DC21BA9DE1700FEB195 /* lib.a */,
 				417E67391BCBB0B900AA0322 /* test-atomic-add */,
 				417E67541BCBB5BE00AA0322 /* test-atomic-cas */,
-				417A8B291BCBCA5000884077 /* libmulle_thread (iOS).a */,
+				417A8B291BCBCA5000884077 /* lib.a */,
 				417A8B2E1BCBCAAE00884077 /* run-on-ipad.app */,
 			);
 			name = Products;
@@ -388,7 +388,7 @@
 			);
 			name = mintomic;
 			productName = mulle_aba;
-			productReference = 41445DC21BA9DE1700FEB195 /* libmintomic.a */;
+			productReference = 41445DC21BA9DE1700FEB195 /* lib.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		417A8B171BCBCA5000884077 /* mulle_thread (iOS) */ = {
@@ -406,7 +406,7 @@
 			);
 			name = "mulle_thread (iOS)";
 			productName = mulle_aba;
-			productReference = 417A8B291BCBCA5000884077 /* libmulle_thread (iOS).a */;
+			productReference = 417A8B291BCBCA5000884077 /* lib.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		417A8B2D1BCBCAAE00884077 /* run-on-ipad */ = {
@@ -478,7 +478,7 @@
 			);
 			name = mulle_thread;
 			productName = mulle_aba;
-			productReference = 41F14FE61B68F098002189F1 /* libmulle_thread.a */;
+			productReference = 41F14FE61B68F098002189F1 /* lib.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
