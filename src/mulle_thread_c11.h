@@ -45,6 +45,7 @@ typedef tss_t    mulle_thread_tss_t;
 typedef thrd_t   mulle_thread_t;
 typedef int      mulle_thread_rval_t;
 
+
 #pragma mark -
 #pragma Threads
 
@@ -87,7 +88,6 @@ static inline void   mulle_thread_yield( void)
 {
    thrd_yield();
 }
-
 
 
 #pragma mark -
@@ -133,7 +133,6 @@ static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 
 #pragma mark -
 #pragma mark Thread Local Storage
-
 
 // different parameters, rval always last
 static inline int   mulle_thread_tss_create( void (*f)( void *), mulle_thread_tss_t *key)

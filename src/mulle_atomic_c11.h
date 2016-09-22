@@ -61,7 +61,7 @@ static inline mulle_functionpointer_t   _mulle_atomic_functionpointer_nonatomic_
 
 
 MULLE_C_ALWAYS_INLINE
-static inline void   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *p, void (*value)())
+static inline void   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *p, mulle_functionpointer_t value)
 {
    *(mulle_functionpointer_t *) p = value;
 }
