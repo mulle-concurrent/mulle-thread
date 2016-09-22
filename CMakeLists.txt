@@ -5,8 +5,10 @@ project (mulle-thread)
 cmake_policy(SET CMP0054 NEW)
 
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/mulle-configuration)
+
 message(STATUS "CMAKE_MODULE_PATH is ${CMAKE_MODULE_PATH}")
 message(STATUS "CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
+
 if( "${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
   include( Debug)
 else()
@@ -38,10 +40,12 @@ mintomic/include/mintomic/private/mintomic_msvc.h
 mintomic/include/mintomic/private/mintomic_stdint.h
 )
 
-add_library(mulle_thread
+add_library( mulle_thread
 src/linkage.c
 src/mulle_thread_windows.c
 ${HEADERS}  # for IDEs
+${MINTOMIC_HEADERS}  # for IDEs
+${MINTOMIC_PRIVATE_HEADERS}  # for IDEs
 )
 
 
@@ -53,9 +57,6 @@ target_link_libraries( mulle_thread LINK_PUBLIC pthread)
 
 INSTALL(TARGETS mulle_thread DESTINATION "lib")
 INSTALL(FILES ${HEADERS} DESTINATION "include/mulle_thread")
-
-# to avoid conflict with another mintomic installation
-# use mulle_mintomic as include subdir
 
 INSTALL(FILES ${MINTOMIC_HEADERS} DESTINATION "include/mintomic")
 INSTALL(FILES ${MINTOMIC_PRIVATE_HEADERS} DESTINATION "include/mintomic/private")
