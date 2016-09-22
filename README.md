@@ -20,9 +20,21 @@ Since C11 has `<stdatomic.h>` and `<threads.h>`, eventually this project could
 become superflous. In the meantime though it's a convenient abstraction on
 threads and atomic operations.
 
+
 ## Build
 
+On OS X you can use [homebrew](//brew.sh) to install the library:
+
+
+```
+brew tap mulle-kybernetik/software
+brew install mulle-thread
+```
+
+Otherwise read:
+
 * [How to Build](dox/BUILD.md)
+
 
 ## API
 
