@@ -1,5 +1,7 @@
 #! /bin/sh
 
+PATH="$HOME/.linuxbrew/bin:/usr/local/bin:${HOME}/bin:${PATH}"
+
 
 mulle-bootstrap -a
 
