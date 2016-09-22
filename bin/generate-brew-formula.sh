@@ -2,7 +2,7 @@
 #
 # Generate a formula for mulle-thread
 #
-PROJECT=mulle-thread
+PROJECT=mulle_thread
 TARGET=mulle-thread
 HOMEPAGE="http://www.mulle-kybernetik.com/software/git/${TARGET}"
 DESC="Cross-platform threads and atomic operations"
@@ -30,7 +30,7 @@ set -e
 [ "$ARCHIVEURL" = "" ] && exit 1
 
 
-TMPARCHIVE="/tmp/${PROJECT}-${VERSION}-archive"
+TMPARCHIVE="/tmp/${TARGET}-${VERSION}-archive"
 
 if [ ! -f  "${TMPARCHIVE}" ]
 then
