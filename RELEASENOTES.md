@@ -4,6 +4,7 @@
 * add thread code for windows
 * mulle_thread_cancel doesn't exist anymore.
 * mulle_thread_exit is a new function
+* improved ocumentation
 
 
 2.1
@@ -11,7 +12,8 @@
 
 * add function pointer atomicity. Why is a function pointer different to a void 
 pointer ? Imagine a machine with 64 KB ram. Data pointers could be 16 bit. Now
-imagine it having a ROM of 4 MB, function pointers could be 32 bit.
+imagine it having a ROM of 4 MB, function pointers could be 32 bit. Basically
+though the function pointers are just there to reduce warnings at the moment.
 
 
 2.0
@@ -28,6 +30,7 @@ making them throw an error. Moronic...
 
 1.0
 ===
+
 * Moved return value parameter to the back of `mulle_thread_tss_create`.
 * Added mulle_thread_detach.
 * Added mulle_thread_yield (will be sched_yield for pthreads)
@@ -35,6 +38,7 @@ making them throw an error. Moronic...
 
 0.2
 ===
+
 * Added mulle_thread_tss_delete.
 * Add MULLE_THREAD_VERSION.
 * User can select mintomic or pthreads, with MULLE_THREAD_USE_MINTOMIC viz

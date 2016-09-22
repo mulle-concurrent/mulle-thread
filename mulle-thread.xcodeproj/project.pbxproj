@@ -228,17 +228,13 @@
 			isa = PBXGroup;
 			children = (
 				41198A7B1B6B7FB40033B390 /* README.md */,
-				415B40571D94083B0022362B /* API_ATOMIC.md */,
-				415B40581D9408C80022362B /* API_THREAD.md */,
-				415B40591D94103A0022362B /* API_MUTEX.md */,
-				415B405A1D9414790022362B /* API_TSS.md */,
 				41399A661C8363B10006D700 /* RELEASENOTES.md */,
-				41BE418C1B6BB0F7000C0DD4 /* BUILD.md */,
 				41F14FF21B6902F9002189F1 /* LICENSE */,
 				4158F6F81B5E982B00C5805C /* CMakeLists.txt */,
-				417C025C1BD83977005A3751 /* mulle-configuration */,
 				4147852E1ABAF290002DBAE4 /* src */,
 				41445DD81BA9DF7300FEB195 /* include */,
+				417C025C1BD83977005A3751 /* mulle-configuration */,
+				415B405B1D9427AF0022362B /* dox */,
 				417E673A1BCBB0B900AA0322 /* test-atomic-add */,
 				417E67561BCBB68A00AA0322 /* test-atomic-cas */,
 				417A8B2F1BCBCAAE00884077 /* run-on-ipad */,
@@ -274,6 +270,18 @@
 				419FC8A51BC95494002D75B9 /* mintomic_empty.c */,
 			);
 			path = src;
+			sourceTree = "<group>";
+		};
+		415B405B1D9427AF0022362B /* dox */ = {
+			isa = PBXGroup;
+			children = (
+				415B40571D94083B0022362B /* API_ATOMIC.md */,
+				415B40581D9408C80022362B /* API_THREAD.md */,
+				415B40591D94103A0022362B /* API_MUTEX.md */,
+				415B405A1D9414790022362B /* API_TSS.md */,
+				41BE418C1B6BB0F7000C0DD4 /* BUILD.md */,
+			);
+			path = dox;
 			sourceTree = "<group>";
 		};
 		417A8B2F1BCBCAAE00884077 /* run-on-ipad */ = {
