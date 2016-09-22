@@ -1,6 +1,5 @@
 #! /bin/sh
 
-
 get_version()
 {
    local filename
@@ -17,8 +16,9 @@ TAG="${1:-`get_version "src/mulle_thread.h"`}"
 
 
 executable="`which mulle-bootstrap`"
-directory="`dirname -- "${executable}"`/../libexec"
+directory="`dirname -- "${executable}"`/../libexec/mulle-bootstrap"
 
+[ ! -d "${directory}" ] && echo "failed to locate mulle-bootstrap library" >&2 && exit 1
 
 . "${directory}/mulle-bootstrap-logging.sh"
 
@@ -43,16 +43,21 @@ git_must_be_clean()
 }
 
 
+[ ! -d "../homebrew-software" ] && fail "failed to locate ../homebrew-software"
+
 set -e
 
 git_must_be_clean
-git push public master
+
+branch="`git rev-parse --abbrev-ref HEAD`"
+
+git push public "${branch}"
 
 # seperate step, as it's tedious to remove tag when
 # previous push fails
 
 git tag "${TAG}"
-git push public master --tags
+git push public "${branch}" --tags
 
 ./bin/generate-brew-formula.sh  > ../homebrew-software/mulle-thread.rb
 (
@@ -61,4 +66,7 @@ git push public master --tags
  	git commit -m "${TAG} release of mulle-thread" mulle-thread.rb ;
  	git push origin master
 )
+
+git checkout "${branch}"
+
 
