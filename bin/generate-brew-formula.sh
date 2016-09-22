@@ -2,7 +2,7 @@
 #
 # Generate a formula for mulle-thread
 #
-PROJECT=mulle_thread
+PROJECT=MulleThread  # ruby requires camel-case
 TARGET=mulle-thread
 HOMEPAGE="http://www.mulle-kybernetik.com/software/git/${TARGET}"
 DESC="Cross-platform threads and atomic operations"
