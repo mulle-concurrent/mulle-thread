@@ -16,6 +16,12 @@ fairly empty. That isexcept on windows, where you absolutely need it.
 that abstracts a small set of non-standardized compiler features. 
 
 
+#### mulle-configuration
+
+[mulle-configuration](//www.mulle-kybernetik.com/software/git/mulle-c11/) are
+configuration files for building with Xcode or cmake.
+
+
 #### mintomic
 
 If your compiler does not support C11 atomics, then `mulle-thread` needs 
@@ -51,6 +57,9 @@ mulle-bootstrap
 ## Building
 
 ### With cmake
+
+You need **cmake 3.0** or better. It's easiest to get this also via homebrew
+with `brew install cmake`:
 
 ```
 mkdir build
