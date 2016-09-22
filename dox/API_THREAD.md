@@ -5,7 +5,6 @@ man pages for more extensive help.
 
 * Main differences to be aware of: There is no such thing as a return value from a thread.
 * You must execute `mulle_thread_exit` at the end of your thread.
-* 
 
 
 ## Types
@@ -31,7 +30,7 @@ mulle_thread_create( mulle_thread_rval_t (*f)(void *),
                      mulle_thread_t *thread)
 ```
 
-** parameters are differently ordered than in pthread **
+> Note: Parameters are differently ordered than in pthread
 
 **f** is the thread function with **arg** as its argument.
 The created thread is returned in **thread** .

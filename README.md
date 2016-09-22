@@ -43,7 +43,7 @@ threads and atomic operations.
 * gcc
 * MSVC
 
-> C11 support in clang is currently lacking, as there is no `<threads.h>`.
+> C11 support in clang as of v3.8 is lacking, as there is no `<threads.h>`.
 > The fallback is **pthreads**.
 
 
