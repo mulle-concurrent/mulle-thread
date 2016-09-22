@@ -3,19 +3,18 @@
 
 ## What you get
  
-* `libmulle_thread.a`, the mulle-thread` static library along with a bunch of
+* `libmulle_thread.a`, the mulle-thread static library along with a bunch of
 headers. You can often get by NOT linking with libmulle_thread.a, which is
-fairly empty.
+fairly empty, except on windows, where you need it.
 
 
 ## Prerequisites
 
 ### mintomic
 
-mulle-aba` needs [mintomic](https://mintomic.github.io/) as a prerequisite. Install it in the top directory besides <tt>src</tt> and <tt>dox</tt> as **mulle_mintomic**-
-The rename is done for packaging reasons, because we install and link only a subset of the functionality.
+If your compiler does not support C11 atomics, then `mulle-thread` needs 
+[mintomic](https://mintomic.github.io/) as a prerequisite. 
 
-If you know that your compiler does C11 atomics, you don't need mintomic.
 
 ### Use mulle-bootstrap to fetch mintomic
 
