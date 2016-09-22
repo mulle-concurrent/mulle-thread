@@ -66,6 +66,9 @@ class ${PROJECT} < Formula
   version "${VERSION}"
   sha256 "${HASH}"
 
+  depends_on 'cmake'           => :build
+  depends_on 'mulle-bootstrap' => :build
+
   def install
      system "./install.sh", "#{prefix}"
   end
