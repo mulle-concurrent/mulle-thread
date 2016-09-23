@@ -7,19 +7,7 @@ TARGET=mulle-thread
 HOMEPAGE="http://www.mulle-kybernetik.com/software/git/${TARGET}"
 DESC="Cross-platform threads and atomic operations"
 
-get_version()
-{
-   local filename
-
-   filename="$1"
-   grep MULLE_THREAD_VERSION "${filename}" | \
-   sed 's|(\([0-9]*\) \<\< [0-9]*)|\1|g' | \
-   sed 's|^.*(\(.*\))|\1|' | \
-   sed 's/ | /./g'
-}
-
-
-VERSION="${1:-`get_version "src/mulle_thread.h"`}"
+VERSION="$1"
 [ $# -eq 0 ] || shift
 ARCHIVEURL="${1:-http://www.mulle-kybernetik.com/software/git/${TARGET}/tarball/$VERSION}"
 [ $# -eq 0 ] || shift
@@ -66,11 +54,11 @@ class ${PROJECT} < Formula
   version "${VERSION}"
   sha256 "${HASH}"
 
-  depends_on 'cmake'           => :build
-  depends_on 'mulle-bootstrap' => :build
+  depends_on 'mulle-c11'
+  depends_on 'mulle-install' => :build
 
   def install
-     system "./install.sh", "#{prefix}"
+     system "./install.sh", "--brew", "--prefix", "#{prefix}"
   end
 
   test do

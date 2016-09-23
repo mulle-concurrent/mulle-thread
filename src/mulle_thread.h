@@ -35,7 +35,7 @@
 #ifndef mulle_thread_h__
 #define mulle_thread_h__ 
 
-#define MULLE_THREAD_VERSION  ((3 << 20) | (0 << 8) | 0)
+#define MULLE_THREAD_VERSION  ((3 << 20) | (0 << 8) | 1)
 
 // clang lies about __STDC_NO_THREADS__
 

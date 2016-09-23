@@ -1,18 +1,27 @@
 #! /bin/sh
 
+NAME="mulle-thread"
+HEADER="src/mulle_thread.h"
+VERSIONNAME="MULLE_THREAD_VERSION"
+ORIGIN=public
+
+RBFILE="${NAME}.rb"
+HOMEBREWTAP="../homebrew-software"
+
+
 get_version()
 {
    local filename
 
    filename="$1"
-   grep MULLE_THREAD_VERSION "${filename}" | \
+   fgrep "${VERSIONNAME}" "${filename}" | \
    sed 's|(\([0-9]*\) \<\< [0-9]*)|\1|g' | \
    sed 's|^.*(\(.*\))|\1|' | \
    sed 's/ | /./g'
 }
 
-
-TAG="${1:-`get_version "src/mulle_thread.h"`}"
+VERSION="`get_version ${HEADER}`"
+TAG="${1:-${VERSION}}"
 
 
 executable="`which mulle-bootstrap`"
@@ -43,7 +52,7 @@ git_must_be_clean()
 }
 
 
-[ ! -d "../homebrew-software" ] && fail "failed to locate ../homebrew-software"
+[ ! -d "${HOMEBREWTAP}" ] && fail "failed to locate \"${HOMEBREWTAP}\""
 
 set -e
 
@@ -51,22 +60,20 @@ git_must_be_clean
 
 branch="`git rev-parse --abbrev-ref HEAD`"
 
-git push public "${branch}"
+git push "${ORIGIN}" "${branch}"
 
 # seperate step, as it's tedious to remove tag when
 # previous push fails
 
 git tag "${TAG}"
-git push public "${branch}" --tags
+git push "${ORIGIN}" "${branch}" --tags
 
-./bin/generate-brew-formula.sh  > ../homebrew-software/mulle-thread.rb
+./bin/generate-brew-formula.sh "${VERSION}" > "${HOMEBREWTAP}/${RBFILE}"
 (
-	cd ../homebrew-software ;
-   git add mulle-thread.rb ;
- 	git commit -m "${TAG} release of mulle-thread" mulle-thread.rb ;
- 	git push origin master
+   cd "${HOMEBREWTAP}" ;
+   git add "${RBFILE}" ;
+   git commit -m "${TAG} release of ${NAME}" "${RBFILE}" ;
+   git push origin master
 )
 
 git checkout "${branch}"
-
-
