@@ -24,12 +24,12 @@ VERSION="`get_version ${HEADER}`"
 TAG="${1:-${VERSION}}"
 
 
-executable="`which mulle-bootstrap`"
-directory="`dirname -- "${executable}"`/../libexec/mulle-bootstrap"
-
+directory="`mulle-bootstrap library-path 2> /dev/null`"
 [ ! -d "${directory}" ] && echo "failed to locate mulle-bootstrap library" >&2 && exit 1
 
-. "${directory}/mulle-bootstrap-logging.sh"
+PATH="${directory}:$PATH"
+
+. "mulle-bootstrap-logging.sh"
 
 
 git_must_be_clean()
