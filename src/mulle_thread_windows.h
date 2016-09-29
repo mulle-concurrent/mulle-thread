@@ -51,16 +51,16 @@ typedef DWORD             mulle_thread_native_rval_t;
 #pragma mark Threads
 
 MULLE_C_CONST_RETURN
-static inline mulle_thread_t  mulle_thread_self(void)
+static inline mulle_thread_t  mulle_thread_self( void)
 {
    return( GetCurrentThread());
 }
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *),
-	void *arg,
-	mulle_thread_t *thread)
+static inline int   mulle_thread_create(  mulle_thread_rval_t (*f)( void *),
+                                          void *arg,       
+                                          mulle_thread_t *thread)
 {
    extern mulle_thread_native_rval_t   mulle_thread_bounceinfo_bounce( void *info);
    struct mulle_thread_bounceinfo      *info;
@@ -194,7 +194,7 @@ static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 
 
 static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
-	void *userdata)
+   void *userdata)
 {
    return( TlsSetValue(key, userdata) ? 0 : -1);
 }
