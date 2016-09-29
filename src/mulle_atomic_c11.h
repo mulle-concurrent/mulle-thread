@@ -163,7 +163,6 @@ static inline int   _mulle_atomic_functionpointer_compare_and_swap( mulle_atomic
                                                    memory_order_relaxed,
                                                    memory_order_relaxed);
 #endif
-
    return( result);
 }
 

@@ -1,9 +1,10 @@
 //
-//  mulle_thread.h
+//  mulle_thread.c
 //  mulle-thread
 //
-//  Created by Nat! on 16/09/15.
-//  Copyright (c) 2015 Mulle kybernetiK. All rights reserved.
+//  Created by Nat! on 29/09/16.
+//  Copyright (c) 2016 Mulle kybernetiK. All rights reserved.
+//  Copyright (c) 2016 Codeon GmbH. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -31,66 +32,41 @@
 //  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //  POSSIBILITY OF SUCH DAMAGE.
 //
+#include "mulle_thread.h"
 
-#ifndef mulle_thread_h__
-#define mulle_thread_h__ 
-
-
-#define MULLE_THREAD_VERSION  ((3 << 20) | (0 << 8) | 1)
-
-#include <stddef.h>
 #include <stdlib.h>
-
-// clang lies about __STDC_NO_THREADS__
-
-#ifndef HAVE_C11_THREADS
-# ifdef __clang__
-#  if __has_include(<threads.h>)
-#    define HAVE_C11_THREADS 1
-#  endif
-# else
-#  if __STDC_VERSION__ >= 201112L && ! defined( __STDC_NO_THREADS__)
-#   define HAVE_C11_THREADS  1
-#  endif
-# endif
-#endif
+#include <assert.h>
 
 
-typedef int   mulle_thread_rval_t;
-
-struct mulle_thread_bounceinfo
+struct mulle_thread_bounceinfo   *mulle_thread_bounceinfo_create( mulle_thread_rval_t (*f)( void *),
+                                                                  void *arg)
 {
-   mulle_thread_rval_t   (*f)( void *arg);
-   void                  *arg;
-};
-
-
-struct mulle_thread_bounceinfo   *mulle_thread_bounceinfo_create( mulle_thread_rval_t (*f)( void *), void *arg);
-
-
-static inline void   mulle_thread_bounceinfo_free( struct mulle_thread_bounceinfo *info)
-{
-   free( info);
+   struct mulle_thread_bounceinfo   *info;
+   
+   info = calloc( 1, sizeof( struct mulle_thread_bounceinfo));
+   if( ! info)
+      return( NULL);
+   
+   info->f   = f;
+   info->arg = arg;
+   return( info);
 }
 
 
-#if HAVE_C11_THREADS && ! defined( MULLE_THREAD_USE_PTHREADS)
-# include "mulle_thread_c11.h"
-#else
-# ifdef _WIN32
-#  if TRACE_INCLUDE
-#   pragma message( "Using windows threads for threads")
-#  endif
-#  include "mulle_thread_windows.h"
-# else
-#  if TRACE_INCLUDE
-#   pragma message( "Using pthreads for threads")
-#  endif
-#  include "mulle_thread_pthreads.h"
-# endif
-#endif
+mulle_thread_native_rval_t   mulle_thread_bounceinfo_bounce( void *_info);
 
+mulle_thread_native_rval_t   mulle_thread_bounceinfo_bounce( void *_info)
+{
+   mulle_thread_rval_t              rval;
+   struct mulle_thread_bounceinfo   *info;
+   
+   info = _info;
+   rval = (*info->f)( info->arg);
+   free( info);
 
-#include "mulle_atomic.h"
+   mulle_thread_exit( rval);
+   
+   assert( 0);
+   return( (mulle_thread_native_rval_t) rval);
+}
 
-#endif

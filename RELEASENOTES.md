@@ -1,3 +1,11 @@
+3.1
+===
+
+* simplify use of mulle_thread_create, so that mulle_thread_exit will always
+be called
+* fix bug in pthreads when using trylock 
+* pthread_join now returns the rval from the thread (whoever needs it).
+
 3.0
 ===
 
