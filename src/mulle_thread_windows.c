@@ -40,6 +40,8 @@
 #include <assert.h>
 
 
+# pragma mark tss destruktor
+
 struct destructor_table_entry
 {
    mulle_thread_tss_t   key;

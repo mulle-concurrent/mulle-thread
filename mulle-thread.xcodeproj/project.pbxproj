@@ -50,6 +50,7 @@
 		417E67581BCBB68A00AA0322 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 417E67571BCBB68A00AA0322 /* main.c */; };
 		419795A41B6A52E2005417AA /* mulle_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 414785391ABAF326002DBAE4 /* mulle_atomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		419FC8A71BC954C8002D75B9 /* mintomic_empty.c in Sources */ = {isa = PBXBuildFile; fileRef = 419FC8A51BC95494002D75B9 /* mintomic_empty.c */; };
+		41AEF4AD1D9D659F0007D7A3 /* mulle_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 41AEF4AC1D9D659F0007D7A3 /* mulle_thread.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,6 +158,7 @@
 		417E67541BCBB5BE00AA0322 /* test-atomic-cas */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "test-atomic-cas"; sourceTree = BUILT_PRODUCTS_DIR; };
 		417E67571BCBB68A00AA0322 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		419FC8A51BC95494002D75B9 /* mintomic_empty.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mintomic_empty.c; sourceTree = "<group>"; };
+		41AEF4AC1D9D659F0007D7A3 /* mulle_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mulle_thread.c; sourceTree = "<group>"; };
 		41BE418C1B6BB0F7000C0DD4 /* BUILD.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BUILD.md; sourceTree = "<group>"; };
 		41F14FE61B68F098002189F1 /* libmulle_thread.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmulle_thread.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		41F14FF21B6902F9002189F1 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				411AB1061BC7F0280089AA49 /* mulle_atomic_c11.h */,
 				414885711BA9B4F90050773A /* mulle_atomic_mintomic.h */,
 				4148856D1BA9B35D0050773A /* mulle_thread.h */,
+				41AEF4AC1D9D659F0007D7A3 /* mulle_thread.c */,
 				4148856E1BA9B43C0050773A /* mulle_thread_pthreads.h */,
 				411AB10A1BC7FD8F0089AA49 /* mulle_thread_c11.h */,
 				4126EA131D6F51F300031F33 /* mulle_thread_windows.h */,
@@ -603,6 +606,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				41445DD91BA9DFB300FEB195 /* linkage.c in Sources */,
+				41AEF4AD1D9D659F0007D7A3 /* mulle_thread.c in Sources */,
 				4126EA141D6F51F300031F33 /* mulle_thread_windows.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

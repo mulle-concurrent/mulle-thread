@@ -43,7 +43,7 @@
 typedef mtx_t    mulle_thread_mutex_t;
 typedef tss_t    mulle_thread_tss_t;
 typedef thrd_t   mulle_thread_t;
-typedef int      mulle_thread_rval_t;
+typedef int      mulle_thread_native_rval_t;
 
 
 #pragma mark -
@@ -61,14 +61,26 @@ static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *),
                                          void *arg,
                                          mulle_thread_t *thread)
 {
-   return( thrd_create( thread, f, arg) == thrd_success ? 0 : -1);
+   extern mulle_thread_native_rval_t   mulle_thread_bounceinfo_bounce( void *info);
+   struct mulle_thread_bounceinfo      *info;
+   
+   info = mulle_thread_bounceinfo_create( f, arg);
+   if( ! info)
+      return( -1);
+   return( thrd_create( thread, mulle_thread_bounceinfo_bounce, info) == thrd_success ? 0 : -1);
 }
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_join( mulle_thread_t thread)
+static inline mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
 {
-   return( thrd_join( thread, NULL) == thrd_success ? 0 : -1);
+   mulle_thread_rval_t   storage;
+   int                   rval;
+   
+   rval = thrd_join( thread, &storage);
+   if( rval == thrd_success)
+      return( storage);
+   return( (mulle_thread_rval_t) -1);
 }
 
 
@@ -78,9 +90,9 @@ static inline int   mulle_thread_detach( mulle_thread_t thread)
 }
 
 
-static inline void   mulle_thread_exit( void)
+static inline void   mulle_thread_exit( mulle_thread_rval_t rval)
 {
-   thrd_exit( 0);
+   thrd_exit( rval);
 }
 
 
@@ -112,8 +124,8 @@ static inline int  mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
    switch( mtx_trylock( lock))
    {
    case thrd_success : return( 0) ;
-   case thrd_busy    : return( 1);
-   default           : return( -1);
+   case thrd_busy    : return( EBUSY);
+   default           : return( EINVAL);
    }
 }
 
@@ -138,7 +150,7 @@ static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 static inline int   mulle_thread_tss_create( void (*f)( void *), mulle_thread_tss_t *key)
 {
    assert( key);
-   return( tss_create( key, f)  == thrd_success ? 0 : -1);
+   return( tss_create( key, f) == thrd_success ? 0 : -1);
 }
 
 

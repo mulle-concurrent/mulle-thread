@@ -35,7 +35,11 @@
 #ifndef mulle_thread_h__
 #define mulle_thread_h__ 
 
+
 #define MULLE_THREAD_VERSION  ((3 << 20) | (0 << 8) | 1)
+
+#include <stddef.h>
+#include <stdlib.h>
 
 // clang lies about __STDC_NO_THREADS__
 
@@ -50,6 +54,25 @@
 #  endif
 # endif
 #endif
+
+
+typedef int   mulle_thread_rval_t;
+
+struct mulle_thread_bounceinfo
+{
+   mulle_thread_rval_t   (*f)( void *arg);
+   void                  *arg;
+};
+
+
+struct mulle_thread_bounceinfo   *mulle_thread_bounceinfo_create( mulle_thread_rval_t (*f)( void *), void *arg);
+
+
+static inline void   mulle_thread_bounceinfo_free( struct mulle_thread_bounceinfo *info)
+{
+   free( info);
+}
+
 
 #if HAVE_C11_THREADS && ! defined( MULLE_THREAD_USE_PTHREADS)
 # include "mulle_thread_c11.h"
@@ -66,6 +89,7 @@
 #  include "mulle_thread_pthreads.h"
 # endif
 #endif
+
 
 #include "mulle_atomic.h"
 

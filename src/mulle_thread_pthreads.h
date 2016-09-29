@@ -38,13 +38,13 @@
 #include <mulle_c11/mulle_c11.h>
 #include <pthread.h>
 #include <errno.h>
+#include <stdlib.h>
 
 
 typedef pthread_mutex_t   mulle_thread_mutex_t;
 typedef pthread_key_t     mulle_thread_tss_t;
 typedef pthread_t         mulle_thread_t;
-typedef void *            mulle_thread_rval_t;
-
+typedef void              *mulle_thread_native_rval_t;
 
 #pragma mark -
 #pragma Threads
@@ -57,18 +57,36 @@ static inline mulle_thread_t  mulle_thread_self( void)
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *),
+static inline int   mulle_thread_create( int (*f)(void *),
                                          void *arg,
                                          mulle_thread_t *thread)
 {
-   return( pthread_create( thread, NULL, f, arg));
+   extern mulle_thread_native_rval_t   mulle_thread_bounceinfo_bounce( void *info);
+   struct mulle_thread_bounceinfo      *info;
+   
+   info = mulle_thread_bounceinfo_create( f, arg);
+   if( ! info)
+      return( -1);
+
+   return( pthread_create( thread, NULL, (void *(*)()) mulle_thread_bounceinfo_bounce, info));
 }
 
 
+//
 // parameters different to pthreads!
-static inline int   mulle_thread_join( mulle_thread_t thread)
+// returns return from thread
+//
+static inline mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
 {
-   return( pthread_join( thread, NULL));
+   void   *storage;
+   int    rval;
+   
+   rval = pthread_join( thread, &storage);
+   if( ! rval)
+      return( (mulle_thread_rval_t) (intptr_t) storage);
+
+   errno = rval;
+   return( (mulle_thread_rval_t) -1);
 }
 
 
@@ -78,9 +96,9 @@ static inline int   mulle_thread_detach( mulle_thread_t thread)
 }
 
 
-static inline void   mulle_thread_exit( void)
+static inline void   mulle_thread_exit( mulle_thread_rval_t rval)
 {
-   pthread_exit( NULL);
+   pthread_exit( (void *) (intptr_t) rval);
 }
 
 
@@ -110,11 +128,7 @@ static inline int  mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 
 static inline int  mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
 {
-   if( ! pthread_mutex_trylock( lock))
-      return( 0);
-   if( errno == EBUSY)
-      return( 1);
-   return( -1);
+   return( pthread_mutex_trylock( lock));
 }
 
 

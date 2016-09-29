@@ -44,7 +44,7 @@
 typedef CRITICAL_SECTION  mulle_thread_mutex_t;
 typedef DWORD             mulle_thread_tss_t;
 typedef HANDLE            mulle_thread_t;
-typedef int               mulle_thread_rval_t;
+typedef DWORD             mulle_thread_native_rval_t;
 
 
 #pragma mark -
@@ -62,25 +62,42 @@ static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *),
 	void *arg,
 	mulle_thread_t *thread)
 {
-   *thread = (HANDLE) _beginthreadex( NULL, 0, (_beginthreadex_proc_type) f, arg, 0, NULL);
+   extern mulle_thread_native_rval_t   mulle_thread_bounceinfo_bounce( void *info);
+   struct mulle_thread_bounceinfo      *info;
+   
+   info = mulle_thread_bounceinfo_create( f, arg);
+   if( ! info)
+      return( -1);
+   
+   *thread = (HANDLE) _beginthreadex( NULL, 0, (_beginthreadex_proc_type) mulle_thread_bounceinfo_bounce, info, 0, NULL);
    return( *thread ? 0 : -1);
 }
 
 
-static inline void   mulle_thread_exit( void)
+// will be called automatically( !)
+static inline void   mulle_thread_exit( mulle_thread_rval_t rval)
 {
    extern void  mulle_thread_windows_destroy_tss( void);
 
    mulle_thread_windows_destroy_tss();
-   _endthreadex( 0);
+   _endthreadex( rval);
 }
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_join( mulle_thread_t thread)
+static inline mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
 {
-   // TODO: fix error codes 
-   return( WaitForSingleObject( thread, INFINITE));
+   mulle_thread_native_rval_t   storage;
+
+   if( WaitForSingleObject( thread, INFINITE))
+   {
+      errno = EINVAL;
+      return( (mulle_thread_rval_t) -1);
+   }
+
+   storage = (mulle_thread_native_rval_t) -1;
+   GetExitCodeThread( thread, &storage);
+   return( (mulle_thread_rval_t) storage);
 }
 
 
@@ -117,8 +134,8 @@ static inline int  mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 static inline int  mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
 {
    if( TryEnterCriticalSection( lock))
-      return(0);
-   return(1);
+      return( 0);
+   return( EBUSY);
 }
 
 

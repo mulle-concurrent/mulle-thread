@@ -42,6 +42,7 @@ mintomic/include/mintomic/private/mintomic_stdint.h
 
 add_library( mulle_thread
 src/linkage.c
+src/mulle_thread.c
 src/mulle_thread_windows.c
 ${HEADERS}  # for IDEs
 ${MINTOMIC_HEADERS}  # for IDEs
