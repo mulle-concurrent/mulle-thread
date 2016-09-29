@@ -65,7 +65,8 @@ struct mulle_thread_bounceinfo
 };
 
 
-struct mulle_thread_bounceinfo   *mulle_thread_bounceinfo_create( mulle_thread_rval_t (*f)( void *), void *arg);
+struct mulle_thread_bounceinfo   *mulle_thread_bounceinfo_create( mulle_thread_rval_t (*f)( void *), 
+                                                                  void *arg);
 
 
 static inline void   mulle_thread_bounceinfo_free( struct mulle_thread_bounceinfo *info)

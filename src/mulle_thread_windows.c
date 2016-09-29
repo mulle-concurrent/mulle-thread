@@ -34,7 +34,7 @@
 
 #ifdef _WIN32
 
-#include "mulle_thread_windows.h"
+#include "mulle_thread.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
