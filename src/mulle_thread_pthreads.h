@@ -38,6 +38,7 @@
 #include <mulle_c11/mulle_c11.h>
 #include <pthread.h>
 #include <errno.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 
@@ -63,7 +64,7 @@ static inline int   mulle_thread_create( int (*f)(void *),
 {
    extern mulle_thread_native_rval_t   mulle_thread_bounceinfo_bounce( void *info);
    struct mulle_thread_bounceinfo      *info;
-   
+
    info = mulle_thread_bounceinfo_create( f, arg);
    if( ! info)
       return( -1);
@@ -80,7 +81,7 @@ static inline mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
 {
    void   *storage;
    int    rval;
-   
+
    rval = pthread_join( thread, &storage);
    if( ! rval)
       return( (mulle_thread_rval_t) (intptr_t) storage);
@@ -105,7 +106,7 @@ static inline void   mulle_thread_exit( mulle_thread_rval_t rval)
 static inline void   mulle_thread_yield( void)
 {
    extern int   sched_yield( void);  // POSIX... don't want the header though
-   
+
    sched_yield();
 }
 
