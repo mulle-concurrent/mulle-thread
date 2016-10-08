@@ -64,11 +64,11 @@ static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *),
 {
    extern mulle_thread_native_rval_t   mulle_thread_bounceinfo_bounce( void *info);
    struct mulle_thread_bounceinfo      *info;
-   
+
    info = mulle_thread_bounceinfo_create( f, arg);
    if( ! info)
       return( -1);
-   
+
    *thread = (HANDLE) _beginthreadex( NULL, 0, (_beginthreadex_proc_type) mulle_thread_bounceinfo_bounce, info, 0, NULL);
    return( *thread ? 0 : -1);
 }
@@ -170,7 +170,7 @@ static inline int   mulle_thread_tss_create( void(*f)(void *), mulle_thread_tss_
 
    *key = TlsAlloc();
    if( *key == TLS_OUT_OF_INDEXES)
-   { 
+   {
       *key = 0;
       return(-1);
    }

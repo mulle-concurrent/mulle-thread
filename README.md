@@ -70,17 +70,13 @@ Otherwise read:
 
 ### Architectures
 
-If **not** using proper C11
+If `<stdatomic.h>` is not available for your architecture, then mulle-threads is limited to:
 
 * x86
 * x86_64
 * arm
 
-
-## mintomic
+That is because of limitations of [mintomic](//mintomic.github.io/).
 
 This was the original source for atomic operations, unfortunately it's not
-really active anymore, so for example ARM64 doesn't work.
-
-For now, `mulle_atomic` will use mintomic only, if `<stdatomic.h>` is not
-available.
+really active anymore, so for example ARM64 doesn't work. `mulle-thread` will use **mintomic** only, if `<stdatomic.h>` is not available.
