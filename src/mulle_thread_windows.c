@@ -71,16 +71,16 @@ struct destructor_table   *destructor_table_grow( struct destructor_table  *tabl
       size = 4;
    }
    else
-   { 
+   {
       n    = table->n;
       size = table->size * 2;
    }
 
    needed = sizeof( struct destructor_table) + sizeof( struct destructor_table_entry) * (size - 1);
-   
+
    newtable = realloc( table, needed);
    if( newtable)
-   { 
+   {
       newtable->n    = n;
       newtable->size = size;
    }
@@ -95,7 +95,7 @@ static int   destructor_table_add_destructor_for_key( struct destructor_table **
    struct destructor_table *table;
 
    assert( key);
- 
+
    table = *p_table;
    if( ! f)
       return( 0);
@@ -184,7 +184,7 @@ static void   mulle_thread_tss_init( void)
       case 1 :  InitializeCriticalSection( &lock);
                 InterlockedIncrement( &inited);  // done
       default : return;
-            
+
       case 2 :  InterlockedDecrement( &inited);  // competing initalizer, undo
                 mulle_thread_yield();            // and wait
                 continue;
@@ -239,7 +239,7 @@ void  mulle_thread_windows_remove_tss( mulle_thread_tss_t key)
       destructor_table_remove_destructor_for_key( table, key);
    }
    LeaveCriticalSection( &lock);
-   
+
    mulle_thread_tss_done();
 }
 

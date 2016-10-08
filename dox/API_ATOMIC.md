@@ -172,8 +172,8 @@ Returns the result, not the previous value like increment/decrement
 
 ## Atomic Function Pointer Operations
 
-Currently these functions exist to avoid C compiler type conversion warnings. 
-It is assumed that `sizeof( void *)` == `sizeof( (void (*)())`. 
+These functions exist to avoid C compiler type conversion warnings. 
+Currently it is assumed that `sizeof( void *)` == `sizeof( (void (*)())`.
 
 #### _mulle_atomic_functionpointer_nonatomic_read
 
