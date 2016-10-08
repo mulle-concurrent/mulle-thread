@@ -5,7 +5,7 @@
 
 * `libmulle_thread.a`, the mulle-thread static library along with a bunch of
 headers. You can often get by, not linking with libmulle_thread.a, which is
-fairly empty. That isexcept on windows, where you absolutely need it.
+fairly empty. That is except on windows, where you absolutely do need it.
 
 
 ## Prerequisites
@@ -17,7 +17,7 @@ You need to install some more prerequisites first.
 * Install [Visual Studio 2015 Community Edition](//beta.visualstudio.com/downloads/)
 or better (free). Make sure that you install Windows C++ support. Also add git support.
 * [Git for Windows](//git-scm.com/download/win) is included in VS 2015, make sure it's there
-* [Python 2 for Windows](//www.python.org/downloads/windows/). **Make sure that python is installed in **PATH**, which is not the default**
+* [Python 2 for Windows](//www.python.org/downloads/windows/). Make sure that python is installed in **PATH**, which is not the default.
 * [CMake for Windows](//cmake.org/download/). CMake should also add itself to **PATH**.
 
 Reboot, so that Windows picks up the **PATH** changes (Voodoo).
@@ -27,6 +27,8 @@ environment.  Assuming you kept default settings the "Git bash" is
 `C:\Program Files\Git\git-bash.exe`. Open the "Developer Command Prompt for VS 2015"
 from the start menu and execute the git-bash from there. A second window with
 the bash should open.
+
+Check that you have the proper environment for VS compilation with `env`.
 
 
 #### mulle-c11
