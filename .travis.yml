@@ -11,12 +11,13 @@ addons:
       - cmake-data
 
 before_install:
-  - git clone https://github.com/Linuxbrew/brew.git ~/.linuxbrew
-  - PATH="$HOME/.linuxbrew/bin:$PATH"
-  - brew update
-  - brew tap mulle-kybernetik/software
-  - brew install mulle-build
+   - git clone https://github.com/Linuxbrew/brew.git ~/.linuxbrew
+   - PATH="$HOME/.linuxbrew/bin:$PATH"
+   - brew update
+   - brew tap mulle-kybernetik/software
+   - brew install mulle-build
 
 
-script: mulle-build
-script: mulle-test
+script: 
+   - mulle-build
+   - mulle-test
