@@ -15,10 +15,8 @@ before_install:
   - PATH="$HOME/.linuxbrew/bin:$PATH"
   - brew update
   - brew tap mulle-kybernetik/software
-  - brew install mulle-bootstrap
+  - brew install mulle-build
 
-before_script:
-  mulle-bootstrap -a
 
-script: mkdir build 2> /dev/null; cd build ; cmake .. ; make
-
+script: mulle-build
+script: mulle-test
