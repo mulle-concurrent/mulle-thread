@@ -96,7 +96,6 @@ git clone http://www.mulle-kybernetik.com/repositories/mulle-build
 ```
 
 
-
 ### Compile Flags
 
 For development use no flags.
