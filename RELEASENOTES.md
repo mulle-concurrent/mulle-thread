@@ -1,3 +1,9 @@
+3.2.1
+===
+
+* improve documentation
+* remove some outdated remnants
+
 3.2
 ===
 
