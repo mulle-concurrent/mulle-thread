@@ -25,15 +25,16 @@ Returns the current thread, just like `pthread_self`
 #### mulle_thread_create
 
 ```
-mulle_thread_create( mulle_thread_rval_t (*f)(void *), 
-                     void *arg, 
+mulle_thread_create( mulle_thread_rval_t (*f)(void *),
+                     void *arg,
                      mulle_thread_t *thread)
 ```
 
 > Note: Parameters are differently ordered than in pthread
 
 **f** is the thread function with **arg** as its argument.
-The created thread is returned in **thread** .
+The created thread is returned in **thread**. Obviously **arg** should not
+be a pointer to stack memory.
 
 A return value of 0 indicates success.
 
@@ -80,7 +81,7 @@ See: [pthread_exit](//man7.org/linux/man-pages/man3/pthread_exit.3.html)
 void   mulle_thread_yield( void)
 ```
 
-Initiate a context switch. 
+Initiate a context switch.
 
 See: [sched_yield](//man7.org/linux/man-pages/man2/sched_yield.2.html)
 
