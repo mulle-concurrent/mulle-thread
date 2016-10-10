@@ -20,7 +20,7 @@ static void   thread_main( void *arg)
    // destruktor may only run if tss has been set in current thread
    printf( "thread set\n");
    if( mulle_thread_tss_set( key, shared_value2))
-      return( 1);
+      mulle_thread_exit( 1);
 
    mulle_thread_exit( 0);
 }
