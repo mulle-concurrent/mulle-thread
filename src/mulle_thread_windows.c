@@ -34,10 +34,11 @@
 
 #ifdef _WIN32
 
-#include "mulle_thread_windows.h"
+#include "mulle_thread.h"
+#include <assert.h>
+#include <malloc.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
 
 
 # pragma mark tss destruktor
@@ -212,7 +213,7 @@ static void   mulle_thread_tss_done( void)
 }
 
 
-int  mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *))
+int   mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *))
 {
    int   rval;
 
@@ -230,7 +231,7 @@ int  mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *))
 }
 
 
-void  mulle_thread_windows_remove_tss( mulle_thread_tss_t key)
+void   mulle_thread_windows_remove_tss( mulle_thread_tss_t key)
 {
    assert( inited);
 
@@ -244,7 +245,7 @@ void  mulle_thread_windows_remove_tss( mulle_thread_tss_t key)
 }
 
 
-void  mulle_thread_windows_destroy_tss( void)
+void   mulle_thread_windows_destroy_tss( void)
 {
    assert( inited);
 
