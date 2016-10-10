@@ -61,9 +61,11 @@ See: [pthread_getspecific](//linux.die.net/man/3/pthread_getspecific)
 
 ```
 int  mulle_thread_tss_set( mulle_thread_tss_t key,
-                           void *userdata)
+                           void *value)
 ```
 
-Set value in thread local storage with key.
+Set value in thread local storage with key. Obviously **value** should not
+be a pointer to memory writable by other threads or stack memory. If you want
+to write an integer use `mulle_thread_tss_set( key, (void *) 1848)`.
 
 See: [pthread_setspecific](//linux.die.net/man/3/pthread_setspecific)

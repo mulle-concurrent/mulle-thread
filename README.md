@@ -30,7 +30,7 @@ brew tap mulle-kybernetik/software
 brew install mulle-thread
 ```
 
-On other platforms you can use **mulle-install** from [mulle-build](//www.mulle-kybernetik.com/software/git/mulle-build) to install the library:
+On other platforms you can use **mulle-install** from [mulle-build](../mulle-build) to install the library:
 
 ```
 mulle-install --prefix /usr/local --branch release https://www.mulle-kybernetik.com/repositories/mulle-thread
@@ -70,13 +70,14 @@ Otherwise read:
 
 ### Architectures
 
-If `<stdatomic.h>` is not available for your architecture, then mulle-threads is limited to:
+If `<stdatomic.h>` is not available for your architecture, then **mulle-thread**
+is limited to:
 
 * x86
 * x86_64
 * arm
 
-That is because of limitations of [mintomic](//mintomic.github.io/).
-
-This was the original source for atomic operations, unfortunately it's not
-really active anymore, so for example ARM64 doesn't work. `mulle-thread` will use **mintomic** only, if `<stdatomic.h>` is not available.
+That is because of [mintomic](//mintomic.github.io/) limitations. **mintomic**
+is the original source for the provided atomic operations. Unfortunately it's not
+really active anymore, so for example ARM64 doesn't work. **mulle-thread** will
+use mintomic only, if `<stdatomic.h>` is not available.
