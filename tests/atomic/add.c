@@ -28,8 +28,7 @@
 //  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //  POSSIBILITY OF SUCH DAMAGE.
 //
-#include "mulle_atomic.h"
-#include "mulle_thread.h"
+#include <mulle_thread/mulle_thread.h>
 #include <assert.h>
 #include <errno.h>
 #include <stdio.h>
@@ -37,10 +36,10 @@
 #include <string.h>
 
 
-#define PROGRESS     0
-#define FOREVER      1
-#define LOOPS        10000000
-#define MAX_THREADS  4
+#define PROGRESS        0
+#define MAX_ITERATIONS  100
+#define LOOPS           1000000
+#define MAX_THREADS     4
 
 
 #if DEBUG_PRINT
@@ -61,7 +60,7 @@ static mulle_atomic_pointer_t    central;
 static void    run_atomic_add_test( void)
 {
    unsigned long   i;
-   
+
    for( i = 0; i < LOOPS; i++)
    {
       _mulle_atomic_pointer_increment( &central);
@@ -82,25 +81,25 @@ static void   _wait_around( mulle_atomic_pointer_t *n_threads)
 {
    // wait for all threads to materialize
    _mulle_atomic_pointer_decrement( n_threads);
-   while( _mulle_atomic_read_pointer( n_threads) != 0)
+   while( _mulle_atomic_pointer_read( n_threads) != 0)
       sched_yield();
 }
 
 
 struct thread_info
 {
-   char                  name[ 64];
-   mulle_atomic_pointer_t    *n_threads;
+   char                     name[ 64];
+   mulle_atomic_pointer_t   *n_threads;
 };
 
 
 static mulle_thread_rval_t   run_test( struct thread_info *info)
 {
    mulle_thread_tss_set( timestamp_thread_key, strdup( info->name));
-   
+
    _wait_around( info->n_threads);
    multi_threaded_test_each_thread();
-   
+
    return( 0);
 }
 
@@ -112,47 +111,47 @@ static void   finish_test( void)
 
 void  multi_threaded_test( intptr_t n)
 {
-   int                  i;
-   mulle_thread_t       *threads;
-   struct thread_info   *info;
+   int                      i;
+   mulle_thread_t           *threads;
+   struct thread_info       *info;
    mulle_atomic_pointer_t   n_threads;
-   
+
 #if MULLE_ABA_TRACE
    fprintf( stderr, "////////////////////////////////\n");
    fprintf( stderr, "multi_threaded_test( %ld) starts\n", n);
 #endif
    threads = alloca( n * sizeof( mulle_thread_t));
    assert( threads);
-   
-   n_threads._nonatomic = (void *) n;
+
+   _mulle_atomic_pointer_nonatomic_write( &n_threads, (void *) n);
    info = alloca( sizeof(struct thread_info) * n);
-   
-   central._nonatomic = (void *) 0;
-   
+
+   _mulle_atomic_pointer_nonatomic_write( &central, (void *) 0);
+
    for( i = 1; i < n; i++)
    {
       info[ i].n_threads = &n_threads;
       sprintf( info[ i].name, "thread #%d", i);
-      
+
       if( mulle_thread_create( (void *) run_test, &info[ i], &threads[ i]))
          abort();
    }
-   
+
    info[ 0].n_threads = &n_threads;
    sprintf( info[ 0].name, "thread #%d", 0);
    run_test( &info[ 0]);
-   
+
    for( i = 1; i < n; i++)
       if( mulle_thread_join( threads[ i]))
       {
          perror( "mulle_thread_join");
          abort();
       }
-   
-   assert( central._nonatomic == (void *) (n * LOOPS));
-   
+
+   assert( _mulle_atomic_pointer_nonatomic_read( &central) == (void *) (n * LOOPS));
+
    finish_test();
-   
+
 #if MULLE_ABA_TRACE
    fprintf( stderr, "%s: multi_threaded_test( %ld) ends\n", mulle_aba_thread_name(), n);
 #endif
@@ -172,7 +171,7 @@ __attribute__((constructor))
 static void  __enable_core_dumps(void)
 {
    struct rlimit   limit;
-   
+
    limit.rlim_cur = RLIM_INFINITY;
    limit.rlim_max = RLIM_INFINITY;
    setrlimit(RLIMIT_CORE, &limit);
@@ -181,42 +180,37 @@ static void  __enable_core_dumps(void)
 
 int   _main(int argc, const char * argv[])
 {
+   unsigned long  i;
    unsigned int   j;
    int            rval;
-   
+
    srand( (unsigned int) time( NULL));
-   
-   rval = mulle_thread_tss_create( &timestamp_thread_key, free);
+
+   rval = mulle_thread_tss_create( free, &timestamp_thread_key);
    assert( ! rval);
-   
+
    rval = mulle_thread_tss_set( timestamp_thread_key, strdup( "main"));
    assert( ! rval);
-   
+
 #if MULLE_ABA_TRACE
    fprintf( stderr, "%s\n", mulle_aba_thread_name());
 #endif
-   
+
    //
    // if there are leaks anywhere, it will assert in
    // _mulle_aba_storage_done which is called by reset_memory
    // eventually
    //
-   
-   for( ;;)
+
+   for( i = 1; i <= MAX_ITERATIONS; i++)
    {
-#if MULLE_ABA_TRACE || PROGRESS
-# if MULLE_ABA_TRACE
-      fprintf( stderr, "iteration %d\n", i);
-# else
-      fprintf( stdout, "iteration %d\n", i);
-# endif
-#endif
       for( j = 1; j <= MAX_THREADS; j += j)
       {
          multi_threaded_test( j);
       }
+      fprintf( stdout, "%ld\n", i);
    }
-   
+
    return( 0);
 }
 
