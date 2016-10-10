@@ -1,3 +1,12 @@
+3.2
+===
+
+* Add bounce documentation
+* Remove magic bounceinfo code from pthreads_create introduced around 3.0. This
+should be done by the caller.
+* Make windows trylock behavior consistent with pthreads
+
+
 3.1.1
 ===
 

@@ -58,18 +58,11 @@ static inline mulle_thread_t  mulle_thread_self( void)
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_create( int (*f)(void *),
+static inline int   mulle_thread_create( void (*f)(void *),
                                          void *arg,
                                          mulle_thread_t *thread)
 {
-   extern mulle_thread_native_rval_t   mulle_thread_bounceinfo_bounce( void *info);
-   struct mulle_thread_bounceinfo      *info;
-
-   info = mulle_thread_bounceinfo_create( f, arg);
-   if( ! info)
-      return( -1);
-
-   return( pthread_create( thread, NULL, (void *(*)()) mulle_thread_bounceinfo_bounce, info));
+   return( pthread_create( thread, NULL, (void *(*)()) f, arg));
 }
 
 

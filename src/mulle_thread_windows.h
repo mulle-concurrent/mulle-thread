@@ -39,37 +39,37 @@
 #include <windows.h>
 #include <process.h>
 #include <errno.h>
+#include <assert.h>
 #include <mulle_c11/mulle_c11.h>
 
-typedef CRITICAL_SECTION  mulle_thread_mutex_t;
 typedef DWORD             mulle_thread_tss_t;
 typedef HANDLE            mulle_thread_t;
 typedef DWORD             mulle_thread_native_rval_t;
+
+// too complicated and unsafe to extract and intepret section.OwningThread
+typedef struct
+{
+   CRITICAL_SECTION  section;
+   mulle_thread_t    owner;
+} mulle_thread_mutex_t;
 
 
 #pragma mark -
 #pragma mark Threads
 
 MULLE_C_CONST_RETURN
-static inline mulle_thread_t  mulle_thread_self(void)
+static inline mulle_thread_t  mulle_thread_self( void)
 {
    return( GetCurrentThread());
 }
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *),
-	void *arg,
-	mulle_thread_t *thread)
+static inline int   mulle_thread_create( void (*f)( void *),
+                                         void *arg,       
+                                         mulle_thread_t *thread)
 {
-   extern mulle_thread_native_rval_t   mulle_thread_bounceinfo_bounce( void *info);
-   struct mulle_thread_bounceinfo      *info;
-
-   info = mulle_thread_bounceinfo_create( f, arg);
-   if( ! info)
-      return( -1);
-
-   *thread = (HANDLE) _beginthreadex( NULL, 0, (_beginthreadex_proc_type) mulle_thread_bounceinfo_bounce, info, 0, NULL);
+   *thread = (HANDLE) _beginthreadex( NULL, 0, (_beginthreadex_proc_type) f, arg, 0, NULL);
    return( *thread ? 0 : -1);
 }
 
@@ -117,38 +117,55 @@ static inline void   mulle_thread_yield(void)
 #pragma mark -
 #pragma mark Lock
 
-static inline int  mulle_thread_mutex_init( mulle_thread_mutex_t *lock)
+static inline int   mulle_thread_mutex_init( mulle_thread_mutex_t *lock)
 {
-   InitializeCriticalSection( lock);
+   InitializeCriticalSection( &lock->section);
+   lock->owner = 0;
+
    return( 0);
 }
 
 
-static inline int  mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
+static inline int   mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 {
-   EnterCriticalSection( lock);
+   EnterCriticalSection( &lock->section);
+   lock->owner = mulle_thread_self(); 
+
    return( 0);
 }
 
 
-static inline int  mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
+static inline int   mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
 {
-   if( TryEnterCriticalSection( lock))
+   //
+   // in win it's ok to reenter a critical, but that's not OK in 
+   // pthreads. So if it's locked and we own, then... it's busy
+   //
+   if( lock->owner == mulle_thread_self())
+      return( EBUSY);
+
+   if( TryEnterCriticalSection( &lock->section))
+   {
+      lock->owner = mulle_thread_self();  // a bit late though possibly!
       return( 0);
+   }
    return( EBUSY);
 }
 
 
-static inline int  mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock)
+static inline int   mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock)
 {
-   LeaveCriticalSection( lock);
+   assert( lock->owner == mulle_thread_self());
+
+   lock->owner = 0; 
+   LeaveCriticalSection( &lock->section);
    return( 0);
 }
 
 
-static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
+static inline int   mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 {
-   DeleteCriticalSection( lock);
+   DeleteCriticalSection( &lock->section);
    return( 0);
 }
 
@@ -194,7 +211,7 @@ static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 
 
 static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
-	void *userdata)
+   void *userdata)
 {
    return( TlsSetValue(key, userdata) ? 0 : -1);
 }
