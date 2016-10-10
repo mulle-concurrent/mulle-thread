@@ -1,4 +1,4 @@
-# Build Information
+# How to build mulle-thread
 
 
 ## What you get
@@ -30,10 +30,10 @@ configuration files for building with Xcode or cmake.
 #### mintomic
 
 If your compiler does not support C11 atomics, then `mulle-thread` needs
-[mintomic](https://mintomic.github.io/) as a prerequisite.
+[mintomic](//mintomic.github.io/) as a prerequisite.
 
 
-### Prerequisites for Windows
+### Windows: Installing further prerequisites
 
 You need to install some more prerequisites first.
 
@@ -54,46 +54,61 @@ the bash should open.
 Check that you have the proper environment for VS compilation with `env`.
 
 
-#### OSX: Use brew to install mulle-build
+### OSX: Install mulle-build using homebrew
 
-Install the [homebrew](http://brew.sh/) package manager, then
+Install the [homebrew](//brew.sh/) package manager, then
 
 ```
 brew tap mulle-kybernetik/software
 brew install mulle-build
 ```
 
-#### Other Unices / Windows: Use git to install mulle-build
+### Linux: Install mulle-build using linuxbrew
+
+Install the [linuxbrew](//linuxbrew.sh/) package manager, then
 
 ```
-git clone http://www.mulle-kybernetik.com/repositories/mulle-bootstrap
+brew tap mulle-kybernetik/software
+brew install mulle-build
+```
+
+### All: Install mulle-build using git
+
+```
+git clone https://www.mulle-kybernetik.com/repositories/mulle-bootstrap
 ( cd mulle-bootstrap ; ./install.sh )
-git clone http://www.mulle-kybernetik.com/repositories/mulle-build
+git clone https://www.mulle-kybernetik.com/repositories/mulle-build
 ( cd mulle-build ; ./install.sh )
 ```
 
+## All: Install mulle-thread using mulle-build
 
-### Use mulle-build to fetch prerequisites and build the library
 
-Fetch dependencies and build mulle-thread in debug mode:
+Grab the latest **mulle-thread** release and go into the project directory:
 
-```console
-( cd mulle-thread ; mulle-build --debug )
+```
+git clone https://www.mulle-kybernetik.com/repositories/mulle-thread
+cd mulle-thread
+```
+
+Then let **mulle-build** fetch the dependencies and build **mulle-thread** in
+debug mode:
+
+```
+mulle-build --debug
 ```
 
 Run some tests:
 
-```console
-( cd mulle-thread ; mulle-test )
+```
+mulle-test
 ```
 
 Build library in release mode and install into `tmp` :
 
-```console
-(
-   cd mulle-thread ;
-   mulle-clean ;
-   mulle-install --prefix /tmp
+```
+mulle-clean ;
+mulle-install --prefix /tmp
 ```
 
 

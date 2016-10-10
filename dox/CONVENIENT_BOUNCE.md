@@ -1,8 +1,12 @@
 
-# Bounce code to automatically call mulle_thread_exit 
+# Automatically call mulle_thread_exit on thread function exit
+
+If you are prone to forget calling `mulle_thread_exit` or want to easily
+interface with functions, that are not aware, that they are running as a
+thread. I've got some code for you:
 
 
-`thread_bounceinfo.h`: 
+`thread_bounceinfo.h`:
 
 ```
 #include <mulle_thread/mulle_thread.h>
@@ -15,7 +19,7 @@ struct thread_bounceinfo
 };
 
 
-struct thread_bounceinfo   *thread_bounceinfo_create( mulle_thread_rval_t (*f)( void *), 
+struct thread_bounceinfo   *thread_bounceinfo_create( mulle_thread_rval_t (*f)( void *),
                                                       void *arg);
 
 
@@ -28,7 +32,7 @@ void   thread_bounceinfo_bounce( void *_info);
 
 ```
 
-`thread_bounceinfo.c`: 
+`thread_bounceinfo.c`:
 
 ```
 #include "thread_bounceinfo.h"
@@ -38,11 +42,11 @@ struct thread_bounceinfo   *thread_bounceinfo_create( mulle_thread_rval_t (*f)( 
                                                       void *arg)
 {
    struct thread_bounceinfo   *info;
-   
+
    info = calloc( 1, sizeof( struct thread_bounceinfo));
    if( ! info)
       return( NULL);
-   
+
    info->f   = f;
    info->arg = arg;
    return( info);
@@ -53,7 +57,7 @@ void   thread_bounceinfo_bounce( void *_info)
 {
    mulle_thread_rval_t        rval;
    struct thread_bounceinfo   *info;
-   void                       (*f)( void *);   
+   void                       (*f)( void *);
    void                       *arg;
 
    info = _info;
@@ -69,9 +73,9 @@ void   thread_bounceinfo_bounce( void *_info)
 ```
 
 
-And the call 
+And the call
 
-`thread.c`: 
+`thread.c`:
 
 ```
 #include "thread_bounceinfo.h"
@@ -81,7 +85,7 @@ static inline int   thread_create( mulle_thread_rval_t (*f)( void *),
                                    mulle_thread_t *thread)
 {
    struct thread_bounceinfo   *info;
-   
+
    info = thread_bounceinfo_create( f, arg);
    if( ! info)
       return( -1);
