@@ -33,10 +33,10 @@
 //
 
 #ifndef mulle_thread_h__
-#define mulle_thread_h__ 
+#define mulle_thread_h__
 
 
-#define MULLE_THREAD_VERSION  ((3 << 20) | (0 << 8) | 1)
+#define MULLE_THREAD_VERSION  ((3 << 20) | (1 << 8) | 1)
 
 #include <stddef.h>
 #include <stdlib.h>

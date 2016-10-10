@@ -1,9 +1,17 @@
+3.1.1
+===
+
+* fix wrong version number
+* migrate homebrew install to mulle-build 0.5
+* move atomic tests to tests folder and integrate into mulle-tests
+
+
 3.1
 ===
 
 * simplify use of mulle_thread_create, so that mulle_thread_exit will always
 be called
-* fix bug in pthreads when using trylock 
+* fix bug in pthreads when using trylock
 * pthread_join now returns the rval from the thread (whoever needs it).
 
 3.0
@@ -18,7 +26,7 @@ be called
 2.1
 ===
 
-* add function pointer atomicity. Why is a function pointer different to a void 
+* add function pointer atomicity. Why is a function pointer different to a void
 pointer ? Imagine a machine with 64 KB ram. Data pointers could be 16 bit. Now
 imagine it having a ROM of 4 MB, function pointers could be 32 bit. Basically
 though the function pointers are just there to reduce warnings at the moment.
@@ -26,7 +34,7 @@ though the function pointers are just there to reduce warnings at the moment.
 
 2.0
 ===
-* renamed _destroy and _delete functions to be orthogonal with other mulle 
+* renamed _destroy and _delete functions to be orthogonal with other mulle
   functions (sorry) to _free and _done.
 
 
@@ -59,4 +67,3 @@ MULLE_THREAD_USE_PTHREADS
 the caller can cache it.
 
 
- 

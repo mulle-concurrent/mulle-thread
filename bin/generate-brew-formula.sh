@@ -20,7 +20,7 @@ set -e
 
 TMPARCHIVE="/tmp/${TARGET}-${VERSION}-archive"
 
-if [ ! -f  "${TMPARCHIVE}" ]
+if [ ! -f "${TMPARCHIVE}" ]
 then
    curl -L -o "${TMPARCHIVE}" "${ARCHIVEURL}"
    if [ $? -ne 0 -o ! -f "${TMPARCHIVE}" ]
@@ -55,10 +55,10 @@ class ${PROJECT} < Formula
   sha256 "${HASH}"
 
   depends_on 'mulle-c11'
-  depends_on 'mulle-install' => :build
+  depends_on 'mulle-build' => :build
 
   def install
-     system "./install.sh", "--brew", "--prefix", "#{prefix}"
+     system "mulle-install", "-e", "--prefix", "#{prefix}"
   end
 
   test do

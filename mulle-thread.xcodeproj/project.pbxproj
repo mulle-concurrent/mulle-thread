@@ -41,13 +41,10 @@
 		417A8B401BCBCAAE00884077 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 417A8B3E1BCBCAAE00884077 /* LaunchScreen.storyboard */; };
 		417A8B481BCBCAF300884077 /* libmulle_thread (iOS).a in Frameworks */ = {isa = PBXBuildFile; fileRef = 417A8B291BCBCA5000884077 /* libmulle_thread (iOS).a */; };
 		417A8B4A1BCBCAFE00884077 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 417A8B491BCBCAFE00884077 /* UIKit.framework */; };
-		417A8B4B1BCBCCF200884077 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 417E67571BCBB68A00AA0322 /* main.c */; };
-		417E673C1BCBB0B900AA0322 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 417E673B1BCBB0B900AA0322 /* main.c */; };
 		417E67441BCBB0C800AA0322 /* libmintomic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41445DC21BA9DE1700FEB195 /* libmintomic.a */; };
 		417E67451BCBB0C800AA0322 /* libmulle_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41F14FE61B68F098002189F1 /* libmulle_thread.a */; };
 		417E674E1BCBB5BE00AA0322 /* libmintomic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41445DC21BA9DE1700FEB195 /* libmintomic.a */; };
 		417E674F1BCBB5BE00AA0322 /* libmulle_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41F14FE61B68F098002189F1 /* libmulle_thread.a */; };
-		417E67581BCBB68A00AA0322 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 417E67571BCBB68A00AA0322 /* main.c */; };
 		419795A41B6A52E2005417AA /* mulle_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 414785391ABAF326002DBAE4 /* mulle_atomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		419FC8A71BC954C8002D75B9 /* mintomic_empty.c in Sources */ = {isa = PBXBuildFile; fileRef = 419FC8A51BC95494002D75B9 /* mintomic_empty.c */; };
 		41AEF4AD1D9D659F0007D7A3 /* mulle_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 41AEF4AC1D9D659F0007D7A3 /* mulle_thread.c */; };
@@ -154,9 +151,7 @@
 		417C02611BD83B47005A3751 /* StaticLibraryOSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = StaticLibraryOSX.xcconfig; sourceTree = "<group>"; };
 		417C02621BD83C6F005A3751 /* ToolOSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ToolOSX.xcconfig; sourceTree = "<group>"; };
 		417E67391BCBB0B900AA0322 /* test-atomic-add */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "test-atomic-add"; sourceTree = BUILT_PRODUCTS_DIR; };
-		417E673B1BCBB0B900AA0322 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		417E67541BCBB5BE00AA0322 /* test-atomic-cas */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "test-atomic-cas"; sourceTree = BUILT_PRODUCTS_DIR; };
-		417E67571BCBB68A00AA0322 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		419FC8A51BC95494002D75B9 /* mintomic_empty.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mintomic_empty.c; sourceTree = "<group>"; };
 		41AEF4AC1D9D659F0007D7A3 /* mulle_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mulle_thread.c; sourceTree = "<group>"; };
 		41BE418C1B6BB0F7000C0DD4 /* BUILD.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BUILD.md; sourceTree = "<group>"; };
@@ -237,8 +232,6 @@
 				41445DD81BA9DF7300FEB195 /* include */,
 				417C025C1BD83977005A3751 /* mulle-configuration */,
 				415B405B1D9427AF0022362B /* dox */,
-				417E673A1BCBB0B900AA0322 /* test-atomic-add */,
-				417E67561BCBB68A00AA0322 /* test-atomic-cas */,
 				417A8B2F1BCBCAAE00884077 /* run-on-ipad */,
 				4147852D1ABAF290002DBAE4 /* Products */,
 			);
@@ -326,22 +319,6 @@
 				417C02601BD83AC5005A3751 /* OSX.xcconfig */,
 			);
 			path = "mulle-configuration";
-			sourceTree = "<group>";
-		};
-		417E673A1BCBB0B900AA0322 /* test-atomic-add */ = {
-			isa = PBXGroup;
-			children = (
-				417E673B1BCBB0B900AA0322 /* main.c */,
-			);
-			path = "test-atomic-add";
-			sourceTree = "<group>";
-		};
-		417E67561BCBB68A00AA0322 /* test-atomic-cas */ = {
-			isa = PBXGroup;
-			children = (
-				417E67571BCBB68A00AA0322 /* main.c */,
-			);
-			path = "test-atomic-cas";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -572,7 +549,6 @@
 			files = (
 				417A8B381BCBCAAE00884077 /* ViewController.m in Sources */,
 				417A8B351BCBCAAE00884077 /* AppDelegate.m in Sources */,
-				417A8B4B1BCBCCF200884077 /* main.c in Sources */,
 				417A8B321BCBCAAE00884077 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -581,7 +557,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				417E673C1BCBB0B900AA0322 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -589,7 +564,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				417E67581BCBB68A00AA0322 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

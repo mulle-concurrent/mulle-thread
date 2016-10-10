@@ -1,6 +1,6 @@
 #! /bin/sh
 
-NAME="mulle-thread"
+NAME="mulle-thread"  # not the ruby name
 HEADER="src/mulle_thread.h"
 VERSIONNAME="MULLE_THREAD_VERSION"
 ORIGIN=public
