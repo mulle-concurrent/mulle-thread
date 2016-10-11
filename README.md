@@ -34,7 +34,7 @@ brew install mulle-thread
 ```
 
 On other platforms you can use **mulle-install** from
-[mulle-build](//github.com/mulle-nat/mulle-bootstrap) to install
+[mulle-build](//github.com/mulle-nat/mulle-build) to install
 the library:
 
 ```
