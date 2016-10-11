@@ -89,7 +89,7 @@ static void   _wait_around( mulle_atomic_pointer_t *n_threads)
    // wait for all threads to materialize
    _mulle_atomic_pointer_decrement( n_threads);
    while( _mulle_atomic_pointer_read( n_threads) != 0)
-      sched_yield();
+      mulle_thread_yield();
 }
 
 
