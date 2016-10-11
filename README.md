@@ -44,14 +44,13 @@ mulle-install --prefix /usr/local --branch release https://www.mulle-kybernetik.
 > If you don't have **mulle-build**
 >
 > ```
-> git clone https://www.mulle-kybernetik.com/repositories/mulle-bootstrap
+> git clone --branch release https://www.mulle-kybernetik.com/repositories/mulle-bootstrap
 > ( cd mulle-bootstrap ; ./install.sh )
-> git clone https://www.mulle-kybernetik.com/repositories/mulle-build
+> git clone --branch release https://www.mulle-kybernetik.com/repositories/mulle-build
 > ( cd mulle-build ; ./install.sh )
 ```
 
-Othwise read this form some more details [How to Build](dox/BUILD.md).
-
+Otherwise read [How to Build](dox/BUILD.md) for some more details.
 
 
 ## API
