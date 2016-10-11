@@ -9,8 +9,10 @@ man pages for more extensive help.
 
 ## Types
 
-* `mulle_thread_t`  : thread type, with **pthreads** a typedef of pthread_t
-* `mulle_thread_rval_t` : the return value of a thread. Assume this being **void**!
+Type                  | Description
+----------------------|------------------------------------------------
+`mulle_thread_t`      | thread type, with **pthreads** a typedef of `pthread_t`
+`mulle_thread_rval_t` | the return value of a thread. Assume this being **void**!
 
 
 #### mulle_thread_self

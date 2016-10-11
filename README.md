@@ -5,9 +5,10 @@ Release on [github](//github.com/mulle-nat/mulle-thread): [![Build Status](https
 
 ## Intro
 
-**mulle-thread** is a set of wrapper headers for a simplified subset
-of thread functions and for a limited range of atomic operations that strongly
-mimics the C11 standard, even if C11 is not available.
+**mulle-thread** is at best a set of **C** wrapper headers for a simplified
+subset of thread functions and for a limited range of atomic operations that
+strongly mimics the C11 standard, even if C11 is not available. On Windows it
+has to do a bit more work.
 
 mulle-threads main advantages are **simplicity**, **portability**, **sanity**.
 

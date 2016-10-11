@@ -70,7 +70,7 @@ static inline mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
 {
    mulle_thread_rval_t   storage;
    int                   rval;
-   
+
    rval = thrd_join( thread, &storage);
    if( rval == thrd_success)
       return( storage);
@@ -99,7 +99,7 @@ static inline void   mulle_thread_yield( void)
 #pragma mark -
 #pragma mark Lock
 
-// moronic FreeBSD <threads.h> 
+// moronic FreeBSD <threads.h>
 // parameters different to mtx!
 static inline int  mulle_thread_mutex_init( mulle_thread_mutex_t *lock)
 {
@@ -163,9 +163,9 @@ static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 
 
 static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
-                                         void *userdata)
+                                         void *value)
 {
-   return( tss_set( key, userdata) == thrd_success ? 0 : -1);
+   return( tss_set( key, value) == thrd_success ? 0 : -1);
 }
 
 #endif

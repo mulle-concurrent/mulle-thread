@@ -36,7 +36,7 @@
 #define mulle_thread_h__
 
 
-#define MULLE_THREAD_VERSION  ((3 << 20) | (2 << 8) | 1)
+#define MULLE_THREAD_VERSION  ((3 << 20) | (2 << 8) | 3)
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -55,10 +55,7 @@
 # endif
 #endif
 
-
 typedef int   mulle_thread_rval_t;
-
-
 
 #if HAVE_C11_THREADS && ! defined( MULLE_THREAD_USE_PTHREADS)
 # include "mulle_thread_c11.h"

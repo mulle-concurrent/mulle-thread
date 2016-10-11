@@ -62,6 +62,7 @@ class ${PROJECT} < Formula
   end
 
   test do
+     system "mulle-test"
   end
 end
 # FORMULA ${TARGET}.rb

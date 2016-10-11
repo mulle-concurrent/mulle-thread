@@ -1,3 +1,14 @@
+3.2.3
+===
+
+* pretty up windows code
+
+
+3.2.2
+===
+
+* improve documentation
+
 3.2.1
 ===
 

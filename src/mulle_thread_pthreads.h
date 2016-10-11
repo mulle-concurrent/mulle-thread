@@ -161,9 +161,9 @@ static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 
 
 static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
-                                         void *userdata)
+                                         void *value)
 {
-   return( pthread_setspecific( key, userdata));
+   return( pthread_setspecific( key, value));
 }
 
 #endif
