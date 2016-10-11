@@ -21,3 +21,6 @@ tmp/
 xcuserdata/
 /mintomic/
 /mulle-configuration/
+/tests/include/
+/tests/lib/
+

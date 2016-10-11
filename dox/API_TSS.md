@@ -10,7 +10,9 @@ thread, where the keys are globally defined (with `mulle_thread_tss_create`).
 
 ## Types
 
-* `mulle_thread_tss_t` : thread local storage key type (when using **pthreads** a typedef of `pthread_key_t`)
+Type                 | Description
+---------------------|------------------------------------------------
+`mulle_thread_tss_t` | thread local storage key type (when using **pthreads** a typedef of `pthread_key_t`)
 
 
 ## Functions

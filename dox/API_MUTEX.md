@@ -1,11 +1,13 @@
 # Mutex API
 
-The mutex API is almost identical to the pthreads mutex API, but a bit simplified. A mutex is local to the process and it's threads. 
+The mutex API is almost identical to the pthreads mutex API, but a bit simplified. A mutex is local to the process and it's threads.
 
 
 ## Types
 
-* `mulle_thread_mutex_t` : mutex type (when using **pthreads** a typedef of `pthread_mutex_t`)
+Type                   | Description
+-----------------------|------------------------------------------------
+`mulle_thread_mutex_t` | mutex type (when using **pthreads** a typedef of `pthread_mutex_t`)
 
 
 ## Functions
@@ -51,7 +53,7 @@ See: [pthread_mutex_trylock](https://linux.die.net/man/3/pthread_mutex_trylock)
 ```
 int  mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock)
 ```
-Unlock the mutex. Unlocking a non-locked mutex is wrong. Unlocking a mutex, that was locked by a different thread, is wrong. 
+Unlock the mutex. Unlocking a non-locked mutex is wrong. Unlocking a mutex, that was locked by a different thread, is wrong.
 
 Returns 0 on success.
 
@@ -64,7 +66,7 @@ See: [pthread_mutex_unlock](https://linux.die.net/man/3/pthread_mutex_unlock)
 int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 ```
 
-Destroy the mutex. You should not destroy a locked mutex. 
+Destroy the mutex. You should not destroy a locked mutex.
 
 Returns 0 on success.
 

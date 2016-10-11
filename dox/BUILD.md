@@ -20,12 +20,15 @@ to assemble the dependencies together and build the library.
 [mulle-c11](//www.mulle-kybernetik.com/software/git/mulle-c11/) is a header
 that abstracts a small set of non-standardized compiler features.
 
-
 #### mulle-configuration
 
 [mulle-configuration](//www.mulle-kybernetik.com/software/git/mulle-c11/) are
 configuration files for building with Xcode or cmake.
 
+#### mulle-tests
+
+[mulle-tests](//www.mulle-kybernetik.com/software/git/mulle-c11/) are
+scripts to provide an environment for running the tests.
 
 #### mintomic
 
@@ -114,12 +117,4 @@ mulle-install --prefix /tmp
 
 ### Compile Flags
 
-For development use no flags.
-
 For production use NDEBUG
-
-* DEBUG : turns on some compile time facilities to aid debugging `mulle-thread` itself.
-* MULLE_ATOMIC_TRACE : turns on a very detailed amount of tracing for some atomic operations.
-
-
-

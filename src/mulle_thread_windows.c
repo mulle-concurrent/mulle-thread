@@ -41,7 +41,7 @@
 #include <stdio.h>
 
 
-# pragma mark tss destruktor
+#pragma mark tss destruktor
 
 struct destructor_table_entry
 {
@@ -59,14 +59,14 @@ struct destructor_table
 };
 
 
-struct destructor_table   *destructor_table_grow( struct destructor_table  *table)
+struct destructor_table   *destructor_table_grow( struct destructor_table *table)
 {
    size_t                    n;
    size_t                    size;
    size_t                    needed;
    struct destructor_table   *newtable;
 
-   if ( !table )
+   if( ! table)
    {
       n    = 0;
       size = 4;
@@ -116,8 +116,8 @@ static int   destructor_table_add_destructor_for_key( struct destructor_table **
 }
 
 
-static void   destructor_table_remove_destructor_for_key( struct destructor_table  *table,
-                                                           mulle_thread_tss_t  key)
+static void   destructor_table_remove_destructor_for_key( struct destructor_table *table,
+                                                          mulle_thread_tss_t key)
 {
    struct destructor_table_entry   *p;
    struct destructor_table_entry   *sentinel;
@@ -140,7 +140,7 @@ static void   destructor_table_remove_destructor_for_key( struct destructor_tabl
 }
 
 
-static void   destructor_table_execute_destructors( struct destructor_table  *table)
+static void   destructor_table_execute_destructors( struct destructor_table *table)
 {
    struct destructor_table_entry   *p;
    struct destructor_table_entry   *sentinel;
@@ -159,7 +159,6 @@ static void   destructor_table_execute_destructors( struct destructor_table  *ta
          if( value)
          {
             TlsSetValue( p->key, NULL);
-
             (*p->f)( value);
          }
       }
@@ -171,22 +170,25 @@ static void   destructor_table_execute_destructors( struct destructor_table  *ta
 #pragma mark -
 #pragma mark "API"
 
-static LONG                       inited;
-static CRITICAL_SECTION           lock;
-static struct destructor_table    *table;
+static struct
+{
+   CRITICAL_SECTION           lock;
+   struct destructor_table    *table;
+   LONG                       inited;
+} global;
 
 
 static void   mulle_thread_tss_init( void)
 {
    for(;;)
    {
-      switch( InterlockedIncrement( &inited))
+      switch( InterlockedIncrement( &global.inited))
       {
-      case 1 :  InitializeCriticalSection( &lock);
-                InterlockedIncrement( &inited);  // done
+      case 1  : InitializeCriticalSection( &global.lock);
+                InterlockedIncrement( &global.inited);  // done
       default : return;
 
-      case 2 :  InterlockedDecrement( &inited);  // competing initalizer, undo
+      case 2  : InterlockedDecrement( &global.inited);  // competing initalizer, undo
                 mulle_thread_yield();            // and wait
                 continue;
       }
@@ -198,15 +200,15 @@ static void   mulle_thread_tss_done( void)
 {
    for(;;)
    {
-      switch( InterlockedDecrement( &inited))
+      switch( InterlockedDecrement( &global.inited))
       {
-      case 0 :  assert( 0 && "mulle_thread_tss_done called too often");
+      case 0  : assert( 0 && "mulle_thread_tss_done called too often");
                 return;
-      case 1 :  mulle_thread_yield();
-                DeleteCriticalSection( &lock);
-                free( table);
+      case 1  : mulle_thread_yield();
+                DeleteCriticalSection( &global.lock);
+                free( global.table);
                 table = NULL;
-                InterlockedDecrement( &inited);
+                InterlockedDecrement( &global.inited);
       default : return;
       }
    }
@@ -219,11 +221,11 @@ int   mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *))
 
    mulle_thread_tss_init();
 
-   EnterCriticalSection( &lock);
+   EnterCriticalSection( &global.lock);
    {
-      rval = destructor_table_add_destructor_for_key( &table, f, key);
+      rval = destructor_table_add_destructor_for_key( &global.table, f, key);
    }
-   LeaveCriticalSection( &lock);
+   LeaveCriticalSection( &global.lock);
 
    // rval == -1 is actually catastrophic/leaky
    assert( ! rval);
@@ -233,11 +235,11 @@ int   mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *))
 
 void   mulle_thread_windows_remove_tss( mulle_thread_tss_t key)
 {
-   assert( inited);
+   assert( global.inited);
 
    EnterCriticalSection( &lock);
    {
-      destructor_table_remove_destructor_for_key( table, key);
+      destructor_table_remove_destructor_for_key( global.table, key);
    }
    LeaveCriticalSection( &lock);
 
@@ -247,17 +249,17 @@ void   mulle_thread_windows_remove_tss( mulle_thread_tss_t key)
 
 void   mulle_thread_windows_destroy_tss( void)
 {
-   assert( inited);
+   assert( global.inited);
 
-   EnterCriticalSection( &lock);
+   //
+   // is it a problem that we are doing this while being locked ?
+   // if yes, copy the table and run it outside of the lock
+   //
+   EnterCriticalSection( &global.lock);
    {
-      //
-      // is it a problem that we are doing this while being locked ?
-      // if yes, copy the table and run it outside of the lock
-      //
-      destructor_table_execute_destructors( table);
+      destructor_table_execute_destructors( global.table);
    }
-   LeaveCriticalSection( &lock);
+   LeaveCriticalSection( &global.lock);
 }
 
 #endif
