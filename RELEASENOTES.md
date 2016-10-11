@@ -1,8 +1,13 @@
+3.2.4
+===
+
+* fix prettied up windows code
+* fix test for windows
+
 3.2.3
 ===
 
 * pretty up windows code
-
 
 3.2.2
 ===
