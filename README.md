@@ -34,17 +34,24 @@ brew install mulle-thread
 ```
 
 On other platforms you can use **mulle-install** from
-[mulle-build](//www.mulle-kybernetik.com/software/git/mulle-build) to install
+[mulle-build](//github.com/mulle-nat/mulle-bootstrap) to install
 the library:
 
 ```
 mulle-install --prefix /usr/local --branch release https://www.mulle-kybernetik.com/repositories/mulle-thread
 ```
 
+> If you don't have **mulle-build**
+>
+> ```
+> git clone https://www.mulle-kybernetik.com/repositories/mulle-bootstrap
+> ( cd mulle-bootstrap ; ./install.sh )
+> git clone https://www.mulle-kybernetik.com/repositories/mulle-build
+> ( cd mulle-build ; ./install.sh )
+```
 
-Otherwise read:
+Othwise read this form some more details [How to Build](dox/BUILD.md).
 
-* [How to Build](dox/BUILD.md)
 
 
 ## API
