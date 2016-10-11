@@ -207,7 +207,7 @@ static void   mulle_thread_tss_done( void)
       case 1  : mulle_thread_yield();
                 DeleteCriticalSection( &global.lock);
                 free( global.table);
-                table = NULL;
+                global.table = NULL;
                 InterlockedDecrement( &global.inited);
       default : return;
       }
@@ -237,11 +237,11 @@ void   mulle_thread_windows_remove_tss( mulle_thread_tss_t key)
 {
    assert( global.inited);
 
-   EnterCriticalSection( &lock);
+   EnterCriticalSection( &global.lock);
    {
       destructor_table_remove_destructor_for_key( global.table, key);
    }
-   LeaveCriticalSection( &lock);
+   LeaveCriticalSection( &global.lock);
 
    mulle_thread_tss_done();
 }

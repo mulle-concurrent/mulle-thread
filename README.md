@@ -24,14 +24,18 @@ threads and atomic operations.
 
 ## Install
 
-On OS X and Linux you can use [homebrew](//brew.sh), respectively [linuxbrew](//linuxbrew.sh) to install the library:
+On OS X and Linux you can use
+[homebrew](//brew.sh), respectively
+[linuxbrew](//linuxbrew.sh) to install the library:
 
 ```
 brew tap mulle-kybernetik/software
 brew install mulle-thread
 ```
 
-On other platforms you can use **mulle-install** from [mulle-build](//www.mulle-kybernetik.com/software/git/mulle-build) to install the library:
+On other platforms you can use **mulle-install** from
+[mulle-build](//www.mulle-kybernetik.com/software/git/mulle-build) to install
+the library:
 
 ```
 mulle-install --prefix /usr/local --branch release https://www.mulle-kybernetik.com/repositories/mulle-thread
