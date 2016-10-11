@@ -1,3 +1,9 @@
+3.2.5
+===
+
+* improve documentation, don't duplicate mulle-build install documentation
+
+
 3.2.4
 ===
 

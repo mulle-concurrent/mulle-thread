@@ -10,10 +10,11 @@ windows, where you absolutely do need it.
 
 ## Prerequisites
 
-#### mulle-build
+#### mintomic
 
-[mulle-build](//www.mulle-kybernetik.com/software/git/mulle-build) is required
-to assemble the dependencies together and build the library.
+If your compiler does not support C11 atomics, then `mulle-thread` needs
+[mintomic](//mintomic.github.io/) as a prerequisite. This is expected to
+exist in the project directory root.
 
 #### mulle-c11
 
@@ -22,70 +23,29 @@ that abstracts a small set of non-standardized compiler features.
 
 #### mulle-configuration
 
-[mulle-configuration](//www.mulle-kybernetik.com/software/git/mulle-c11/) are
-configuration files for building with Xcode or cmake.
+[mulle-configuration](//www.mulle-kybernetik.com/software/git/mulle-configuration/) are
+configuration files for building with Xcode or cmake. This is expected to
+exist in the project directory root.
 
 #### mulle-tests
 
-[mulle-tests](//www.mulle-kybernetik.com/software/git/mulle-c11/) are
-scripts to provide an environment for running the tests.
+[mulle-tests](//www.mulle-kybernetik.com/software/git/mulle-tests/) are
+scripts to provide an environment for running the tests. This is expected to
+exist in the project directory root if you want to run tests.
 
-#### mintomic
+#### mulle-build
 
-If your compiler does not support C11 atomics, then `mulle-thread` needs
-[mintomic](//mintomic.github.io/) as a prerequisite.
+[mulle-build](//www.mulle-kybernetik.com/software/git/mulle-build) will
+painlessly assemble the dependencies and build the library.
 
 
 ### Windows: Installing further prerequisites
 
-You need to install some more prerequisites first.
-
-* Install [Visual Studio 2015 Community Edition](//beta.visualstudio.com/downloads/)
-or better (free). Make sure that you install Windows C++ support. Also add git support.
-* [Git for Windows](//git-scm.com/download/win) is included in VS 2015, make sure it's there
-* [Python 2 for Windows](//www.python.org/downloads/windows/). Make sure that python is installed in **PATH**, which is not the default.
-* [CMake for Windows](//cmake.org/download/). CMake should also add itself to **PATH**.
-
-Reboot, so that Windows picks up the **PATH** changes (Voodoo).
-
-Now the tricky part is to get the "Git bash" shell running with the proper VS
-environment.  Assuming you kept default settings the "Git bash" is
-`C:\Program Files\Git\git-bash.exe`. Open the "Developer Command Prompt for VS 2015"
-from the start menu and execute the git-bash from there. A second window with
-the bash should open.
-
-Check that you have the proper environment for VS compilation with `env`.
+Check the [mulle-build README.md](//www.mulle-kybernetik.com/software/git/mulle-build/README.md)
+for instrutions how to get the "Git for Windows" bash going.
 
 
-### OSX: Install mulle-build using homebrew
-
-Install the [homebrew](//brew.sh/) package manager, then
-
-```
-brew tap mulle-kybernetik/software
-brew install mulle-build
-```
-
-### Linux: Install mulle-build using linuxbrew
-
-Install the [linuxbrew](//linuxbrew.sh/) package manager, then
-
-```
-brew tap mulle-kybernetik/software
-brew install mulle-build
-```
-
-### All: Install mulle-build using git
-
-```
-git clone https://www.mulle-kybernetik.com/repositories/mulle-bootstrap
-( cd mulle-bootstrap ; ./install.sh )
-git clone https://www.mulle-kybernetik.com/repositories/mulle-build
-( cd mulle-build ; ./install.sh )
-```
-
-## All: Install mulle-thread using mulle-build
-
+## Install mulle-thread using mulle-build
 
 Grab the latest **mulle-thread** release and go into the project directory:
 
