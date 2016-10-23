@@ -92,3 +92,10 @@ That is because of [mintomic](//mintomic.github.io/) limitations. **mintomic**
 is the original source for the provided atomic operations. Unfortunately it's not
 really active anymore, so for example ARM64 doesn't work. **mulle-thread** will
 use mintomic only, if `<stdatomic.h>` is not available.
+
+
+## Author
+
+[Nat!](//www.mulle-kybernetik.com/weblog) for
+[Mulle kybernetiK](//www.mulle-kybernetik.com) and
+[Codeon GmbH](//www.codeon.de)

@@ -54,8 +54,6 @@ git_must_be_clean()
 
 [ ! -d "${HOMEBREWTAP}" ] && fail "failed to locate \"${HOMEBREWTAP}\""
 
-
-
 git_must_be_clean || exit 1
 
 branch="`git rev-parse --abbrev-ref HEAD`"
