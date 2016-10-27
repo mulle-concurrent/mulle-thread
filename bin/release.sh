@@ -1,82 +1,64 @@
 #! /bin/sh
 
-NAME="mulle-thread"  # not the ruby name
-HEADER="src/mulle_thread.h"
-VERSIONNAME="MULLE_THREAD_VERSION"
-ORIGIN=public
+PROJECT="MulleThread"    # requires camel-case
+DESC="Cross-platform threads and atomic operations"
+DEPENDENCIES="mulle-c11" # names not camel case
+ORIGIN=public            # git repo to push
+LANGUAGE=c               # c,cpp, objc
 
-RBFILE="${NAME}.rb"
-HOMEBREWTAP="../homebrew-software"
+# source mulle-homebrew.sh (clumsily)
 
+. ./bin/mulle-homebrew/mulle-homebrew.sh
 
-get_version()
-{
-   local filename
+# parse options
+homebrew_parse_options "$@"
 
-   filename="$1"
-   fgrep "${VERSIONNAME}" "${filename}" | \
-   sed 's|(\([0-9]*\) \<\< [0-9]*)|\1|g' | \
-   sed 's|^.*(\(.*\))|\1|' | \
-   sed 's/ | /./g'
-}
-
-VERSION="`get_version ${HEADER}`"
-TAG="${1:-${VERSION}}"
-
-
-directory="`mulle-bootstrap library-path 2> /dev/null`"
-[ ! -d "${directory}" ] && echo "failed to locate mulle-bootstrap library" >&2 && exit 1
-
-PATH="${directory}:$PATH"
-
-. "mulle-bootstrap-logging.sh"
-
-
-git_must_be_clean()
-{
-   local name
-   local clean
-
-   name="${1:-${PWD}}"
-
-   if [ ! -d .git ]
-   then
-      fail "\"${name}\" is not a git repository"
-   fi
-
-   clean=`git status -s --untracked-files=no`
-   if [ "${clean}" != "" ]
-   then
-      fail "repository \"${name}\" is tainted"
-   fi
-}
-
-
-[ ! -d "${HOMEBREWTAP}" ] && fail "failed to locate \"${HOMEBREWTAP}\""
-
-git_must_be_clean || exit 1
-
-branch="`git rev-parse --abbrev-ref HEAD`"
+# dial past options
+while [ $# -ne 0 ]
+do
+   case "$1" in
+      -*)
+         shift
+      ;;
+      *)
+         break;
+      ;;
+   esac
+done
 
 #
-# make it a release
+# these can usually be deduced, if you follow the conventions
 #
-git checkout release     || exit 1
-git rebase "${branch}"   || exit 1
+NAME="`get_name_from_project "${PROJECT}" "${LANGUAGE}"`"
+HEADER="`get_header_from_name "${NAME}"`"
+VERSIONNAME="`get_versionname_from_project "${PROJECT}"`"
+VERSION="`get_header_version "${HEADER}" "${VERSIONNAME}"`"
 
-# if rebase fails, we shouldn't be hitting tag now
-git tag "${TAG}"         || exit 1
 
-git push "${ORIGIN}" release --tags  || exit 1
-git push github release --tags       || exit 1
+# --- HOMEBREW FORMULA ---
+# Information needed to construct a proper brew formula
+#
+HOMEPAGE="https://www.mulle-kybernetik.com/software/git/${NAME}"
+ARCHIVEURL='https://www.mulle-kybernetik.com/software/git/${NAME}/tarball/${VERSION}'  # ARCHIVEURL will be evaled later! keep it in single quotes
 
-./bin/generate-brew-formula.sh "${VERSION}" > "${HOMEBREWTAP}/${RBFILE}"
-(
-   cd "${HOMEBREWTAP}" ;
-   git add "${RBFILE}" ;
-   git commit -m "${TAG} release of ${NAME}" "${RBFILE}" ;
-   git push origin master
-)  || exit 1
 
-git checkout "${branch}"          || exit 1
-git push "${ORIGIN}" "${branch}"  || exit 1
+# --- HOMEBREW TAP ---
+# Specify to where and under what bame to publish via your brew tap
+#
+RBFILE="${NAME}.rb"                    # ruby file for brew
+HOMEBREWTAP="../homebrew-software"     # your tap repository path
+
+
+# --- GIT ---
+# tag to tag your release
+# and the origin where
+TAG="${1:-${TAGPREFIX}${VERSION}}"
+
+
+main()
+{
+   git_main "${ORIGIN}" "${TAG}" || exit 1
+   homebrew_main
+}
+
+main "$@"

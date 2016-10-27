@@ -36,7 +36,7 @@
 #define mulle_thread_h__
 
 
-#define MULLE_THREAD_VERSION  ((3 << 20) | (2 << 8) | 8)
+#define MULLE_THREAD_VERSION  ((3 << 20) | (2 << 8) | 9)
 
 #include <stddef.h>
 #include <stdlib.h>
