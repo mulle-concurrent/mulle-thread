@@ -1,3 +1,10 @@
+3.2.9
+===
+
+* modernized tests dir structure
+* modernized release.sh
+
+
 3.2.8
 ===
 
