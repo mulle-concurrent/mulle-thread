@@ -1,12 +1,21 @@
 #! /bin/sh
+#
+# (c) 2016 Nat! for Mulle kybernetiK
+#
+# BSD3-License
+#
 
 PROJECT="MulleThread"    # requires camel-case
 DESC="Cross-platform threads and atomic operations"
 DEPENDENCIES="mulle-c11" # names not camel case
-ORIGIN=public            # git repo to push
 LANGUAGE=c               # c,cpp, objc
 
+#
+# Ideally you don't hafta change anything below this line
+#
 # source mulle-homebrew.sh (clumsily)
+
+. ./bin/repository-info.sh
 
 . ./bin/mulle-homebrew/mulle-homebrew.sh
 
@@ -38,8 +47,7 @@ VERSION="`get_header_version "${HEADER}" "${VERSIONNAME}"`"
 # --- HOMEBREW FORMULA ---
 # Information needed to construct a proper brew formula
 #
-HOMEPAGE="https://www.mulle-kybernetik.com/software/git/${NAME}"
-ARCHIVEURL='https://www.mulle-kybernetik.com/software/git/${NAME}/tarball/${VERSION}'  # ARCHIVEURL will be evaled later! keep it in single quotes
+HOMEPAGE="${REMOTEURL}/${NAME}"
 
 
 # --- HOMEBREW TAP ---
