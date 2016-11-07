@@ -1,3 +1,8 @@
+3.2.12
+===
+
+* fix homebrew package
+
 3.2.10
 ===
 
