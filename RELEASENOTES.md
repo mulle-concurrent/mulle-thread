@@ -1,3 +1,8 @@
+3.2.10
+===
+
+* first community release version, fix for community repositories
+
 3.2.9
 ===
 
