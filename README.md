@@ -1,6 +1,6 @@
 # mulle-thread
 
-[![Build Status](https://travis-ci.org/mulle-clang/mulle-thread.svg)](https://travis-ci.org/mulle-clang/mulle-thread)
+[![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg)](https://travis-ci.org/mulle-objc/mulle-thread)
 
 
 ## Intro
