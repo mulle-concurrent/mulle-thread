@@ -1,6 +1,6 @@
 # mulle-thread
 
-Release on [github](//github.com/mulle-nat/mulle-thread): [![Build Status](https://travis-ci.org/mulle-nat/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-nat/mulle-thread)
+[![Build Status](https://travis-ci.org/mulle-clang/mulle-thread.svg)](https://travis-ci.org/mulle-clang/mulle-thread)
 
 
 ## Intro
