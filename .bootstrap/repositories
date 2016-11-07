@@ -4,5 +4,12 @@
 #
 # override the branches like so:
 #    echo "master" > .bootstrap.local/MULLE_C11_BRANCH
-
+#
+# Q: Why is the branch default "release" ?
+# A: When people use mulle-objc, they will most likely not hack on it, but write
+# something with it. So they want to clone the stable release branch.
+# If you want to hack on it, its more convenient to checkout all repositories
+# and then use mulle-bootstrap -y to symlink them. That way the branch is
+# ignored anyway. So win-win.
+#
 ${MULLE_REPOSITORIES}/mulle-c11;;${MULLE_C11_BRANCH:-release}

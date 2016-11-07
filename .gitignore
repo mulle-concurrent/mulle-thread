@@ -7,9 +7,6 @@
 *.old
 *[Bb]uild/
 
-addictions/
-dependencies/
-
 /.bootstrap.auto/
 /.bootstrap.local/
 /.repos/
@@ -23,5 +20,5 @@ xcuserdata/
 /mulle-configuration/
 /tests/include/
 /tests/lib/
-
-/mulle-tests/
+/tests/mulle-tests/
+/bin/mulle-homebrew/
