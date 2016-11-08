@@ -34,4 +34,3 @@ POSSIBILITY OF SUCH DAMAGE.
 mulle-thread (Library) uses mintomic https://mintomic.github.io/
 which is governed by a modified BSD 3 License. See its LICENSE file
 http://directory.fsf.org/wiki/License:BSD_3Clause
-

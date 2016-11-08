@@ -1,9 +1,9 @@
 .DS_Store
 .idea/
-.repos/
 
 *.dSYM/
 *.exe
+*.exe.debug
 *.old
 *[Bb]uild/
 
@@ -22,3 +22,11 @@ xcuserdata/
 /tests/lib/
 /tests/mulle-tests/
 /bin/mulle-homebrew/
+
+# various cruft
+
+tests/atomic/add
+tests/mutex/pthreads.c
+tests/mutex/pthreads.stdout
+tests/threads/pthreads.c
+tests/threads/pthreads.stdout
