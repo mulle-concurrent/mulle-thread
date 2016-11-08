@@ -7,13 +7,14 @@
 
 PROJECT="MulleThread"    # requires camel-case
 DESC="Cross-platform threads and atomic operations"
-DEPENDENCIES='${REMOTEROOTDIR}/software/mulle-c11' # no camel case, will be evaled later!
+DEPENDENCIES='${DEPENDENCY_TAP}/mulle-c11' # no camel case, will be evaled later!
 LANGUAGE=c               # c,cpp, objc
 
 #
 # Ideally you don't hafta change anything below this line
 #
 # source mulle-homebrew.sh (clumsily)
+MULLE_BOOTSTRAP_FAIL_PREFIX="release.sh"
 
 . ./bin/repository-info.sh || exit 1
 . ./bin/mulle-homebrew/mulle-homebrew.sh || exit 1
