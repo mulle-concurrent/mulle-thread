@@ -50,7 +50,7 @@ for instrutions how to get the "Git for Windows" bash going.
 Grab the latest **mulle-thread** release and go into the project directory:
 
 ```
-git clone https://www.mulle-kybernetik.com/repositories/mulle-thread
+git clone https://github.com/mulle-objc/mulle-thread
 cd mulle-thread
 ```
 
