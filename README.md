@@ -16,12 +16,10 @@ Since thread has `<stdatomic.h>` and `<threads.h>`, eventually this project coul
 become superflous. In the meantime though it's a convenient abstraction on
 threads and atomic operations.
 
-Fork         | Branch  | Version | Build Status 
--------------|-------- |---------|----------------
-[Mulle kybernetiK](//github.com/mulle-nat/mulle-thread)  | release | ![GitHub version](https://badge.fury.io/gh/mulle-nat%2Fmulle-thread.svg) | [![Build Status](https://travis-ci.org/mulle-nat/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-nat/mulle-thread)
-[Community](https://github.com/mulle-objc/mulle-thread/tree/release)      | release | ![GitHub version](https://badge.fury.io/gh/mulle-objc%2Fmulle-thread.svg) |  [![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-objc/mulle-thread)
-[Community](//github.com/mulle-objc/mulle-thread)    | master | current |  [![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg?branch=master)](https://travis-ci.org/mulle-objc/mulle-thread)
-
+Fork      |  Build Status | Release Version
+----------|---------------|-----------------------------------
+[Mulle kybernetiK](//github.com/mulle-nat/mulle-thread) | [![Build Status](https://travis-ci.org/mulle-nat/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-nat/mulle-thread) | ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-nat/mulle-thread.svg) [![Build Status](https://travis-ci.org/mulle-nat/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-nat/mulle-thread)
+[Community](https://github.com/mulle-objc/mulle-thread/tree/release) | [![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg)](https://travis-ci.org/mulle-objc/mulle-thread) | ![Community tag](https://img.shields.io/github/tag/mulle-objc/mulle-thread.svg) [![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-objc/mulle-thread)
 
 
 ## Install
