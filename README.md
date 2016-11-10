@@ -18,8 +18,8 @@ threads and atomic operations.
 
 Fork         | Branch  | Version | Build Status 
 -------------|-------- |---------|----------------
-[Mulle kybernetiK](//github.com/mulle-nat/mulle-thread)  | release | [![GitHub version](https://badge.fury.io/gh/mulle-nat%2Fmulle-thread.svg)](https://badge.fury.io/gh/mulle-nat%2Fmulle-thread) | [![Build Status](https://travis-ci.org/mulle-nat/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-nat/mulle-thread)
-[Community](https://github.com/mulle-objc/mulle-thread/tree/release)      | release | [![GitHub version](https://badge.fury.io/gh/mulle-objc%2Fmulle-thread.svg)](https://badge.fury.io/gh/mulle-objc%2Fmulle-thread) |  [![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-objc/mulle-thread)
+[Mulle kybernetiK](//github.com/mulle-nat/mulle-thread)  | release | ![GitHub version](https://badge.fury.io/gh/mulle-nat%2Fmulle-thread.svg) | [![Build Status](https://travis-ci.org/mulle-nat/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-nat/mulle-thread)
+[Community](https://github.com/mulle-objc/mulle-thread/tree/release)      | release | ![GitHub version](https://badge.fury.io/gh/mulle-objc%2Fmulle-thread.svg) |  [![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-objc/mulle-thread)
 [Community](//github.com/mulle-objc/mulle-thread)    | master | current |  [![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg?branch=master)](https://travis-ci.org/mulle-objc/mulle-thread)
 
 
