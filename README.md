@@ -1,13 +1,8 @@
 # mulle-thread
 
-[![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg)](https://travis-ci.org/mulle-objc/mulle-thread)
-
-
-## Intro
-
-**mulle-thread** is at best a set of **C** wrapper headers for a simplified
+**mulle-thread** is a set of **C** wrapper headers for a simplified
 subset of thread functions and for a limited range of atomic operations that
-strongly mimics the C11 standard, even if C11 is not available. On Windows it
+strongly mimics the thread standard, even if thread is not available. On Windows it
 has to do a bit more work.
 
 mulle-threads main advantages are **simplicity**, **portability**, **sanity**.
@@ -17,9 +12,16 @@ mulle-threads main advantages are **simplicity**, **portability**, **sanity**.
 * mutex functionality
 * thread local storage, with proper destruction
 
-Since C11 has `<stdatomic.h>` and `<threads.h>`, eventually this project could
+Since thread has `<stdatomic.h>` and `<threads.h>`, eventually this project could
 become superflous. In the meantime though it's a convenient abstraction on
 threads and atomic operations.
+
+Fork         | Branch  | Version | Build Status 
+-------------|-------- |---------|----------------
+[Mulle kybernetiK](//github.com/mulle-nat/mulle-thread)  | release | [![GitHub version](https://badge.fury.io/gh/mulle-nat%2Fmulle-thread.svg)](https://badge.fury.io/gh/mulle-nat%2Fmulle-thread) | [![Build Status](https://travis-ci.org/mulle-nat/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-nat/mulle-thread)
+[Community](https://github.com/mulle-objc/mulle-thread/tree/release)      | release | [![GitHub version](https://badge.fury.io/gh/mulle-objc%2Fmulle-thread.svg)](https://badge.fury.io/gh/mulle-objc%2Fmulle-thread) |  [![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-objc/mulle-thread)
+[Community](//github.com/mulle-objc/mulle-thread)    | master | current |  [![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg?branch=master)](https://travis-ci.org/mulle-objc/mulle-thread)
+
 
 
 ## Install
@@ -75,7 +77,7 @@ Otherwise read [How to Build](dox/BUILD.md) for some more details.
 * gcc
 * MSVC
 
-> C11 support in clang as of v3.8 is lacking, as there is no `<threads.h>`.
+> thread support in clang as of v3.8 is lacking, as there is no `<threads.h>`.
 > The fallback is **pthreads**.
 
 
