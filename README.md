@@ -38,15 +38,15 @@ On other platforms you can use **mulle-install** from
 the library:
 
 ```
-mulle-install --prefix /usr/local --branch release https://www.mulle-kybernetik.com/repositories/mulle-thread
+mulle-install --prefix /usr/local --branch release https://github.com/mulle-objc/mulle-thread
 ```
 
 > If you don't have **mulle-build**
 >
 > ```
-> git clone --branch release https://www.mulle-kybernetik.com/repositories/mulle-bootstrap
+> git clone --branch release https://github.com/mulle-nat/mulle-bootstrap
 > ( cd mulle-bootstrap ; ./install.sh )
-> git clone --branch release https://www.mulle-kybernetik.com/repositories/mulle-build
+> git clone --branch release https://github.com/mulle-nat/mulle-build
 > ( cd mulle-build ; ./install.sh )
 ```
 
