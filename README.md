@@ -29,8 +29,7 @@ On OS X and Linux you can use
 [linuxbrew](//linuxbrew.sh) to install the library:
 
 ```
-brew tap mulle-kybernetik/software
-brew install mulle-thread
+brew install mulle-objc/softwaremulle-thread
 ```
 
 On other platforms you can use **mulle-install** from
