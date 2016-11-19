@@ -1,3 +1,8 @@
+3.2.15
+===
+
+* merge community release
+
 3.2.14
 ===
 
