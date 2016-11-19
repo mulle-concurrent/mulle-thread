@@ -1,13 +1,8 @@
 # mulle-thread
 
-[![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg)](https://travis-ci.org/mulle-objc/mulle-thread)
-
-
-## Intro
-
-**mulle-thread** is at best a set of **C** wrapper headers for a simplified
+**mulle-thread** is a set of **C** wrapper headers for a simplified
 subset of thread functions and for a limited range of atomic operations that
-strongly mimics the C11 standard, even if C11 is not available. On Windows it
+strongly mimics the thread standard, even if thread is not available. On Windows it
 has to do a bit more work.
 
 mulle-threads main advantages are **simplicity**, **portability**, **sanity**.
@@ -17,9 +12,14 @@ mulle-threads main advantages are **simplicity**, **portability**, **sanity**.
 * mutex functionality
 * thread local storage, with proper destruction
 
-Since C11 has `<stdatomic.h>` and `<threads.h>`, eventually this project could
+Since thread has `<stdatomic.h>` and `<threads.h>`, eventually this project could
 become superflous. In the meantime though it's a convenient abstraction on
 threads and atomic operations.
+
+Fork      |  Build Status | Release Version
+----------|---------------|-----------------------------------
+[Mulle kybernetiK](//github.com/mulle-nat/mulle-thread) | [![Build Status](https://travis-ci.org/mulle-nat/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-nat/mulle-thread) | ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-nat/mulle-thread.svg) [![Build Status](https://travis-ci.org/mulle-nat/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-nat/mulle-thread)
+[Community](https://github.com/mulle-objc/mulle-thread/tree/release) | [![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg)](https://travis-ci.org/mulle-objc/mulle-thread) | ![Community tag](https://img.shields.io/github/tag/mulle-objc/mulle-thread.svg) [![Build Status](https://travis-ci.org/mulle-objc/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-objc/mulle-thread)
 
 
 ## Install
@@ -29,8 +29,7 @@ On OS X and Linux you can use
 [linuxbrew](//linuxbrew.sh) to install the library:
 
 ```
-brew tap mulle-kybernetik/software
-brew install mulle-thread
+brew install mulle-objc/softwaremulle-thread
 ```
 
 On other platforms you can use **mulle-install** from
@@ -38,15 +37,15 @@ On other platforms you can use **mulle-install** from
 the library:
 
 ```
-mulle-install --prefix /usr/local --branch release https://www.mulle-kybernetik.com/repositories/mulle-thread
+mulle-install --prefix /usr/local --branch release https://github.com/mulle-objc/mulle-thread
 ```
 
 > If you don't have **mulle-build**
 >
 > ```
-> git clone --branch release https://www.mulle-kybernetik.com/repositories/mulle-bootstrap
+> git clone --branch release https://github.com/mulle-nat/mulle-bootstrap
 > ( cd mulle-bootstrap ; ./install.sh )
-> git clone --branch release https://www.mulle-kybernetik.com/repositories/mulle-build
+> git clone --branch release https://github.com/mulle-nat/mulle-build
 > ( cd mulle-build ; ./install.sh )
 ```
 
@@ -75,7 +74,7 @@ Otherwise read [How to Build](dox/BUILD.md) for some more details.
 * gcc
 * MSVC
 
-> C11 support in clang as of v3.8 is lacking, as there is no `<threads.h>`.
+> thread support in clang as of v3.8 is lacking, as there is no `<threads.h>`.
 > The fallback is **pthreads**.
 
 

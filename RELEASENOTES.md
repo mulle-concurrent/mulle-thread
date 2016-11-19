@@ -1,3 +1,8 @@
+3.2.14
+===
+
+* improved README, improved distribution
+
 3.2.13
 ===
 
