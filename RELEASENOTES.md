@@ -1,3 +1,8 @@
+3.3.1
+===
+
+* use mulle-bootstrap alpha, clean-up some garbage
+
 3.2.15
 ===
 
