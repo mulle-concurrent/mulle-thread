@@ -645,6 +645,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 417C025D1BD83A44005A3751 /* StaticLibrary.xcconfig */;
 			buildSettings = {
+				CURRENT_PROJECT_VERSION = 3.3.1;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -653,6 +654,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 417C025D1BD83A44005A3751 /* StaticLibrary.xcconfig */;
 			buildSettings = {
+				CURRENT_PROJECT_VERSION = 3.3.1;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -661,7 +663,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 417C025A1BD83972005A3751 /* Debug.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 3.0.0;
+				CURRENT_PROJECT_VERSION = 3.1.1;
 				HEADER_SEARCH_PATHS = (
 					./mintomic/include,
 					"$(inherited)",
@@ -673,7 +675,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 417C025B1BD83972005A3751 /* Release.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 3.0.0;
+				CURRENT_PROJECT_VERSION = 3.1.1;
 				HEADER_SEARCH_PATHS = (
 					./mintomic/include,
 					"$(inherited)",
