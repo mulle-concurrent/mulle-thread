@@ -52,6 +52,9 @@
 // http://en.cppreference.com/w/c/atomic
 //
 #if HAVE_C11_STDATOMIC && ! defined( MULLE_THREAD_USE_MINTOMIC)
+# if TRACE_INCLUDE
+#  pragma message( "Using C11 for atomics")
+# endif
 # include "mulle_atomic_c11.h"
 #else
 # if TRACE_INCLUDE

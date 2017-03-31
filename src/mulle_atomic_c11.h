@@ -71,12 +71,12 @@ MULLE_C_ALWAYS_INLINE
 static inline mulle_functionpointer_t  _mulle_atomic_functionpointer_read( mulle_atomic_functionpointer_t *address)
 {
    mulle_functionpointer_t   result;
-   
+
    result = atomic_load_explicit( address, memory_order_relaxed);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
-      
+
       fprintf( stderr, "%s: read %p -> %p\n", pthread_name(), address, result);
    }
 #endif
@@ -99,14 +99,14 @@ static inline mulle_functionpointer_t  __mulle_atomic_functionpointer_compare_an
                                                                mulle_functionpointer_t expect)
 {
    mulle_functionpointer_t   actual;
-   
+
    actual = expect;
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
       char          *decor;
      _Bool          result;   // that hated bool type
-      
+
       result = atomic_compare_exchange_weak_explicit( address,
                                                       &actual,
                                                       value,
@@ -137,14 +137,14 @@ static inline int   _mulle_atomic_functionpointer_compare_and_swap( mulle_atomic
    int                        result;
 
    assert( value != expect);
-   
+
    actual = expect;
 
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
       char          *decor;
-      
+
       result = (int) atomic_compare_exchange_weak_explicit( address,
                                                             &actual,
                                                             value,
@@ -188,12 +188,12 @@ MULLE_C_ALWAYS_INLINE
 static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address)
 {
    void   *result;
-   
+
    result = atomic_load_explicit( address, memory_order_relaxed);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
-      
+
       fprintf( stderr, "%s: read %p -> %p\n", pthread_name(), address, result);
    }
 #endif
@@ -217,14 +217,14 @@ static inline void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_poin
                                                                void *expect)
 {
    void    *actual;
-   
+
    actual = expect;
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
       char          *decor;
       int           result;
-      
+
       result = (int) atomic_compare_exchange_weak_explicit( address,
                                                             &actual,
                                                             value,
@@ -256,14 +256,14 @@ static inline int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer
    int     result;
 
    assert( value != expect);
-   
+
    actual = expect;
 
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
       char          *decor;
-      
+
       result = (int) atomic_compare_exchange_weak_explicit( address,
                                                             &actual,
                                                             value,
