@@ -60,6 +60,9 @@
 typedef int   mulle_thread_rval_t;
 
 #if HAVE_C11_THREADS && ! defined( MULLE_THREAD_USE_PTHREADS)
+# if TRACE_INCLUDE
+#  pragma message( "Using C11 for threads")
+# endif
 # include "mulle_thread_c11.h"
 #else
 # ifdef _WIN32

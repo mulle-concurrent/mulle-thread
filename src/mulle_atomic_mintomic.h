@@ -77,12 +77,12 @@ MULLE_C_ALWAYS_INLINE
 static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address)
 {
    void   *result;
-   
+
    result = mint_load_ptr_relaxed( address);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
-      
+
       fprintf( stderr, "%s: read %p -> %p\n", pthread_name(), address, result);
    }
 #endif
@@ -104,13 +104,13 @@ static inline void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_poin
                                                               void *expect)
 {
    void    *result;
-   
+
    result = mint_compare_exchange_strong_ptr_relaxed( address, expect, value);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
       char          *decor;
-      
+
       decor = "";
       if( result != expect )
          decor = "FAILED to";
@@ -127,7 +127,7 @@ static inline int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer
                                                            void *expect)
 {
    void  *result;
-   
+
    result = __mulle_atomic_pointer_compare_and_swap( address, value, expect);
    return( result == expect);
 }
@@ -179,7 +179,7 @@ static inline mulle_functionpointer_t   __mulle_atomic_functionpointer_compare_a
                                                                       mulle_functionpointer_t expect)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
-   
+
    return( (mulle_functionpointer_t) __mulle_atomic_pointer_compare_and_swap( (mulle_atomic_pointer_t *) address,
                                                                                     (void *) value,
                                                                                     (void *) expect));
@@ -191,7 +191,7 @@ static inline int   _mulle_atomic_functionpointer_compare_and_swap( mulle_atomic
                                                            mulle_functionpointer_t expect)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
-   
+
    return( _mulle_atomic_pointer_compare_and_swap( (mulle_atomic_pointer_t *) address,
                                                    (void *) value,
                                                    (void *) expect));

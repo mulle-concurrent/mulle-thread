@@ -37,7 +37,7 @@
 
 // provide linkage to glom thread lib unto (if dylib)
 // but you can live without it in .a
-MULLE_C_GLOBAL 
+MULLE_C_GLOBAL
 unsigned long   __mulle_thread_version__ = 0x0000;
 
 // we include this, if we need it

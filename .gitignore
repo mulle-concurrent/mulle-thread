@@ -30,3 +30,8 @@ tests/mutex/pthreads.c
 tests/mutex/pthreads.stdout
 tests/threads/pthreads.c
 tests/threads/pthreads.stdout
+
+tests/threads/threads
+tests/mutex/mutex
+tests/mutex/pthreads
+tests/threads/pthreads

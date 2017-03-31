@@ -27,7 +27,9 @@ int   mulle_thread_tss_create( void (*f)( void *),
 
 Create a thread local storage key, with a destructor function. This key is
 common to all threads. TSS storage keys are very limited. Do not create too
-many for your application. Less than 100 I would expect to work evertime. The destructor function will be called, whenever a thread terminates properly with `mulle_thread_exit`.
+many for your application. Less than 100 I would expect to work evertime. 
+The destructor function will be called, whenever a thread terminates properly 
+with `mulle_thread_exit`. The key can be zero value!
 
 Returns 0 on success.
 
