@@ -6,6 +6,7 @@
 *.exe.debug
 *.old
 *[Bb]uild/
+*.bak
 
 /.bootstrap.auto/
 /.bootstrap.local/
