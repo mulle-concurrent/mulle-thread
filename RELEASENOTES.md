@@ -1,3 +1,7 @@
+### 3.3.7
+
+* make it a cmake "C" projezt
+
 ### 3.3.5
 
 * modernized project
