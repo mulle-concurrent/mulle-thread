@@ -1,3 +1,7 @@
+### 3.3.9
+
+* Various small improvements
+
 ### 3.3.7
 
 * make it a cmake "C" projezt
