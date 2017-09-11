@@ -1,0 +1,38 @@
+set( HEADERS
+src/mulle_atomic.h
+src/mulle_atomic_mintomic.h
+src/mulle_atomic_c11.h
+src/mulle_thread.h
+src/mulle_thread_c11.h
+src/mulle_thread_pthreads.h
+src/mulle_thread_windows.h
+)
+
+
+set( SOURCES
+src/linkage.c
+)
+
+
+if( MSVC)
+   set( SOURCES
+${SOURCES}
+src/mulle_thread_windows.c
+)
+endif()
+
+
+set( MINTOMIC_HEADERS
+mintomic/include/mintomic/core.h
+mintomic/include/mintomic/mintomic.h
+mintomic/include/mintomic/platform_detect.h)
+
+
+set( MINTOMIC_PRIVATE_HEADERS
+mintomic/include/mintomic/private/core_gcc.h
+mintomic/include/mintomic/private/core_msvc.h
+mintomic/include/mintomic/private/mintomic_gcc_arm.h
+mintomic/include/mintomic/private/mintomic_gcc_x86-64.h
+mintomic/include/mintomic/private/mintomic_msvc.h
+mintomic/include/mintomic/private/mintomic_stdint.h
+)
