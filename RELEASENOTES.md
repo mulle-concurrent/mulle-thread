@@ -1,3 +1,8 @@
+### 3.3.11
+
+* Modernize CMakeLists.txt
+
+
 ### 3.3.9
 
 * Various small improvements
@@ -175,5 +180,3 @@ MULLE_THREAD_USE_PTHREADS
 
 * Adorned mulle_thread_self() with __attribute__((const, returns_nonnull)) so that
 the caller can cache it.
-
-
