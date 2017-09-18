@@ -1,3 +1,7 @@
+### 3.3.13
+
+* refinements for mulle-configuration 3.1
+
 ### 3.3.11
 
 * Modernize CMakeLists.txt
