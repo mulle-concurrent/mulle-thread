@@ -1,3 +1,7 @@
+### 3.3.15
+
+* fixed scion wrapper command
+
 ### 3.3.13
 
 * refinements for mulle-configuration 3.1
