@@ -315,7 +315,7 @@
 				417C025F1BD83ABD005A3751 /* IOS.xcconfig */,
 				417C02601BD83AC5005A3751 /* OSX.xcconfig */,
 			);
-			path = "mulle-configuration";
+			path = "mulle-configuration/xcode";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
