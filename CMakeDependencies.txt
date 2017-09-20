@@ -13,7 +13,7 @@ if( NOT __MULLE_THREAD_CMAKE_DEPENDENCIES_TXT__)
       )
    endif()
 
-   if( UNIX)
+   if( UNIX AND NOT APPLE)
       #
       # Pthread is OS specific and not a C dependency,
       # because it's not bootstrapped

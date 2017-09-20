@@ -1,3 +1,7 @@
+### 3.3.17
+
+* support new mulle-tests
+
 ### 3.3.15
 
 * fixed scion wrapper command
