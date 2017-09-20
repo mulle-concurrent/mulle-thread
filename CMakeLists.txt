@@ -50,3 +50,6 @@ INSTALL( FILES ${PUBLIC_HEADERS} DESTINATION "include/mulle_thread")
 
 INSTALL( FILES ${MINTOMIC_HEADERS} DESTINATION "include/mintomic")
 INSTALL( FILES ${MINTOMIC_PRIVATE_HEADERS} DESTINATION "include/mintomic/private")
+
+include( MulleTest)
+
