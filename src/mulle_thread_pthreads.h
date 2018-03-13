@@ -35,7 +35,7 @@
 #ifndef mulle_thread_pthreads_h__
 #define mulle_thread_pthreads_h__
 
-#include <mulle_c11/mulle_c11.h>
+#include "dependencies.h"
 #include <pthread.h>
 #include <errno.h>
 #include <stdint.h>

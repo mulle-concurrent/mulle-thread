@@ -1,0 +1,6 @@
+#
+#
+#
+export MULLE_SDE_CMAKE_SOURCES_FILE="NONE"
+
+

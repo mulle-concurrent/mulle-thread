@@ -33,7 +33,7 @@
 //
 // don't need it but finds compiler C11 problems early
 #include "mulle_thread.h"
-#include <mulle_c11/mulle_c11.h>
+#include "dependencies.h"
 
 // provide linkage to glom thread lib unto (if dylib)
 // but you can live without it in .a
