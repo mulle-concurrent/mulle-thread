@@ -35,9 +35,9 @@
 #ifndef mulle_thread_c11_h__
 #define mulle_thread_c11_h__
 
+#include "dependencies.h"
 #include <assert.h>
 #include <threads.h>
-#include <mulle_c11/mulle_c11.h>
 
 
 typedef mtx_t    mulle_thread_mutex_t;

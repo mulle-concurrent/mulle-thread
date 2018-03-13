@@ -40,7 +40,7 @@
 #include <process.h>
 #include <errno.h>
 #include <assert.h>
-#include <mulle_c11/mulle_c11.h>
+#include "dependencies.h"
 
 
 typedef DWORD    mulle_thread_tss_t;

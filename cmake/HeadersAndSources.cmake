@@ -1,12 +1,15 @@
-set( HEADERS
-src/mulle_atomic.h
-src/mulle_atomic_mintomic.h
-src/mulle_atomic_c11.h
-src/mulle_thread.h
-src/mulle_thread_c11.h
-src/mulle_thread_pthreads.h
-src/mulle_thread_windows.h
-)
+#
+# The following includes include definitions generated
+# during `mulle-sde update`. Don't edit those files. They are
+# overwritten frequently.
+#
+# === MULLE-SDE START ===
+
+include( _Headers)
+include( _Sources)
+
+# === MULLE-SDE END ===
+#
 
 
 set( SOURCES
