@@ -2,7 +2,7 @@ if( MULLE_TRACE_INCLUDE)
    message( STATUS "# Include \"${CMAKE_CURRENT_LIST_FILE}\"" )
 endif()
 
-include( FinalOutput)
+include( CompilerDetection)
+include( UnwantedWarnings)
 
-include( PostLibraryCAux OPTIONAL)
-
+include( PreLibraryCAux OPTIONAL)

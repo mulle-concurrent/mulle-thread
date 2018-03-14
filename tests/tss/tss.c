@@ -1,4 +1,4 @@
-#include <mulle_thread/mulle_thread.h>
+#include <mulle-thread/mulle-thread.h>
 #include <stdio.h>
 
 static char                 *shared_value  = "VfL Bochum 1848";

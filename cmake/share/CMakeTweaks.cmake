@@ -44,4 +44,3 @@ else()
       set( CMAKE_POSITION_INDEPENDENT_CODE TRUE)
    endif()
 endif()
-
