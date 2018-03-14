@@ -20,7 +20,7 @@ src/linkage.c
 if( MSVC)
    set( SOURCES
 ${SOURCES}
-src/mulle_thread_windows.c
+src/mulle-thread-windows.c
 )
 endif()
 
@@ -38,4 +38,9 @@ mintomic/include/mintomic/private/mintomic_gcc_arm.h
 mintomic/include/mintomic/private/mintomic_gcc_x86-64.h
 mintomic/include/mintomic/private/mintomic_msvc.h
 mintomic/include/mintomic/private/mintomic_stdint.h
+)
+
+set( PUBLIC_HEADERS
+"src/_dependencies.h"
+${PUBLIC_HEADERS}
 )

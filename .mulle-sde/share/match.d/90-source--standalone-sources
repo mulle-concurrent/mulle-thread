@@ -1,1 +1,1 @@
-*_standalone.c
+src/**/*[-_]standalone.c

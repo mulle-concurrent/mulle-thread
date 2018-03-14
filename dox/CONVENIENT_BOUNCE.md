@@ -9,7 +9,7 @@ thread. I've got some code for you:
 `thread_bounceinfo.h`:
 
 ```
-#include <mulle_thread/mulle_thread.h>
+#include <mulle-thread/mulle-thread.h>
 #include <stdlib.h>
 
 struct thread_bounceinfo

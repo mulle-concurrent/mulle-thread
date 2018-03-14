@@ -1,31 +1,16 @@
-# build directories are always boring
-build/
-build.d/
+# Everything is boring
+*/
 
-# output directories are also always boring
-
-dependencies/
-addictions/
-
-# stashes are too interesting :)
-stashes/
-
-# maintainance directories like .git or .mulle-sde are very boring
-.*/
-
-
-# anything with tmp is boring
-*.tmp/
-tmp.*/
-tmp/
+# Except for src and tests
+!src/
+!tests/
 
 # Except for mulle-sourcetree where we like the etc directory...
 #
 # If we specifically exclude !.mulle-sourcetree/etc only, that's no good for
-# mulle-find, which collects top-level directories only. So we specifcally
+# mulle-find, which collects top-level directories only. So we specifically
 # ignore some known boring subfolders only
 #
-!.mulle-sourcetree
-.mulle-sourcetree/var
-.mulle-sourcetree/share
-
+!.mulle-sourcetree/
+.mulle-sourcetree/var/
+.mulle-sourcetree/share/

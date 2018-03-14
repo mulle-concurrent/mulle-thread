@@ -1,8 +1,8 @@
 //
-//  mulle_thread_atomic.h
+//  mulle_thread.h
 //  mulle-thread
 //
-//  Created by Nat! on 16.03.15.
+//  Created by Nat! on 16/09/15.
 //  Copyright (c) 2015 Mulle kybernetiK. All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without
@@ -32,35 +32,53 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef mulle_atomic_h__
-#define mulle_atomic_h__
+#ifndef mulle_thread_h__
+#define mulle_thread_h__
 
-#ifndef HAVE_C11_STDATOMIC
+//
+// community version is always even
+//
+#define MULLE_THREAD_VERSION  ((3 << 20) | (3 << 8) | 17)
+
+#include "dependencies.h"
+#include <stddef.h>
+#include <stdlib.h>
+
+// clang lies about __STDC_NO_THREADS__
+
+#ifndef HAVE_C11_THREADS
 # ifdef __clang__
-#  if __has_include(<stdatomic.h>)
-#    define HAVE_C11_STDATOMIC 1
+#  if __has_include(<threads.h>)
+#    define HAVE_C11_THREADS 1
 #  endif
 # else
-#  if __STDC_VERSION__ >= 201112L && ! defined( __STDC_NO_ATOMICS__)
-#   define HAVE_C11_STDATOMIC  1
+#  if __STDC_VERSION__ >= 201112L && ! defined( __STDC_NO_THREADS__)
+#   define HAVE_C11_THREADS  1
 #  endif
 # endif
 #endif
 
-//
-// http://stackoverflow.com/questions/11805636/how-do-i-check-by-using-stdc-version-if-is-std-c1x-in-use
-// http://en.cppreference.com/w/c/atomic
-//
-#if HAVE_C11_STDATOMIC && ! defined( MULLE_THREAD_USE_MINTOMIC)
+typedef int   mulle_thread_rval_t;
+
+#if HAVE_C11_THREADS && ! defined( MULLE_THREAD_USE_PTHREADS)
 # if TRACE_INCLUDE
-#  pragma message( "Using C11 for atomics")
+#  pragma message( "Using C11 for threads")
 # endif
-# include "mulle_atomic_c11.h"
+# include "mulle-thread-c11.h"
 #else
-# if TRACE_INCLUDE
-#  pragma message( "Using mintomic for atomics")
+# ifdef _WIN32
+#  if TRACE_INCLUDE
+#   pragma message( "Using windows threads for threads")
+#  endif
+#  include "mulle-thread-windows.h"
+# else
+#  if TRACE_INCLUDE
+#   pragma message( "Using pthreads for threads")
+#  endif
+#  include "mulle-thread-pthreads.h"
 # endif
-# include "mulle_atomic_mintomic.h"
 #endif
+
+#include "mulle-atomic.h"
 
 #endif

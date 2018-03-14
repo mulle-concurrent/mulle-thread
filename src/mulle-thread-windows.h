@@ -35,12 +35,12 @@
 #ifndef mulle_thread_windows_h__
 #define mulle_thread_windows_h__
 
+#include "dependencies.h"
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <process.h>
 #include <errno.h>
 #include <assert.h>
-#include "dependencies.h"
 
 
 typedef DWORD    mulle_thread_tss_t;
