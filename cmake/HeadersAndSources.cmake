@@ -16,6 +16,9 @@ set( SOURCES
 src/linkage.c
 )
 
+set( STANDALONE_SOURCES
+src/mulle-thread-standalone.c
+)
 
 if( MSVC)
    set( SOURCES
