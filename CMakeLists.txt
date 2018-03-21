@@ -52,21 +52,32 @@ ${OS_SPECIFIC_LIBRARIES}
 )
 endif()
 
-include_directories( AFTER SYSTEM mintomic/include)
-target_include_directories( mulle-thread PUBLIC mintomic/include)
-
 include( PostLibrary OPTIONAL)
+
+
+set( STANDALONE_BASE_NAME "mulle-thread")
+set( STANDALONE_NAME "mulle-thread-standalone")
+set( STANDALONE_DEFINITIONS ${MULLE_THREAD_DEFINITIONS})
+set( STANDALONE_DEPENDENCIES
+mulle-thread
+)
+
+set( STANDALONE_ALL_LOAD_LIBRARIES
+$<TARGET_FILE:mulle-thread>
+${C_DEPENDENCY_LIBRARIES}
+${OS_SPECIFIC_LIBRARIES}
+)
+
+include( Standalone)
 
 ### Install
 
 include( PreInstall OPTIONAL)
 
-install( TARGETS "mulle-thread" DESTINATION "lib")
+install( TARGETS "mulle-thread" "mulle-thread-standalone" DESTINATION "lib")
 install( FILES ${PUBLIC_HEADERS}  DESTINATION "include/mulle-thread")
 install( FILES ${PRIVATE_HEADERS} DESTINATION "include/mulle-thread/private")
-install( FILES ${CMAKE_INCLUDES}  DESTINATION "include/mulle-thread/cmake")
 
-install( FILES ${MINTOMIC_HEADERS} DESTINATION "include/mintomic")
-install( FILES ${MINTOMIC_PRIVATE_HEADERS} DESTINATION "include/mintomic/private")
+install( FILES ${CMAKE_INCLUDES}  DESTINATION "include/mulle-thread/cmake")
 
 include( PostInstall OPTIONAL)
