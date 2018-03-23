@@ -40,7 +40,7 @@ mkdir build 2> /dev/null
 )
 ```
 
-Or let [mulle-sde](//github.com/mulle-sde)  do it all for you.
+Or let [mulle-sde](//github.com/mulle-sde) build it for you with `mulle-sde craft`.
 
 
 ## API

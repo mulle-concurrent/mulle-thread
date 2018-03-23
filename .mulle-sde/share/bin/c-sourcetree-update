@@ -37,10 +37,9 @@ usage()
 {
    cat <<EOF >&2
 Usage:
-   mulle-c-sourcetree-update <action> <filename> <category>
+   c-sourcetree-update <action> <filename> <category>
 
-   Let mulle-monitor run this for you. None of the arguments are actually
-   used.
+   This produces the _dependencies.h or some similiarly named file.
 
 EOF
    exit 1
@@ -116,13 +115,14 @@ osexclude_to_cpp_if()
 }
 
 
-emit_c_include_dependency()
+_emit_c_include()
 {
-   log_entry "emit_c_include_dependency" "$@"
+   log_entry "_emit_c_include" "$@"
 
-   local name="$1"
-   local marks="$2"
-   local header="$3"
+   local address="$1"
+   local header="$2"
+   local marks="$3"
+   local aliases="$4"
 
    local indent
    local ifstatement
@@ -161,12 +161,7 @@ emit_c_include_dependency()
       indent=" "
    fi
 
-   if [ -z "${header}" ]
-   then
-      header="${name}/${name}.h"
-   fi
-
-   echo "# ${indent}include <${header}>"
+   echo "# ${indent}include <${header}>   // ${address}"
    if [ ! -z "${ifstatement}" ]
    then
       echo "# endif"
@@ -176,30 +171,69 @@ emit_c_include_dependency()
 }
 
 
-get_header_include_list()
+emit_c_include_library()
 {
-   log_entry "get_header_dependency_list" "$@"
+   log_entry "emit_c_include_library" "$@"
 
-   exekutor mulle-sde library list \
-                                   --marks header \
-                                   --\
-                                   --output-raw \
-                                   --no-output-header
+   local address="$1"
+   local marks="$2"
+   local aliases="$3"
+   local header="$4"
 
-   exekutor mulle-sde dependency list \
-                                   --marks header \
-                                   --\
-                                   --output-raw \
-                                   --no-output-header
+   #
+   # the default for libraries is old style <name.h> not <name/name.h>
+   #
+   if [ -z "${header}" ]
+   then
+      local name
+
+      name="`fast_basename "${address}"`"
+      header="${name}.h"
+   fi
+
+   _emit_c_include "${address}" "${header}" "${marks}" "${aliases}"
+
 }
 
 
-_emit_headers()
+emit_c_include_dependency()
 {
-   log_entry "_emit_headers" "$@"
+   log_entry "emit_c_include_dependency" "$@"
 
-   local headers="$1"; shift
-   local emitter="$1"; shift
+   local address="$1"
+   local marks="$2"
+   local aliases="$3"
+   local header="$4"
+
+   #
+   # the default for dependencies is <name/name.h>
+   #
+   if [ -z "${header}" ]
+   then
+      local name
+
+      name="`fast_basename "${address}"`"
+      header="${name}/${name}.h"
+   fi
+
+   _emit_c_include "${address}" "${header}" "${marks}" "${aliases}"
+}
+
+
+emit_c_header()
+{
+   log_entry "emit_c_header" "$@"
+
+   # since the order of the headers is important and needs to be in treeorder
+   # we use mulle-sourcetree directly
+   local headers
+
+   headers="`exekutor mulle-sourcetree list \
+                                       --format "%a;%m;%i={aliases,,-------};\
+%i={include,,-------}\\n" \
+                                       --marks header \
+                                       --output-raw \
+                                       --no-output-header`" || return 1
 
    local dependency
 
@@ -213,27 +247,35 @@ _emit_headers()
       local marks
       local include
 
-      IFS=";" read address marks include <<< "${header}"
+      IFS=";" read address marks aliases include <<< "${header}"
 
-      if [ ! -z "${address}" ]
+      if [ -z "${address}" ]
       then
-         log_verbose "Emit statements for ${C_MAGENTA}${C_BOLD}${address}"
-         ${emitter} "${address}" "${marks}" "${include}" "$@"
+         continue
       fi
+
+      log_verbose "Emit statements for ${C_MAGENTA}${C_BOLD}${address}"
+
+      case ",${marks}," in
+         *,no-dependency,*)
+            emit_c_include_library "${address}" \
+                                   "${marks}" \
+                                   "${aliases}" \
+                                   "${include}" \
+                                   "$@"
+         ;;
+
+         *)
+            emit_c_include_dependency "${address}" \
+                                      "${marks}" \
+                                      "${aliases}" \
+                                      "${include}" \
+                                      "$@"
+         ;;
+      esac
    done
+
    IFS="${DEFAULT_IFS}"; set +o noglob
-}
-
-
-emit_c_header()
-{
-   log_entry "emit_c_header" "$@"
-
-   local headers
-
-   # OBJC is in this
-   headers="`get_header_include_list`" || return 1
-   _emit_headers "${headers}" emit_c_include_dependency
 }
 
 
@@ -242,6 +284,7 @@ main()
    log_entry "main" "$@"
 
    # technical flags
+   local MULLE_TRACE
    local MULLE_FLAG_DONT_DEFER="NO"
    local MULLE_FLAG_EXEKUTOR_DRY_RUN="NO"
    local MULLE_FLAG_FOLLOW_SYMLINKS="YES"
@@ -292,6 +335,25 @@ main()
 
    options_setup_trace "${MULLE_TRACE}"
 
+
+   local projectname
+
+   projectname="${PROJECT_NAME}"
+   if [ -z "${projectname}" ]
+   then
+      projectname="`fast_basename "${PWD}"`" # could be nicer
+   fi
+
+   if [ "${MULLE_SDE_DEPENDENCIES_HEADER_FILE}" = "NONE" ]
+   then
+      return
+   fi
+
+   if [ -z "${MULLE_SDE_DEPENDENCIES_HEADER_FILE}" ]
+   then
+      MULLE_SDE_DEPENDENCIES_HEADER_FILE="${PROJECT_SOURCE_DIR:-src}/_${projectname}-dependencies.h"
+   fi
+
    local text_h
    local text_dep
 
@@ -302,32 +364,23 @@ main()
       text_h="/* no headers */"
    fi
 
-   local projectname
+   local projectidentifier
 
-   projectname="${MULLE_SDE_PROJECT_NAME}"
-   projectname="${projectname:-${PROJECT_NAME}}"
-   if [ -z "${projectname}" ]
-   then
-      projectname="`fast_basename "${PWD}"`" # could be nicer
-   fi
-
-   projectname="`tr 'A-Z-' 'a-z_' <<< "${projectname}" `"
+   projectidentifier="`tr 'A-Z-' 'a-z_' <<< "${projectname}" `"
 
    text_h="/*
    This file will be regenerated by \`mulle-sde update|monitor\`.
    Edits will be lost.
 */
 
-#ifndef _${projectname}__dependencies_h__
-#define _${projectname}__dependencies_h__
+#ifndef _${projectidentifier}__dependencies_h__
+#define _${projectidentifier}__dependencies_h__
 
 ${text_h}
 
 #endif"
 
    log_fluff "Create header file (${PWD})"
-
-   MULLE_SDE_DEPENDENCIES_HEADER_FILE="${MULLE_SDE_DEPENDENCIES_HEADER_FILE:-src/_dependencies.h}"
 
    log_verbose "Writing ${C_RESET_BOLD}${MULLE_SDE_DEPENDENCIES_HEADER_FILE}"
    redirect_exekutor "${MULLE_SDE_DEPENDENCIES_HEADER_FILE}" echo "${text_h}"

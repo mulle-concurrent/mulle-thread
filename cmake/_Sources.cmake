@@ -4,4 +4,12 @@ if( MULLE_TRACE_INCLUDE)
    MESSAGE( STATUS "# Include \"${CMAKE_CURRENT_LIST_FILE}\"" )
 endif()
 
-# source generation turned off by MULLE_SDE_CMAKE_SOURCES_FILE
+set( SOURCES
+src/linkage.c
+src/mintomic-empty.c
+src/mulle-thread-windows.c
+)
+
+set( STANDALONE_SOURCES
+src/mulle-thread-standalone.c
+)
