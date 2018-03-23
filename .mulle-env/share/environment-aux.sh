@@ -11,12 +11,6 @@ export MULLE_SDE_INSTALLED_VERSION="0.14.2"
 #
 #
 #
-export MULLE_SDE_INSTALLED_EXTENSIONS="--meta 'mulle-c/c-cmake'"
-
-
-#
-#
-#
 export PROJECT_NAME="mulle-thread"
 
 
