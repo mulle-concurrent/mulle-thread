@@ -1,3 +1,9 @@
+# 4.0.0
+
+* use uniform - instead of `_` in header files
+* migrated to mulle-sde
+* no longer available through homebrew
+
 ### 3.3.17
 
 * support new mulle-tests

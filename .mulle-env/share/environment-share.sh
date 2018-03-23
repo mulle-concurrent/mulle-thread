@@ -25,11 +25,6 @@ export MULLE_SYMLINK="YES"
 export MULLE_SOURCETREE_SHARE_DIR="${MULLE_VIRTUAL_ROOT}/stash"
 
 #
-# Use common build directory
-#
-export BUILD_DIR="${MULLE_VIRTUAL_ROOT}/build"
-
-#
 # Share dependency directory (absolute for ease of use)
 #
 export DEPENDENCY_DIR="${MULLE_VIRTUAL_ROOT}/dependency"
@@ -38,3 +33,27 @@ export DEPENDENCY_DIR="${MULLE_VIRTUAL_ROOT}/dependency"
 # Share addiction directory (absolute for ease of use)
 #
 export ADDICTION_DIR="${MULLE_VIRTUAL_ROOT}/addiction"
+
+#
+# Use common build directory
+#
+export BUILD_DIR="${MULLE_VIRTUAL_ROOT}/build"
+# Used by `mulle-match find` to speed up the search.
+export MULLE_MATCH_FIND_NAMES="config:CMakeLists.txt:*.cmake:*.h:*.inc:*.c"
+
+
+# Used by `mulle-match find` to locate files
+export MULLE_MATCH_FIND_LOCATIONS="${PROJECT_SOURCE_DIR}"
+
+
+# By default assume a project has source and a sourcetree
+# The order should be sourcetree then source
+export MULLE_SDE_UPDATE_CALLBACKS="sourcetree:source"
+
+
+#
+#
+#
+export MULLE_SDE_INSTALLED_VERSION="0.16.2"
+
+

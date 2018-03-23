@@ -36,6 +36,7 @@
 #define mulle_atomic_c11_h__
 
 #include "dependencies.h"
+
 #include <assert.h>
 #include <stdatomic.h>
 #include <stdint.h>

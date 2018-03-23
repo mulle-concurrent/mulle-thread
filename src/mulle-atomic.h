@@ -37,6 +37,7 @@
 
 #include "dependencies.h"
 
+
 #ifndef HAVE_C11_STDATOMIC
 # ifdef __clang__
 #  if __has_include(<stdatomic.h>)

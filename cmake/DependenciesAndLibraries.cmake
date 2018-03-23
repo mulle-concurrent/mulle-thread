@@ -1,36 +1,20 @@
-if( NOT __MULLE_THREAD_DEPENDENCIES_AND_LIBRARIES_CMAKE__)
-   set( __MULLE_THREAD_DEPENDENCIES_AND_LIBRARIES_CMAKE__ ON)
+#
+# The following includes include definitions generated
+# during `mulle-sde update`. Don't edit those files. They are
+# overwritten frequently.
+#
+# === MULLE-SDE START ===
 
-   if( MULLE_TRACE_INCLUDE)
-      MESSAGE( STATUS "# Include \"${CMAKE_CURRENT_LIST_FILE}\"" )
-   endif()
+include( _Dependencies)
+include( _Libraries)
 
-   #
-   # Put your find_library() statements here to import other libraries
-   #
-   # Add OS specific dependencies to OS_SPECIFIC_LIBRARIES
-   # Add all other dependencies (rest) to DEPENDENCIES_LIBRARIES
+# === MULLE-SDE END ===
+#
 
-
-   #
-   # The following includes include definitions generated
-   # during `mulle-sde update`. Don't edit those files. They are
-   # overwritten frequently.
-   #
-   # === MULLE-SDE START ===
-
-   # `mulle-sde update` will generate these files
-
-   include( _Dependencies)
-   include( _Libraries)
-
-   # === MULLE-SDE END ===
-   #
-
-   #
-   # For benefit of Windows
-   #
-   #if( MSVC)
-   #   set( MULLE_THREAD_DEFINITIONS $<|PARENT_IDENTIFIER|>_DEFINITIONS})
-   #endif()
-endif()
+#
+# If you need more find_library() statements, that you dont want to manage
+# with the sourcetree, add them here.
+#
+# Add OS specific dependencies to OS_SPECIFIC_LIBRARIES
+# Add all other dependencies (rest) to DEPENDENCY_LIBRARIES
+#

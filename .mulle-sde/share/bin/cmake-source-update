@@ -182,6 +182,7 @@ create_sources_file()
    log_entry "create_sources_file" "$@"
 
    local categorized_files="$1"
+
    local text_src
 
    if [ "${MULLE_SDE_CMAKE_SOURCES_FILE}" = "NONE" ]
@@ -229,6 +230,7 @@ main()
    log_entry "main" "$@"
 
    # technical flags
+   local MULLE_TRACE
    local MULLE_FLAG_DONT_DEFER="NO"
    local MULLE_FLAG_EXEKUTOR_DRY_RUN="NO"
    local MULLE_FLAG_FOLLOW_SYMLINKS="YES"
