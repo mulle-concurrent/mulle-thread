@@ -1,3 +1,7 @@
+### 4.0.1
+
+* fix travis
+
 # 4.0.0
 
 * use uniform - instead of `_` in header files
