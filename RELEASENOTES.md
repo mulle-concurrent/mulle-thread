@@ -1,3 +1,7 @@
+### 4.0.4
+
+* fix yaml
+
 ### 4.0.3
 
 * fix travis

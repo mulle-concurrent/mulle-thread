@@ -17,4 +17,4 @@ before_install:
 
 script:
    - mulle-sde -vvv craft 
-   - [ -d test ] && mulle-test -vvv
+   - [ -d test ] '&&' mulle-test -vvv
