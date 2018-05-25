@@ -1,3 +1,7 @@
+### 4.0.2
+
+* upgraded mulle-sde extensions
+
 ### 4.0.1
 
 * fix travis
