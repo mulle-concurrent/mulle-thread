@@ -1,1 +1,1 @@
--isystem '${MULLE_MAKE_PROJECT_DIR}'
+-isystem '${MULLE_MAKE_PROJECT_DIR}/mintomic/include'
