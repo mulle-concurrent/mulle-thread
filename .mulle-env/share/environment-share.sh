@@ -54,6 +54,6 @@ export MULLE_SDE_UPDATE_CALLBACKS="sourcetree:source"
 #
 #
 #
-export MULLE_SDE_INSTALLED_VERSION="0.16.3"
+export MULLE_SDE_INSTALLED_VERSION="0.17.6"
 
 

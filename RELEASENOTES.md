@@ -1,3 +1,7 @@
+### 4.0.9
+
+* fix build problems on old linux with .mulle-make
+
 ### 4.0.8
 
 * fix ppa sourceline
