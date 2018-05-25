@@ -1,3 +1,7 @@
+### 4.0.5
+
+* try different YAML style for && escapement
+
 ### 4.0.4
 
 * fix yaml
