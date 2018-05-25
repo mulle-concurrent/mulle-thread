@@ -1,3 +1,7 @@
+### 4.0.6
+
+* fix key for debian
+
 ### 4.0.5
 
 * try different YAML style for && escapement
