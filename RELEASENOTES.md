@@ -1,3 +1,7 @@
+### 4.0.7
+
+* try to add ppa to travis for cmake 3
+
 ### 4.0.6
 
 * fix key for debian
