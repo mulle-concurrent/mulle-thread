@@ -38,7 +38,7 @@
 //
 // community version is always even
 //
-#define MULLE_THREAD_VERSION  ((4 << 20) | (0 << 8) | 10)
+#define MULLE_THREAD_VERSION  ((4 << 20) | (0 << 8) | 11)
 
 #include "dependencies.h"
 #include <stddef.h>

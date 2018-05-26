@@ -1,3 +1,7 @@
+### 4.0.11
+
+* local buildinfos are a bad idea IMO, do it in cmake
+
 ### 4.0.10
 
 * proper isystem directory now...
