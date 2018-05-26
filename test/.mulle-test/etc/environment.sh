@@ -1,1 +1,1 @@
-CFLAGS="-isystem mintomic/include"
+CFLAGS="-isystem `mulle-sde project-dir`/mintomic/include"

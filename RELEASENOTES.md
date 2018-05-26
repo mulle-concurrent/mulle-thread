@@ -1,3 +1,7 @@
+### 4.0.12
+
+* make -isystem absolute
+
 ### 4.0.11
 
 * local buildinfos are a bad idea IMO, do it in cmake
