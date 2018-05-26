@@ -17,6 +17,10 @@ set( PUBLIC_HEADERS
 ${PUBLIC_HEADERS}
 )
 
+include_directories( 
+SYSTEM mintomic/include
+)
+
 #
 # You can put more source and resource file definitions here.
 #
