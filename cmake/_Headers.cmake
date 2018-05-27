@@ -8,7 +8,7 @@ set( INCLUDE_DIRS
 src
 ) 
 
-set( PUBLIC_HEADERS
+      set( PUBLIC_HEADERS
 src/dependencies.h
 src/mulle-atomic-c11.h
 src/mulle-atomic.h

@@ -102,4 +102,8 @@ install( FILES ${CMAKE_INCLUDES}  DESTINATION "include/mulle-thread/cmake")
 # definitions from cmake/share/LinkManifest.cmake
 install( FILES ${LINK_MANIFEST_FILES}  DESTINATION "include/mulle-thread/link")
 
+# needed for linux and older GCC
+install( FILES ${MINTOMIC_HEADERS} DESTINATION "include/mintomic")
+install( FILES ${MINTOMIC_PRIVATE_HEADERS} DESTINATION "include/mintomic/private")
+
 include( PostInstall OPTIONAL)
