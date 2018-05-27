@@ -1,3 +1,7 @@
+### 4.0.14
+
+* handle sources manually again, publish mintomic headers again
+
 ### 4.0.13
 
 * fix travis.yml
