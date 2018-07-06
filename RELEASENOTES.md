@@ -1,3 +1,7 @@
+### 4.0.16
+
+* add mintomic headers back in for trusty and related
+
 ### 4.0.15
 
 * modernized mulle-sde

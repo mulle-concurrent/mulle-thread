@@ -124,4 +124,7 @@ install( FILES ${PRIVATE_HEADERS} DESTINATION "include/mulle-thread/private")
 
 install( FILES ${CMAKE_INCLUDES}  DESTINATION "include/mulle-thread/cmake")
 
+INSTALL( FILES ${MINTOMIC_HEADERS} DESTINATION "include/mintomic")
+INSTALL( FILES ${MINTOMIC_PRIVATE_HEADERS} DESTINATION "include/mintomic/private")
+
 include( PostInstall OPTIONAL)
