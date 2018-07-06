@@ -3,8 +3,8 @@
    Edits will be lost.
 */
 
-#ifndef _mulle_thread__dependencies_h__
-#define _mulle_thread__dependencies_h__
+#ifndef _mulle_thread_include_h__
+#define _mulle_thread_include_h__
 
 # include <mulle-c11/mulle-c11.h>   // mulle-c11
 

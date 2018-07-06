@@ -35,7 +35,7 @@
 #ifndef mulle_thread_windows_h__
 #define mulle_thread_windows_h__
 
-#include "dependencies.h"
+#include "include.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

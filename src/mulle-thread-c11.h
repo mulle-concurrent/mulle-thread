@@ -35,7 +35,7 @@
 #ifndef mulle_thread_c11_h__
 #define mulle_thread_c11_h__
 
-#include "dependencies.h"
+#include "include.h"
 
 #include <assert.h>
 #include <threads.h>

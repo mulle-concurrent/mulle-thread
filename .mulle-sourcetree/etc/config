@@ -1,3 +1,3 @@
-mulle-c11;tar;no-link,no-recurse;342e9885-b3d3-4de9-82aa-10600b2e340d;${MULLE_C11_URL:-https://github.com/mulle-c/mulle-c11/archive/${MULLE_C11_BRANCH:-latest}.tar.gz};;;;
-mintomic;tar;no-build,no-header,no-link,no-recurse,no-share;74cd2077-3124-4083-be6a-c643393aee69;${MINTOMIC_URL:-https://github.com/mulle-nat/mintomic/archive/${MINTOMIC_BRANCH:-mulle-objc}.tar.gz};;;;
+mulle-c11;tar;no-all-load,no-link,no-recurse;342e9885-b3d3-4de9-82aa-10600b2e340d;${MULLE_C11_URL:-https://github.com/mulle-c/mulle-c11/archive/${MULLE_C11_BRANCH:-latest}.tar.gz};;;;
+mintomic;tar;no-all-load,no-build,no-header,no-link,no-recurse,no-share;74cd2077-3124-4083-be6a-c643393aee69;${MINTOMIC_URL:-https://github.com/mulle-nat/mintomic/archive/${MINTOMIC_BRANCH:-mulle-objc}.tar.gz};;;;
 pthread;none;no-all-load,no-build,no-delete,no-dependency,no-fs,no-update;8fd8130b-1d75-4633-89b4-57e61467847e;;;;;aliases=pthread,pthreads

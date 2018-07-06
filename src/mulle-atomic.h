@@ -35,7 +35,7 @@
 #ifndef mulle_atomic_h__
 #define mulle_atomic_h__
 
-#include "dependencies.h"
+#include "include.h"
 
 
 #ifndef HAVE_C11_STDATOMIC
