@@ -8,14 +8,19 @@ set( INCLUDE_DIRS
 src
 ) 
 
-      set( PUBLIC_HEADERS
-src/dependencies.h
+set( PRIVATE_HEADERS
+src/include-private.h
+src/_mulle-thread-include-private.h
+)
+
+set( PUBLIC_HEADERS
+src/include.h
 src/mulle-atomic-c11.h
 src/mulle-atomic.h
 src/mulle-atomic-mintomic.h
 src/mulle-thread-c11.h
-src/_mulle-thread-dependencies.h
 src/mulle-thread.h
+src/_mulle-thread-include.h
 src/mulle-thread-pthreads.h
 src/mulle-thread-windows.h
 ) 

@@ -12,9 +12,15 @@ include( _Sources)
 #
 
 # add ignored header back in
+# add ignored headers back in
 set( PUBLIC_HEADERS
-"src/_mulle-thread-dependencies.h"
+"src/_mulle-thread-include.h"
 ${PUBLIC_HEADERS}
+)
+
+set( PRIVATE_HEADERS
+"src/_mulle-thread-include-private.h"
+${PRIVATE_HEADERS}
 )
 
 set( SOURCES

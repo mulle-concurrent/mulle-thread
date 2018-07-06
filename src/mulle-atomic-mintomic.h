@@ -35,7 +35,7 @@
 #ifndef mulle_atomic_mintomic_h__
 #define mulle_atomic_mintomic_h__
 
-#include "dependencies.h"
+#include "include.h"
 
 #include <assert.h>
 #include <stdint.h>

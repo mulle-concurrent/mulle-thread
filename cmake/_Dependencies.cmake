@@ -7,9 +7,9 @@ endif()
 if( NOT MULLE_C11_HEADER)
    find_file( MULLE_C11_HEADER NAMES mulle-c11.h mulle-c11/mulle-c11.h)
    message( STATUS "MULLE_C11_HEADER is ${MULLE_C11_HEADER}")
-   set( ALL_LOAD_HEADER_ONLY_LIBRARIES
+   set( HEADER_ONLY_LIBRARIES
       ${MULLE_C11_HEADER}
-      ${ALL_LOAD_HEADER_ONLY_LIBRARIES}
+      ${HEADER_ONLY_LIBRARIES}
       CACHE INTERNAL "need to cache this"
    )
    if( MULLE_C11_HEADER)

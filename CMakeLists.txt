@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.0)
+cmake_minimum_required( VERSION 3.1)
 
 project( mulle-thread C)
 
@@ -34,59 +34,85 @@ include_directories( ${INCLUDE_DIRS})
 
 include( PostFiles OPTIONAL)
 
+set( PROJECT_FILES
+   ${PROJECT_FILES}
+   ${SOURCES}
+   ${PUBLIC_HEADERS}
+   ${PRIVATE_HEADERS}
+   ${CMAKE_EDITABLE_FILES}
+)
+
 ### Library
 
 include( PreLibrary OPTIONAL)
 
-add_library( "mulle-thread"
-# definitions from cmake/HeadersAndSources.cmake
-${SOURCES}
-${PUBLIC_HEADERS}
-${PRIVATE_HEADERS}
-# definitions from cmake/share/Environment.cmake
-${CMAKE_EDITABLE_FILES}
+# ##################################
+# Mainly of interest for Objective-C
+# ##################################
+# Libraries are built in two stages:
+#
+# In the first step the PROJECT_FILES are compiled.
+# In the second step STAGE2_SOURCES are added.
+# This allows PostLibrary to run an analysis step over PROJECT_FILES and
+# generate files to be included by STAGE2_SOURCES. If there are no
+# STAGE2_SOURCES then this is just a more verbose way of doing it.
+# OBJC_LOADER_INC is the generated analysis step.
+#
+#
+add_library( "_1_mulle-thread" OBJECT
+   ${PROJECT_FILES}
 )
 
-
-
-if( BUILD_SHARED_LIBS)
-   target_link_libraries( mulle-thread
-# definitions from cmake/share/DependenciesAndLibraries.cmake
-${DEPENDENCY_LIBRARIES}
-${OS_SPECIFIC_LIBRARIES}
+set( ALL_OBJECT_FILES
+   $<TARGET_OBJECTS:_1_mulle-thread>
 )
+
+set_property( TARGET "_1_mulle-thread" PROPERTY CXX_STANDARD 11)
+
+if( STAGE2_SOURCES)
+   add_library( "_2_mulle-thread" OBJECT
+      ${STAGE2_SOURCES}
+      ${STAGE2_HEADERS}
+   )
+   set( ALL_OBJECT_FILES
+      ${ALL_OBJECT_FILES}
+      $<TARGET_OBJECTS:_2_mulle-thread>
+   )
+   set_property( TARGET "_2_mulle-thread" PROPERTY CXX_STANDARD 11)
+else()
+   if( STAGE2_HEADERS)
+      message( FATAL_ERROR "No STAGE2_SOURCES found but STAGE2_HEADERS exist")
+   endif()
 endif()
+
+
+add_library( "mulle-thread"
+   ${ALL_OBJECT_FILES}
+)
+
+
+set( INSTALL_LIBRARY_TARGETS "mulle-thread")
 
 include( PostLibrary OPTIONAL)
 
-option( STANDALONE "Create standalone library for debugging" OFF)
 
-set( INSTALL_LIBRARY_TARGETS
-"mulle-thread"
-)
-
-if( STANDALONE)
-   set( STANDALONE_BASE_NAME "mulle-thread")
-   set( STANDALONE_NAME "mulle-thread-standalone")
-   set( STANDALONE_DEFINITIONS ${MULLE_THREAD_DEFINITIONS})
-   set( STANDALONE_DEPENDENCIES
-   mulle-thread
+#
+# defined by cmake -DBUILD_SHARED_LIBS=ON
+#
+if( BUILD_SHARED_LIBS)
+   set( SHARED_LIBRARY_LIST
+      ${DEPENDENCY_LIBRARIES}
+      ${OPTIONAL_DEPENDENCY_LIBRARIES}
+      ${OS_SPECIFIC_LIBRARIES}
    )
 
-   set( STANDALONE_ALL_LOAD_LIBRARIES
-   $<TARGET_FILE:mulle-thread>
-   ${DEPENDENCY_LIBRARIES}
-   ${OPTIONAL_DEPENDENCY_LIBRARIES}
-   ${OS_SPECIFIC_LIBRARIES}
-   )
+   include( PostSharedLibrary OPTIONAL) # additional hook
 
-   include( Standalone)
-
-   set( INSTALL_LIBRARY_TARGETS
-   ${INSTALL_LIBRARY_TARGETS}
-   "mulle-thread-standalone"
+   target_link_libraries( mulle-thread
+      ${SHARED_LIBRARY_LIST}
    )
 endif()
+
 
 ### Install
 
@@ -96,14 +122,6 @@ install( TARGETS ${INSTALL_LIBRARY_TARGETS} DESTINATION "lib")
 install( FILES ${PUBLIC_HEADERS}  DESTINATION "include/mulle-thread")
 install( FILES ${PRIVATE_HEADERS} DESTINATION "include/mulle-thread/private")
 
-# definitions from cmake/share/Environment.cmake
 install( FILES ${CMAKE_INCLUDES}  DESTINATION "include/mulle-thread/cmake")
-
-# definitions from cmake/share/LinkManifest.cmake
-install( FILES ${LINK_MANIFEST_FILES}  DESTINATION "include/mulle-thread/link")
-
-# needed for linux and older GCC
-install( FILES ${MINTOMIC_HEADERS} DESTINATION "include/mintomic")
-install( FILES ${MINTOMIC_PRIVATE_HEADERS} DESTINATION "include/mintomic/private")
 
 include( PostInstall OPTIONAL)
