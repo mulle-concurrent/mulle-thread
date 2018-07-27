@@ -1,7 +1,5 @@
 
-inotifywait
 ssh
-cc
-gcc
-ld
+curl
+uuidgen
 ninja
