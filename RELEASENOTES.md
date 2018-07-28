@@ -1,3 +1,7 @@
+### 4.0.17
+
+* modernize mulle-sde and fix for mingw
+
 ### 4.0.16
 
 * add mintomic headers back in for trusty and related
