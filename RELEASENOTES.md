@@ -1,3 +1,7 @@
+### 4.0.18
+
+* fix misspelling
+
 ### 4.0.17
 
 * modernize mulle-sde and fix for mingw
