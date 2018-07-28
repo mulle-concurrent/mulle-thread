@@ -90,8 +90,13 @@ add_library( "mulle-thread"
    ${ALL_OBJECT_FILES}
 )
 
+include( Library OPTIONAL)
 
-set( INSTALL_LIBRARY_TARGETS "mulle-thread")
+
+set( INSTALL_LIBRARY_TARGETS
+   "mulle-thread"
+   "${INSTALL_LIBRARY_TARGETS}"
+)
 
 include( PostLibrary OPTIONAL)
 

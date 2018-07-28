@@ -8,6 +8,8 @@
 
 # include <mulle-c11/mulle-c11.h>   // mulle-c11
 
-# include <pthread.h>   // pthread
+# if ! defined( _WIN32)
+#  include <pthread.h>   // pthread
+# endif
 
 #endif

@@ -4,40 +4,42 @@ if( MULLE_TRACE_INCLUDE)
    message( STATUS "# Include \"${CMAKE_CURRENT_LIST_FILE}\"" )
 endif()
 
-if( NOT PTHREAD_LIBRARY)
-   find_library( PTHREAD_LIBRARY NAMES pthread pthreads)
-   message( STATUS "PTHREAD_LIBRARY is ${PTHREAD_LIBRARY}")
-
-   # the order looks ascending, but due to the way this file is read
-   # it ends up being descending, which is what we need
-   if( PTHREAD_LIBRARY)
-      set( OS_SPECIFIC_LIBRARIES
-         ${OS_SPECIFIC_LIBRARIES}
-         ${PTHREAD_LIBRARY}
-         CACHE INTERNAL "need to cache this"
-      )
-      # temporarily expand CMAKE_MODULE_PATH
-      get_filename_component( _TMP_PTHREAD_ROOT "${PTHREAD_LIBRARY}" DIRECTORY)
-      get_filename_component( _TMP_PTHREAD_ROOT "${_TMP_PTHREAD_ROOT}" DIRECTORY)
-
-      # search for DependenciesAndLibraries.cmake to include
-      foreach( _TMP_PTHREAD_NAME in pthread,pthreads)
-         set( _TMP_PTHREAD_DIR "${_TMP_PTHREAD_ROOT}/include/${_TMP_PTHREAD_NAME}/cmake")
-         # use explicit path to avoid "surprises"
-         if( EXISTS "${_TMP_PTHREAD_DIR}/DependenciesAndLibraries.cmake")
-            unset( PTHREAD_DEFINITIONS)
-            list( INSERT CMAKE_MODULE_PATH 0 "${_TMP_PTHREAD_DIR}")
-            include( "${_TMP_PTHREAD_DIR}/DependenciesAndLibraries.cmake")
-            list( REMOVE_ITEM CMAKE_MODULE_PATH "${_TMP_PTHREAD_DIR}")
-            set( INHERITED_DEFINITIONS
-               ${INHERITED_DEFINITIONS}
-               ${PTHREAD_DEFINITIONS}
-               CACHE INTERNAL "need to cache this"
-            )
-            break()
-         endif()
-      endforeach()
-   else()
-      message( FATAL_ERROR "PTHREAD_LIBRARY was not found")
+if( NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+   if( NOT PTHREADS_LIBRARY)
+      find_library( PTHREADS_LIBRARY NAMES pthreads pthread)
+      message( STATUS "PTHREADS_LIBRARY is ${PTHREADS_LIBRARY}")
+   
+      # the order looks ascending, but due to the way this file is read
+      # it ends up being descending, which is what we need
+      if( PTHREADS_LIBRARY)
+         set( OS_SPECIFIC_LIBRARIES
+            ${OS_SPECIFIC_LIBRARIES}
+            ${PTHREADS_LIBRARY}
+            CACHE INTERNAL "need to cache this"
+         )
+         # temporarily expand CMAKE_MODULE_PATH
+         get_filename_component( _TMP_PTHREADS_ROOT "${PTHREADS_LIBRARY}" DIRECTORY)
+         get_filename_component( _TMP_PTHREADS_ROOT "${_TMP_PTHREADS_ROOT}" DIRECTORY)
+   
+         # search for DependenciesAndLibraries.cmake to include
+         foreach( _TMP_PTHREADS_NAME in pthreads,pthread)
+            set( _TMP_PTHREADS_DIR "${_TMP_PTHREADS_ROOT}/include/${_TMP_PTHREADS_NAME}/cmake")
+            # use explicit path to avoid "surprises"
+            if( EXISTS "${_TMP_PTHREADS_DIR}/DependenciesAndLibraries.cmake")
+               unset( PTHREADS_DEFINITIONS)
+               list( INSERT CMAKE_MODULE_PATH 0 "${_TMP_PTHREADS_DIR}")
+               include( "${_TMP_PTHREADS_DIR}/DependenciesAndLibraries.cmake")
+               list( REMOVE_ITEM CMAKE_MODULE_PATH "${_TMP_PTHREADS_DIR}")
+               set( INHERITED_DEFINITIONS
+                  ${INHERITED_DEFINITIONS}
+                  ${PTHREADS_DEFINITIONS}
+                  CACHE INTERNAL "need to cache this"
+               )
+               break()
+            endif()
+         endforeach()
+      else()
+         message( FATAL_ERROR "PTHREADS_LIBRARY was not found")
+      endif()
    endif()
 endif()
