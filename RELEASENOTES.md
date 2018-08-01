@@ -1,3 +1,7 @@
+### 4.0.20
+
+* remove obsolete file
+
 ### 4.0.19
 
 * adapt to mulle-c11 3.0.0
