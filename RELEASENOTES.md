@@ -1,3 +1,7 @@
+### 4.1.2
+
+* fix misspelled variables in mintomic code
+
 ### 4.1.1
 
 * add missing cmake files

@@ -127,7 +127,7 @@ MULLE_C_ALWAYS_INLINE static inline void   *
                                    void *value,
                                    void *expect)
 {
-   return( __mulle_atomic_pointer_cas( addres, value, expect));
+   return( __mulle_atomic_pointer_cas( address, value, expect));
 }
 
 
@@ -148,7 +148,7 @@ MULLE_C_ALWAYS_INLINE static inline int
                                   void *value,
                                   void *expect)
 {
-   return( __mulle_atomic_pointer_cas( addres, value, expect));
+   return( __mulle_atomic_pointer_cas( address, value, expect));
 }
 
 
