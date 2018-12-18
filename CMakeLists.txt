@@ -20,7 +20,8 @@ if( HEADERS_PHASE)
    install( FILES ${INSTALL_PRIVATE_HEADERS} DESTINATION "include/mulle-thread/private")
    install( FILES ${CMAKE_INCLUDES}          DESTINATION "include/mulle-thread/cmake")
    # manually maintained!
-   install( FILES ${MINTOMIC_HEADERS}        DESTINATION "include/mintomic")
+   install( FILES ${MINTOMIC_PUBLIC_HEADERS}  DESTINATION "include/mintomic")
+   install( FILES ${MINTOMIC_PRIVATE_HEADERS} DESTINATION "include/mintomic/private")
 
    # short cut out
    if( NOT COMPILE_PHASE AND NOT LINK_PHASE)

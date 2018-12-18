@@ -1,3 +1,7 @@
+### 4.1.4
+
+* fix missing mintomic private headers...
+
 ### 4.1.3
 
 * fix missing mintomic headers
