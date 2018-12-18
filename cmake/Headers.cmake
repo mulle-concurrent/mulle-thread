@@ -46,7 +46,7 @@ ${PRIVATE_HEADERS}
 # add ignored header back in
 # add ignored headers back in
 
-set( MINTOMIC_HEADERS
+set( MINTOMIC_PUBLIC_HEADERS
 mintomic/include/mintomic/core.h
 mintomic/include/mintomic/mintomic.h
 mintomic/include/mintomic/platform_detect.h)
