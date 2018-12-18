@@ -1,3 +1,7 @@
+### 4.1.3
+
+* fix missing mintomic headers
+
 ### 4.1.2
 
 * fix misspelled variables in mintomic code
