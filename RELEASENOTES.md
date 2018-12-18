@@ -1,3 +1,7 @@
+### 4.1.5
+
+* fix functionpointer case code for mintomic
+
 ### 4.1.4
 
 * fix missing mintomic private headers...
