@@ -70,7 +70,7 @@ static void    run_atomic_add_test( void)
          expect = _mulle_atomic_pointer_read( &central);
          value  = (void *) ((intptr_t) expect + 1);
       }
-      while( ! _mulle_atomic_pointer_compare_and_swap( &central, value, expect));
+      while( ! _mulle_atomic_pointer_weakcas( &central, value, expect));
    }
 }
 

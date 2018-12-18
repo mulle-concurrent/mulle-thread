@@ -54,22 +54,23 @@ typedef _Atomic( mulle_functionpointer_t)   mulle_atomic_functionpointer_t;
 # pragma mark -
 # pragma mark function pointer set and get
 
-MULLE_C_ALWAYS_INLINE
-static inline mulle_functionpointer_t   _mulle_atomic_functionpointer_nonatomic_read( mulle_atomic_functionpointer_t *p)
+MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
+   _mulle_atomic_functionpointer_nonatomic_read( mulle_atomic_functionpointer_t *p)
 {
    return( *(mulle_functionpointer_t *) p);
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline void   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *p, mulle_functionpointer_t value)
+MULLE_C_ALWAYS_INLINE static inline void
+   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *p, 
+   	                                            mulle_functionpointer_t value)
 {
    *(mulle_functionpointer_t *) p = value;
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline mulle_functionpointer_t  _mulle_atomic_functionpointer_read( mulle_atomic_functionpointer_t *address)
+MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
+   _mulle_atomic_functionpointer_read( mulle_atomic_functionpointer_t *address)
 {
    mulle_functionpointer_t   result;
 
@@ -85,8 +86,9 @@ static inline mulle_functionpointer_t  _mulle_atomic_functionpointer_read( mulle
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline void  _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address, mulle_functionpointer_t value)
+MULLE_C_ALWAYS_INLINE static inline void
+   _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address,
+                                        mulle_functionpointer_t value)
 {
    atomic_store_explicit( address, value, memory_order_relaxed);
 }
@@ -95,9 +97,10 @@ static inline void  _mulle_atomic_functionpointer_write( mulle_atomic_functionpo
 # pragma mark -
 # pragma mark primitive code
 
-static inline mulle_functionpointer_t  __mulle_atomic_functionpointer_compare_and_swap( mulle_atomic_functionpointer_t *address,
-                                                               mulle_functionpointer_t value,
-                                                               mulle_functionpointer_t expect)
+MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
+   __mulle_atomic_functionpointer_weakcas( mulle_atomic_functionpointer_t *address,
+                                           mulle_functionpointer_t value,
+                                           mulle_functionpointer_t expect)
 {
    mulle_functionpointer_t   actual;
 
@@ -130,9 +133,10 @@ static inline mulle_functionpointer_t  __mulle_atomic_functionpointer_compare_an
 }
 
 
-static inline int   _mulle_atomic_functionpointer_compare_and_swap( mulle_atomic_functionpointer_t *address,
-                                                            mulle_functionpointer_t value,
-                                                            mulle_functionpointer_t expect)
+MULLE_C_ALWAYS_INLINE static inline int
+   _mulle_atomic_functionpointer_weakcas( mulle_atomic_functionpointer_t *address,
+                                          mulle_functionpointer_t value,
+                                          mulle_functionpointer_t expect)
 {
    mulle_functionpointer_t    actual;
    int                        result;
@@ -168,25 +172,100 @@ static inline int   _mulle_atomic_functionpointer_compare_and_swap( mulle_atomic
 }
 
 
+MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
+   __mulle_atomic_functionpointer_cas( mulle_atomic_functionpointer_t *address,
+                                       mulle_functionpointer_t value,
+                                       mulle_functionpointer_t expect)
+{
+   mulle_functionpointer_t   actual;
+
+   actual = expect;
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+      char          *decor;
+     _Bool          result;   // that hated bool type
+
+      result = atomic_compare_exchange_strong_explicit( address,
+                                                        &actual,
+                                                        value,
+                                                        memory_order_relaxed,
+                                                        memory_order_relaxed);
+      decor = "";
+      if( ! result)
+         decor = "FAILED to";
+      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n",
+         pthread_name(), decor, address, expect, value, actual);
+   }
+#else
+   atomic_compare_exchange_strong_explicit( address,
+                                            &actual,
+                                            value,
+                                            memory_order_relaxed,
+                                            memory_order_relaxed);
+#endif
+   return( actual);
+}
+
+
+MULLE_C_ALWAYS_INLINE static inline int
+   _mulle_atomic_functionpointer_cas( mulle_atomic_functionpointer_t *address,
+                                      mulle_functionpointer_t value,
+                                      mulle_functionpointer_t expect)
+{
+   mulle_functionpointer_t    actual;
+   int                        result;
+
+   assert( value != expect);
+
+   actual = expect;
+
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+      char          *decor;
+
+      result = (int) atomic_compare_exchange_strong_explicit( address,
+                                                              &actual,
+                                                              value,
+                                                              memory_order_relaxed,
+                                                              memory_order_relaxed);
+      decor = "";
+      if( ! result)
+         decor = "FAILED to";
+      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n",
+         pthread_name(), decor, address, expect, value, actual);
+   }
+#else
+   result = atomic_compare_exchange_strong_explicit( address,
+                                                     &actual,
+                                                     value,
+                                                     memory_order_relaxed,
+                                                     memory_order_relaxed);
+#endif
+   return( result);
+}
+
+
 # pragma mark -
 # pragma mark pointer set and get
 
-MULLE_C_ALWAYS_INLINE
-static inline void   *_mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *p)
+MULLE_C_ALWAYS_INLINE static inline void *
+   _mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *p)
 {
    return( *(void **) p);
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline void   _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *p, void *value)
+MULLE_C_ALWAYS_INLINE static inline void
+   _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *p, void *value)
 {
    *(void **) p = value;
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address)
+MULLE_C_ALWAYS_INLINE static inline void  *
+   _mulle_atomic_pointer_read( mulle_atomic_pointer_t *address)
 {
    void   *result;
 
@@ -203,8 +282,8 @@ static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline void  _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address, void *value)
+MULLE_C_ALWAYS_INLINE static inline void
+   _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address, void *value)
 {
    atomic_store_explicit( address, value, memory_order_relaxed);
 }
@@ -213,9 +292,10 @@ static inline void  _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address
 # pragma mark -
 # pragma mark primitive code
 
-static inline void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
-                                                               void *value,
-                                                               void *expect)
+MULLE_C_ALWAYS_INLINE static inline void   *
+   __mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
+                                   void *value,
+                                   void *expect)
 {
    void    *actual;
 
@@ -249,9 +329,10 @@ static inline void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_poin
 }
 
 
-static inline int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
-                                                            void *value,
-                                                            void *expect)
+MULLE_C_ALWAYS_INLINE static inline int
+   _mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
+                                  void *value,
+                                  void *expect)
 {
    void    *actual;
    int     result;
@@ -288,27 +369,113 @@ static inline int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer
 }
 
 
-static inline void   *_mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
+MULLE_C_ALWAYS_INLINE static inline void  *
+   __mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
+                               void *value,
+                               void *expect)
 {
-   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) address, 1, memory_order_relaxed));
+   void    *actual;
+
+   actual = expect;
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+      char          *decor;
+      int           result;
+
+      result = (int) atomic_compare_exchange_weak_explicit( address,
+                                                            &actual,
+                                                            value,
+                                                            memory_order_relaxed,
+                                                            memory_order_relaxed);
+      decor = "";
+      if( ! result)
+         decor = "FAILED to";
+      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n",
+         pthread_name(), decor, address, expect, value, actual);
+   }
+#else
+   atomic_compare_exchange_weak_explicit( address,
+                                          &actual,
+                                          value,
+                                          memory_order_relaxed,
+                                          memory_order_relaxed);
+#endif
+
+   return( actual);
 }
 
 
-static inline void  *_mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *address)
+MULLE_C_ALWAYS_INLINE static inline int
+   _mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
+                              void *value,
+                              void *expect)
 {
-   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) address, -1, memory_order_relaxed));
+   void    *actual;
+   int     result;
+
+   assert( value != expect);
+
+   actual = expect;
+
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+      char          *decor;
+
+      result = (int) atomic_compare_exchange_strong_explicit( address,
+                                                              &actual,
+                                                              value,
+                                                              memory_order_relaxed,
+                                                              memory_order_relaxed);
+      decor = "";
+      if( ! result)
+         decor = "FAILED to";
+      fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n",
+         pthread_name(), decor, address, expect, value, actual);
+   }
+#else
+   result = atomic_compare_exchange_strong_explicit( address,
+                                                     &actual,
+                                                     value,
+                                                     memory_order_relaxed,
+                                                     memory_order_relaxed);
+#endif
+
+   return( result);
+}
+
+
+MULLE_C_ALWAYS_INLINE static inline void *
+   _mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
+{
+   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) address,
+                                               1,
+                                               memory_order_relaxed));
+}
+
+
+MULLE_C_ALWAYS_INLINE static inline void  *
+   _mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *address)
+{
+   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) address,
+                                               -1,
+                                               memory_order_relaxed));
 }
 
 
 // returns the result, not the previous value like increment/decrement
-static inline void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *address, intptr_t diff)
+MULLE_C_ALWAYS_INLINE static inline void  *
+   _mulle_atomic_pointer_add( mulle_atomic_pointer_t *address, intptr_t diff)
 {
-   return( (void *) ((intptr_t) atomic_fetch_add_explicit( (atomic_intptr_t *) address, diff, memory_order_relaxed) + diff));
+   return( (void *) ((intptr_t) atomic_fetch_add_explicit( (atomic_intptr_t *) address,
+                                                            diff,
+                                                            memory_order_relaxed) + diff));
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline void   mulle_atomic_memory_barrier( void)
+MULLE_C_ALWAYS_INLINE static inline void
+   mulle_atomic_memory_barrier( void)
 {
    atomic_signal_fence( memory_order_seq_cst);
 }

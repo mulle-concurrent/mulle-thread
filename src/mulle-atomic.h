@@ -66,4 +66,80 @@
 # include "mulle-atomic-mintomic.h"
 #endif
 
+
+#pragma mark - additional API
+
+MULLE_C_ALWAYS_INLINE static inline void *
+   _mulle_atomic_pointer_set( mulle_atomic_pointer_t *address,
+                              void  *value)
+{
+   void   *expect;   // random contents don't matter
+   void   *previous;
+
+	expect = value; // contents don't matter, let compiler not get a heart attack
+   for(;;)
+   {
+      previous = __mulle_atomic_pointer_weakcas( address, value, expect);
+      if( previous == expect)
+         return( previous);
+      expect = previous;
+   }
+}
+
+
+MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
+   _mulle_atomic_functionpointer_set( mulle_atomic_functionpointer_t *address,
+                                      mulle_functionpointer_t value)
+{
+   mulle_functionpointer_t   expect;   
+   mulle_functionpointer_t   previous;
+
+	expect = value; // contents don't matter, let compiler not get a heart attack
+   for(;;)
+   {
+      previous = __mulle_atomic_functionpointer_weakcas( address, value, expect);
+      if( previous == expect)
+         return( previous);
+      expect = previous;
+   }
+}
+
+
+#pragma mark - old API
+
+static inline int   
+   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
+                                           void *value,
+                                           void *expect)
+{
+   return( _mulle_atomic_pointer_cas( address, value, expect));
+}
+
+
+static inline void   *
+   __mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
+                                            void *value,
+                                            void *expect)
+{
+   return( __mulle_atomic_pointer_cas( address, value, expect));
+}
+
+
+static inline mulle_functionpointer_t
+   __mulle_atomic_functionpointer_compare_and_swap( mulle_atomic_functionpointer_t *address,
+                                                    mulle_functionpointer_t value,
+                                                    mulle_functionpointer_t expect)
+{
+   return( __mulle_atomic_functionpointer_cas( address, value, expect));
+}
+
+
+static inline int
+   _mulle_atomic_functionpointer_compare_and_swap( mulle_atomic_functionpointer_t *address,
+                                                   mulle_functionpointer_t value,
+                                                   mulle_functionpointer_t expect)
+{
+   return( _mulle_atomic_functionpointer_cas( address, value, expect));
+}
+
 #endif

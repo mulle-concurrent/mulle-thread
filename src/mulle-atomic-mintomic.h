@@ -55,27 +55,25 @@ typedef mint_atomicPtr_t   mulle_atomic_functionpointer_t;
 typedef void   (*mulle_functionpointer_t)();
 
 
-
-
 #pragma mark -
 #pragma mark value pointers
 
-MULLE_C_ALWAYS_INLINE
-static inline void   *_mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *address)
+MULLE_C_ALWAYS_INLINE static inline void   *
+   _mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *address)
 {
    return( address->_nonatomic);
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline void   _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *address, void *value)
+MULLE_C_ALWAYS_INLINE static inline void
+   _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *address, void *value)
 {
    address->_nonatomic = value;
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address)
+MULLE_C_ALWAYS_INLINE static inline void  *
+   _mulle_atomic_pointer_read( mulle_atomic_pointer_t *address)
 {
    void   *result;
 
@@ -91,18 +89,19 @@ static inline void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline void  _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address,
-                                                void *value)
+MULLE_C_ALWAYS_INLINE static inline void
+   _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address,
+                              void *value)
 {
    mint_store_ptr_relaxed( address, value);
 }
 
 
 
-static inline void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
-                                                              void *value,
-                                                              void *expect)
+MULLE_C_ALWAYS_INLINE static inline void   *
+   __mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
+                               void *value,
+                               void *expect)
 {
    void    *result;
 
@@ -123,22 +122,41 @@ static inline void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_poin
 }
 
 
-static inline int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
-                                                           void *value,
-                                                           void *expect)
+MULLE_C_ALWAYS_INLINE static inline void   *
+   __mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
+                                   void *value,
+                                   void *expect)
+{
+   return( __mulle_atomic_pointer_cas( addres, value, expect));
+}
+
+
+MULLE_C_ALWAYS_INLINE static inline int
+   _mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
+                              void *value,
+                              void *expect)
 {
    void  *result;
 
-   result = __mulle_atomic_pointer_compare_and_swap( address, value, expect);
+   result = __mulle_atomic_pointer_cas( address, value, expect);
    return( result == expect);
+}
+
+
+MULLE_C_ALWAYS_INLINE static inline int
+   _mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
+                                  void *value,
+                                  void *expect)
+{
+   return( __mulle_atomic_pointer_cas( addres, value, expect));
 }
 
 
 #pragma mark -
 #pragma mark function pointers
 
-MULLE_C_ALWAYS_INLINE
-static inline mulle_functionpointer_t   _mulle_atomic_functionpointer_nonatomic_read( mulle_atomic_functionpointer_t *address)
+MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
+   _mulle_atomic_functionpointer_nonatomic_read( mulle_atomic_functionpointer_t *address)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
@@ -146,8 +164,9 @@ static inline mulle_functionpointer_t   _mulle_atomic_functionpointer_nonatomic_
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline void   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *address, mulle_functionpointer_t value)
+MULLE_C_ALWAYS_INLINE static inline void
+   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *address,
+                                                  mulle_functionpointer_t value)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
@@ -155,8 +174,8 @@ static inline void   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline mulle_functionpointer_t   _mulle_atomic_functionpointer_read( mulle_atomic_functionpointer_t *address)
+MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
+   _mulle_atomic_functionpointer_read( mulle_atomic_functionpointer_t *address)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
@@ -164,9 +183,9 @@ static inline mulle_functionpointer_t   _mulle_atomic_functionpointer_read( mull
 }
 
 
-MULLE_C_ALWAYS_INLINE
-static inline void  _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address,
-                                                         mulle_functionpointer_t value)
+MULLE_C_ALWAYS_INLINE static inline void
+   _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address,
+                                        mulle_functionpointer_t value)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
@@ -175,48 +194,63 @@ static inline void  _mulle_atomic_functionpointer_write( mulle_atomic_functionpo
 
 
 
-static inline mulle_functionpointer_t   __mulle_atomic_functionpointer_compare_and_swap( mulle_atomic_functionpointer_t *address,
-                                                                      mulle_functionpointer_t value,
-                                                                      mulle_functionpointer_t expect)
+MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
+   __mulle_atomic_functionpointer_cas( mulle_atomic_functionpointer_t *address,
+                                       mulle_functionpointer_t value,
+                                       mulle_functionpointer_t expect)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
-   return( (mulle_functionpointer_t) __mulle_atomic_pointer_compare_and_swap( (mulle_atomic_pointer_t *) address,
-                                                                                    (void *) value,
-                                                                                    (void *) expect));
+   return( (mulle_functionpointer_t) __mulle_atomic_pointer_cas( (mulle_atomic_pointer_t *) address,
+                                                                 (void *) value,
+                                                                 (void *) expect));
 }
 
-
-static inline int   _mulle_atomic_functionpointer_compare_and_swap( mulle_atomic_functionpointer_t *address,
-                                                           mulle_functionpointer_t value,
-                                                           mulle_functionpointer_t expect)
+MULLE_C_ALWAYS_INLINE static inline int
+   _mulle_atomic_functionpointer_cas( mulle_atomic_functionpointer_t *address,
+                                                       mulle_functionpointer_t value,
+                                                       mulle_functionpointer_t expect)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
-   return( _mulle_atomic_pointer_compare_and_swap( (mulle_atomic_pointer_t *) address,
-                                                   (void *) value,
-                                                   (void *) expect));
+   return( _mulle_atomic_pointer_cas( (mulle_atomic_pointer_t *) address,
+                                      (void *) value,
+                                      (void *) expect));
 }
+
+
+MULLE_C_ALWAYS_INLINE static inline int
+   _mulle_atomic_functionpointer_weakcas( mulle_atomic_functionpointer_t *address,
+                                          mulle_functionpointer_t value,
+                                          mulle_functionpointer_t expect)
+{
+   return( _mulle_atomic_functionpointer_cas( address, value, expect));
+}
+
+
 
 
 #pragma mark -
 #pragma mark atomic arithmetic
 
-static inline void   *_mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
+MULLE_C_ALWAYS_INLINE static inline void   *
+   _mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
 {
    return( mint_fetch_add_ptr_relaxed( address, 1));
 }
 
 
-static inline void  *_mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *address)
+MULLE_C_ALWAYS_INLINE
+static inline void  *
+   _mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *address)
 {
    return( mint_fetch_add_ptr_relaxed( address, -1));
 }
 
 
 // returns the result, not the previous value like increment/decrement
-static inline void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *address,
-                                                intptr_t diff)
+MULLE_C_ALWAYS_INLINE static inline void  *
+   _mulle_atomic_pointer_add( mulle_atomic_pointer_t *address, intptr_t diff)
 {
    return( (void *) ((intptr_t) mint_fetch_add_ptr_relaxed( address, diff) + diff));
 }
@@ -225,7 +259,8 @@ static inline void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *address,
 #pragma mark -
 #pragma mark barrier
 
-static inline void   mulle_atomic_memory_barrier( void)
+MULLE_C_ALWAYS_INLINE static inline void
+   mulle_atomic_memory_barrier( void)
 {
    mint_thread_fence_seq_cst();
 }
