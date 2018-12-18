@@ -2,28 +2,18 @@
 ._.DS_Store
 .idea/
 
+var/
 *.dSYM/
 *.exe
 *.exe.debug
 *.old
 *.bak
 
+environment-os-*.sh
+environment-host-*.sh
+
 # various cruft
 
-test/atomic/add
-test/mutex/pthreads.c
-test/mutex/pthreads.stdout
-test/threads/pthreads.c
-test/threads/pthreads.stdout
-
-test/threads/threads
-test/mutex/mutex
-test/mutex/pthreads
-test/threads/pthreads
-test/atomic/cas
-test/tss/tss
-test/include/
-test/lib/
 bin/tap-info.sh
 tap-info.sh
 

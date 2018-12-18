@@ -43,10 +43,13 @@
 #include <stdlib.h>
 
 
+typedef pthread_once_t    mulle_thread_once_t;
 typedef pthread_mutex_t   mulle_thread_mutex_t;
 typedef pthread_key_t     mulle_thread_tss_t;
 typedef pthread_t         mulle_thread_t;
 typedef void              *mulle_thread_native_rval_t;
+
+#define MULLE_THREAD_ONCE_INIT   PTHREAD_ONCE_INIT
 
 #pragma mark -
 #pragma Threads
@@ -102,6 +105,13 @@ static inline void   mulle_thread_yield( void)
    extern int   sched_yield( void);  // POSIX... don't want the header though
 
    sched_yield();
+}
+
+
+static inline void   mulle_thread_once( mulle_thread_once_t  *once,
+                                        void (*init)( void))
+{
+   pthread_once( once, init);
 }
 
 

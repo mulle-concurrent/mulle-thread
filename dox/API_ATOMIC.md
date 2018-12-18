@@ -64,12 +64,12 @@ Write to the contents of a  `mulle_atomic_functionpointer_t` atomically. This
 is not used very often, you usually use CAS.
 
 
-#### __mulle_atomic_pointer_compare_and_swap
+#### __mulle_atomic_pointer_cas
 
 ```
-void   *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
-                                                 void *value,
-                                                 void *expect)
+void   *__mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
+                                    void *value,
+                                    void *expect)
 ```
 
 CAS: Replace the function pointer value in **address** with **value**, if it's
@@ -90,7 +90,7 @@ void   set_1848_if_zero( mulle_atomic_pointer_t *pointer)
    	  expect = actual;
 	  if( expect)
 	     break;
-      actual = __mulle_atomic_pointer_compare_and_swap( pointer, (void *) 1848, expect);
+      actual = __mulle_atomic_pointer_cas( pointer, (void *) 1848, expect);
    }
    while( actual != expect);
 }
@@ -98,12 +98,12 @@ void   set_1848_if_zero( mulle_atomic_pointer_t *pointer)
 ```
 
 
-#### _mulle_atomic_pointer_compare_and_swap
+#### _mulle_atomic_pointer_cas
 
 ```
-int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
-                                              void *value,
-                                              void *expect)
+int   _mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
+                                 void *value,
+                                 void *expect)
 ```
 
 CAS: Replace the function pointer value in **address** with **value**, if it's
@@ -124,7 +124,7 @@ void   set_1848_if_zero( mulle_atomic_pointer_t *pointer)
 	  if( expect)
 	     break;
    }
-   while( ! __mulle_atomic_pointer_compare_and_swap( pointer, (void *) 1848, expect));
+   while( ! __mulle_atomic_pointer_cas( pointer, (void *) 1848, expect));
 }
 
 ```
@@ -221,10 +221,10 @@ Write to the contents of a  `mulle_atomic_functionpointer_t` atomically. This
 is not used very often, you usually use CAS.
 
 
-#### __mulle_atomic_functionpointer_compare_and_swap
+#### __mulle_atomic_functionpointer_cas
 
 ```
-mulle_functionpointer_t  __mulle_atomic_functionpointer_compare_and_swap(
+mulle_functionpointer_t  __mulle_atomic_functionpointer_cas(
                                        mulle_atomic_functionpointer_t *address,
                                        mulle_functionpointer_t value,
                                        mulle_functionpointer_t expect)
@@ -235,10 +235,10 @@ contents match **expect**. Will return the value that was found. If the
 returned value is **expect**, you know that the swap was succesful.
 
 
-#### _mulle_atomic_functionpointer_compare_and_swap
+#### _mulle_atomic_functionpointer_cas
 
 ```
-int   _mulle_atomic_functionpointer_compare_and_swap(
+int   _mulle_atomic_functionpointer_cas(
                                        mulle_atomic_functionpointer_t *address,
                                        mulle_functionpointer_t value,
                                        mulle_functionpointer_t expect)

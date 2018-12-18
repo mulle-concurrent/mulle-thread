@@ -38,13 +38,18 @@
 #include "include.h"
 
 #include <assert.h>
+#include <errno.h>
 #include <threads.h>
 
 
-typedef mtx_t    mulle_thread_mutex_t;
-typedef tss_t    mulle_thread_tss_t;
-typedef thrd_t   mulle_thread_t;
-typedef int      mulle_thread_native_rval_t;
+typedef once_flag   mulle_thread_once_t;
+typedef mtx_t       mulle_thread_mutex_t;
+typedef tss_t       mulle_thread_tss_t;
+typedef thrd_t      mulle_thread_t;
+typedef int         mulle_thread_native_rval_t;
+
+
+#define MULLE_THREAD_ONCE_INIT   ONCE_FLAG_INIT
 
 
 #pragma mark -
@@ -62,7 +67,7 @@ static inline int   mulle_thread_create( void (*f)(void *),
                                          void *arg,
                                          mulle_thread_t *thread)
 {
-   return( thrd_create( thread, (void (*)()) f, arg) == thrd_success ? 0 : -1);
+   return( thrd_create( thread, (thrd_start_t) f, arg) == thrd_success ? 0 : -1);
 }
 
 
@@ -94,6 +99,13 @@ static inline void   mulle_thread_exit( mulle_thread_rval_t rval)
 static inline void   mulle_thread_yield( void)
 {
    thrd_yield();
+}
+
+
+static inline void   mulle_thread_once( mulle_thread_once_t  *once,
+                                        void (*init)( void))
+{
+   call_once( once, init);
 }
 
 
@@ -146,7 +158,7 @@ static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 static inline int   mulle_thread_tss_create( void (*f)( void *), mulle_thread_tss_t *key)
 {
    assert( key);
-   return( tss_create( key, f) == thrd_success ? 0 : -1);
+   return( tss_create( key, (tss_dtor_t) f) == thrd_success ? 0 : -1);
 }
 
 
@@ -158,8 +170,6 @@ static inline void   mulle_thread_tss_free( mulle_thread_tss_t key)
 
 static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 {
-   assert( key);
-
    return( tss_get( key));
 }
 

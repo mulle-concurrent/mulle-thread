@@ -1,3 +1,8 @@
+## 4.1.0
+
+* added support for `mulle_thread_once`
+
+
 ### 4.0.20
 
 * remove obsolete file
