@@ -1,3 +1,7 @@
+### 4.1.1
+
+* add missing cmake files
+
 ## 4.1.0
 
 * added support for `mulle_thread_once`
