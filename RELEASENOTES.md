@@ -1,3 +1,7 @@
+### 4.1.6
+
+* fix more mintomic stuff
+
 ### 4.1.5
 
 * fix functionpointer case code for mintomic

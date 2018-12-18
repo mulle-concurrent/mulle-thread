@@ -148,7 +148,7 @@ MULLE_C_ALWAYS_INLINE static inline int
                                   void *value,
                                   void *expect)
 {
-   return( __mulle_atomic_pointer_cas( address, value, expect));
+   return( _mulle_atomic_pointer_cas( address, value, expect));
 }
 
 
@@ -231,14 +231,16 @@ MULLE_C_ALWAYS_INLINE static inline int
 }
 
 
-MULLE_C_ALWAYS_INLINE static inline int
+MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
 	__mulle_atomic_functionpointer_weakcas( mulle_atomic_functionpointer_t *address,
                                            mulle_functionpointer_t value,
                                            mulle_functionpointer_t expect)
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
-   return( __mulle_atomic_pointer_weakcas( (mulle_atomic_pointer_t *) address, value, expect));
+   return( (mulle_functionpointer_t) __mulle_atomic_pointer_weakcas( (mulle_atomic_pointer_t *) address, 
+   																						value, 
+   																						expect));
 }
 
 
