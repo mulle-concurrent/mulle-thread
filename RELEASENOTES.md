@@ -1,3 +1,7 @@
+### 4.1.7
+
+* move mintomic from mulle-nat to mulle-concurrent
+
 ### 4.1.6
 
 * fix more mintomic stuff
