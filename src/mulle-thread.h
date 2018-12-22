@@ -38,7 +38,7 @@
 //
 // community version is always even
 //
-#define MULLE_THREAD_VERSION  ((4 << 20) | (1 << 8) | 7)
+#define MULLE_THREAD_VERSION  ((4 << 20) | (1 << 8) | 8)
 
 #include "include.h"
 #include <stddef.h>
@@ -80,5 +80,40 @@ typedef int   mulle_thread_rval_t;
 #endif
 
 #include "mulle-atomic.h"
+
+
+/*
+ * some code for tests forces problems to reveal themselves much quicker
+ * if used in test code
+ */
+#if defined( MULLE_TEST)
+
+#include "include.h"
+#include <stdlib.h>
+#include <time.h>
+
+static inline void  MULLE_THREAD_UNPLEASANT_RACE_YIELD()
+{
+   extern void   mulle_thread_yield( void);
+
+   if( (rand() & 0xF) == 0xA)  // 1:16 chance of yield
+   {
+#ifndef _WIN32
+      if( (rand() & 0x7) == 0x4)  // 1:64 chance of nanosleep
+      {
+         struct timespec ms30 =  { .tv_sec = 0, .tv_nsec = 1 * (1000 * 1000 * 1000) / 30 };
+
+         nanosleep( &ms30, NULL);
+      }
+      else
+#endif
+         mulle_thread_yield();
+   }
+}
+#else
+
+#define MULLE_THREAD_UNPLEASANT_RACE_YIELD()  do {} while( 0)
+
+#endif
 
 #endif
