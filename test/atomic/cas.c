@@ -38,7 +38,7 @@
 
 #define PROGRESS        0
 #define MAX_ITERATIONS  100
-#define LOOPS           100000
+#define LOOPS           1000
 #define MAX_THREADS     4
 
 
@@ -67,8 +67,10 @@ static void    run_atomic_add_test( void)
    {
       do
       {
+         MULLE_THREAD_UNPLEASANT_RACE_YIELD();
          expect = _mulle_atomic_pointer_read( &central);
          value  = (void *) ((intptr_t) expect + 1);
+         MULLE_THREAD_UNPLEASANT_RACE_YIELD();
       }
       while( ! _mulle_atomic_pointer_weakcas( &central, value, expect));
    }
@@ -95,7 +97,7 @@ static void   _wait_around( mulle_atomic_pointer_t *n_threads)
 
 struct thread_info
 {
-   char                  name[ 64];
+   char                       name[ 64];
    mulle_atomic_pointer_t    *n_threads;
 };
 

@@ -1,3 +1,7 @@
+### 4.1.8
+
+* moved `UNPLEASANT_RACE_YIELD` from mulle-aba to mulle-thread and renamed it
+
 ### 4.1.7
 
 * move mintomic from mulle-nat to mulle-concurrent

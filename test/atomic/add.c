@@ -38,7 +38,7 @@
 
 #define PROGRESS        0
 #define MAX_ITERATIONS  100
-#define LOOPS           1000000
+#define LOOPS           1000
 #define MAX_THREADS     4
 
 
@@ -64,6 +64,7 @@ static void    run_atomic_add_test( void)
    for( i = 0; i < LOOPS; i++)
    {
       _mulle_atomic_pointer_increment( &central);
+      MULLE_THREAD_UNPLEASANT_RACE_YIELD();
    }
 }
 
