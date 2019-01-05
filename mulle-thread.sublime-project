@@ -2,14 +2,18 @@
 	"folders":
 	[
 		{
-			"path": ".",
-         "folder_exclude_patterns": [
-         "build",
-         ".mulle-*",
-         ".git",
-         "stash",
-         ".unison*"
-         ]
-      }
+			"folder_exclude_patterns":
+			[
+				"build",
+				".mulle-*",
+				".git",
+				"stash",
+				".unison*"
+			],
+			"path": "."
+		},
+		{
+			"path": "/home/src/srcO/mulle-concurrent/mulle-aba"
+		}
 	]
 }

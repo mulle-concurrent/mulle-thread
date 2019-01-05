@@ -1,3 +1,7 @@
+### 4.1.9
+
+* modernized to mulle-sde with .mulle folder
+
 ### 4.1.8
 
 * moved `UNPLEASANT_RACE_YIELD` from mulle-aba to mulle-thread and renamed it
