@@ -155,6 +155,8 @@ static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 
 // different parameters, rval always last
 // a returned zero key is valid!
+// destruktor is likely NOT to be called on main thread
+//
 static inline int   mulle_thread_tss_create( void (*f)( void *), mulle_thread_tss_t *key)
 {
    assert( key);

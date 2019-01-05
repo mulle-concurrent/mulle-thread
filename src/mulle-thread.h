@@ -38,11 +38,15 @@
 //
 // community version is always even
 //
-#define MULLE_THREAD_VERSION  ((4 << 20) | (1 << 8) | 8)
+#define MULLE_THREAD_VERSION  ((4 << 20) | (1 << 8) | 9)
 
 #include "include.h"
 #include <stddef.h>
 #include <stdlib.h>
+
+
+#include "mulle-atomic.h"
+
 
 // clang lies about __STDC_NO_THREADS__
 
@@ -78,8 +82,6 @@ typedef int   mulle_thread_rval_t;
 #  include "mulle-thread-pthreads.h"
 # endif
 #endif
-
-#include "mulle-atomic.h"
 
 
 /*

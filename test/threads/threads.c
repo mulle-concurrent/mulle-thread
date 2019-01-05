@@ -18,10 +18,20 @@ static mulle_thread_rval_t   thread_main( void *arg)
 //
 // parameters different to pthreads!
 
+static void   call_me_once( void)
+{
+   printf( "thread once\n");
+}
+
+
 int   main( void)
 {
    mulle_thread_t       thread;
    mulle_thread_rval_t  rval;
+   static mulle_thread_once_t   once = ONCE_FLAG_INIT;
+
+   mulle_thread_once( &once, call_me_once);
+   mulle_thread_once( &once, call_me_once);
 
    printf( "thread start\n");
    if( mulle_thread_create( thread_main, (void *) 0x1847, &thread))

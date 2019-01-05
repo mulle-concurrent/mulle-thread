@@ -48,7 +48,7 @@ extern void   mulle_aba_print( void);
 # define mulle_aba_print()
 #endif
 
-static mulle_thread_tss_t   timestamp_thread_key;
+static mulle_thread_tss_t   timestamp_thread_key = -1;
 char  *mulle_aba_thread_name( void);
 
 
