@@ -26,9 +26,10 @@ static void   call_me_once( void)
 
 int   main( void)
 {
-   mulle_thread_t       thread;
-   mulle_thread_rval_t  rval;
-   static mulle_thread_once_t   once = ONCE_FLAG_INIT;
+   mulle_thread_t               thread;
+   mulle_thread_rval_t          rval;
+
+   static mulle_thread_once_t   once = MULLE_THREAD_ONCE_INIT;
 
    mulle_thread_once( &once, call_me_once);
    mulle_thread_once( &once, call_me_once);
