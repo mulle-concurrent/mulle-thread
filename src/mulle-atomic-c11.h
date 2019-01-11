@@ -62,7 +62,7 @@ MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
 
 
 MULLE_C_ALWAYS_INLINE static inline void
-   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *p, 
+   _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *p,
    	                                            mulle_functionpointer_t value)
 {
    *(mulle_functionpointer_t *) p = value;
@@ -383,11 +383,11 @@ MULLE_C_ALWAYS_INLINE static inline void  *
       char          *decor;
       int           result;
 
-      result = (int) atomic_compare_exchange_weak_explicit( address,
-                                                            &actual,
-                                                            value,
-                                                            memory_order_relaxed,
-                                                            memory_order_relaxed);
+      result = (int) atomic_compare_exchange_strong_explicit( address,
+                                                              &actual,
+                                                              value,
+                                                              memory_order_relaxed,
+                                                              memory_order_relaxed);
       decor = "";
       if( ! result)
          decor = "FAILED to";
@@ -395,7 +395,7 @@ MULLE_C_ALWAYS_INLINE static inline void  *
          pthread_name(), decor, address, expect, value, actual);
    }
 #else
-   atomic_compare_exchange_weak_explicit( address,
+   atomic_compare_exchange_strong_explicit( address,
                                           &actual,
                                           value,
                                           memory_order_relaxed,

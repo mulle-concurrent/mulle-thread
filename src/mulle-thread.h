@@ -92,6 +92,7 @@ typedef int   mulle_thread_rval_t;
 
 #include "include.h"
 #include <stdlib.h>
+//#define _XOPEN_SOURCE  // user should define this
 #include <time.h>
 
 static inline void  MULLE_THREAD_UNPLEASANT_RACE_YIELD()

@@ -7,7 +7,7 @@ endif()
 
 set( INCLUDE_DIRS
 src
-) 
+)
 
 set( PRIVATE_HEADERS
 src/include-private.h
@@ -24,5 +24,5 @@ src/mulle-thread.h
 src/_mulle-thread-include.h
 src/mulle-thread-pthreads.h
 src/mulle-thread-windows.h
-) 
+)
 
