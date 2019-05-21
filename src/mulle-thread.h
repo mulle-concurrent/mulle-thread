@@ -38,7 +38,7 @@
 //
 // community version is always even
 //
-#define MULLE_THREAD_VERSION  ((4 << 20) | (1 << 8) | 9)
+#define MULLE_THREAD_VERSION  ((4 << 20) | (1 << 8) | 10)
 
 #include "include.h"
 #include <stddef.h>
@@ -92,7 +92,7 @@ typedef int   mulle_thread_rval_t;
 
 #include "include.h"
 #include <stdlib.h>
-//#define _XOPEN_SOURCE  // user should define this
+//#define _XOPEN_SOURCE  // user should define this not us
 #include <time.h>
 
 static inline void  MULLE_THREAD_UNPLEASANT_RACE_YIELD()
@@ -104,6 +104,9 @@ static inline void  MULLE_THREAD_UNPLEASANT_RACE_YIELD()
 #ifndef _WIN32
       if( (rand() & 0x7) == 0x4)  // 1:64 chance of nanosleep
       {
+#ifdef __linux  // as we don't want to #define _XOPEN_SOURCE
+         int nanosleep( const struct timespec *req, struct timespec *rem);
+#endif
          struct timespec ms30 =  { .tv_sec = 0, .tv_nsec = 1 * (1000 * 1000 * 1000) / 30 };
 
          nanosleep( &ms30, NULL);

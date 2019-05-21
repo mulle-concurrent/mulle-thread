@@ -36,6 +36,7 @@ tap-info.sh
 
 stash/
 build/
+kitchen/
 dependency/
 mintomic/
 .mulle-sourcetree-fix
