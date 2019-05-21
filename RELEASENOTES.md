@@ -1,3 +1,7 @@
+### 4.1.10
+
+* Various small improvements
+
 ### 4.1.9
 
 * modernized to mulle-sde with .mulle folder
