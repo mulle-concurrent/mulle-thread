@@ -1,3 +1,3 @@
-mulle-c11;tar;no-all-load,no-cmakeinherit,no-link,no-recurse,no-singlephase;342e9885-b3d3-4de9-82aa-10600b2e340d;${MULLE_C11_URL:-https://github.com/mulle-c/mulle-c11/archive/${MULLE_C11_BRANCH:-latest}.tar.gz};;;;
-mintomic;tar;no-all-load,no-build,no-header,no-link,no-recurse,no-share;74cd2077-3124-4083-be6a-c643393aee69;${MINTOMIC_URL:-https://github.com/mulle-concurrent/mintomic/archive/${MINTOMIC_BRANCH:-mulle-objc}.tar.gz};;;;
-pthread;none;no-all-load,no-build,no-delete,no-dependency,no-fs,no-os-android,no-os-mingw,no-update;8fd8130b-1d75-4633-89b4-57e61467847e;;;;;aliases=pthreads,pthread
+mulle-c11;${MULLE_C11_NODETYPE:-tar};no-all-load,no-cmakeinherit,no-import,no-link,no-recurse,no-singlephase;342e9885-b3d3-4de9-82aa-10600b2e340d;${MULLE_C11_URL:-https://github.com/mulle-c/mulle-c11/archive/${MULLE_BRANCH}.tar.gz};${MULLE_C11_BRANCH:-latest};;;
+mintomic;${MINTOMIC_NODETYPE:-tar};no-all-load,no-build,no-header,no-import,no-link,no-recurse,no-share;74cd2077-3124-4083-be6a-c643393aee69;${MINTOMIC_URL:-https://github.com/mulle-concurrent/mintomic/archive/${MULLE_BRANCH}.tar.gz};${MINTOMIC_BRANCH:-mulle-objc};;;
+pthread;none;no-all-load,no-build,no-delete,no-dependency,no-fs,no-import,no-os-android,no-os-mingw,no-update;8fd8130b-1d75-4633-89b4-57e61467847e;;${PTHREAD_BRANCH};;;aliases=pthreads,pthread

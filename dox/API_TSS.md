@@ -1,10 +1,11 @@
-# Mutex API
+# TSS API
 
-The mutex API is like the [pthreads](//en.wikipedia.org/wiki/POSIX_Threads) thread local storage API, except where noted.
+The thread specific storage API is like the [pthreads](//en.wikipedia.org/wiki/POSIX_Threads)
+thread local storage API, except where noted.
 
-On Windows the  destructor facility of pthreads is emulated to provide a saner experience.
+On Windows the destructor facility of pthreads is emulated to provide a saner experience.
 
-Think of thread local storage as a hashtable/dictionary that belongs to every
+Think of thread specific storage as a hashtable/dictionary that belongs to every
 thread, where the keys are globally defined (with `mulle_thread_tss_create`).
 
 
@@ -27,8 +28,8 @@ int   mulle_thread_tss_create( void (*f)( void *),
 
 Create a thread local storage key, with a destructor function. This key is
 common to all threads. TSS storage keys are very limited. Do not create too
-many for your application. Less than 100 I would expect to work evertime. 
-The destructor function will be called, whenever a thread terminates properly 
+many for your application. Less than 100 I would expect to work evertime.
+The destructor function will be called, whenever a thread terminates properly
 with `mulle_thread_exit`. The key can be zero value!
 
 Returns 0 on success.
