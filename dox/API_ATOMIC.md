@@ -13,7 +13,7 @@ Type                             | Description
 ## Atomic Pointer Operations
 
 
-#### _mulle_atomic_pointer_nonatomic_read
+#### `_mulle_atomic_pointer_nonatomic_read`
 
 ```
 void   *_mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *p)
@@ -23,7 +23,7 @@ Read the contents of a `mulle_atomic_pointer_t` unsafely. Useful and
 faster when you know that access is single-threaded.
 
 
-#### _mulle_atomic_pointer_nonatomic_write
+#### `_mulle_atomic_pointer_nonatomic_write`
 
 ```
 void   _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *p, void *value)
@@ -32,7 +32,7 @@ void   _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *p, void *v
 Write into the contents of a `mulle_atomic_pointer_t` unsafely. Useful and
 faster when you know that access is single-threaded.
 
-#### _mulle_atomic_pointer_read
+#### `_mulle_atomic_pointer_read`
 
 ```
 void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address)
@@ -53,7 +53,7 @@ printf( "%p\n", value);
 
 
 
-#### _mulle_atomic_pointer_write
+#### `_mulle_atomic_pointer_write`
 
 ```
 void  _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address,
@@ -64,7 +64,7 @@ Write to the contents of a  `mulle_atomic_functionpointer_t` atomically. This
 is not used very often, you usually use CAS.
 
 
-#### __mulle_atomic_pointer_cas
+#### `__mulle_atomic_pointer_cas`
 
 ```
 void   *__mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
@@ -98,7 +98,7 @@ void   set_1848_if_zero( mulle_atomic_pointer_t *pointer)
 ```
 
 
-#### _mulle_atomic_pointer_cas
+#### `_mulle_atomic_pointer_cas`
 
 ```
 int   _mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
@@ -129,9 +129,7 @@ void   set_1848_if_zero( mulle_atomic_pointer_t *pointer)
 
 ```
 
-
-
-#### _mulle_atomic_pointer_increment
+#### `_mulle_atomic_pointer_increment`
 
 ```
 void   *_mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
@@ -140,7 +138,7 @@ void   *_mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
 Returns the previous value. (acts like a postincrement `*p++`)
 
 
-#### _mulle_atomic_pointer_decrement
+#### `_mulle_atomic_pointer_decrement`
 
 ```
 void  *_mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *address)
@@ -161,7 +159,7 @@ int   decrement_was_zero( mulle_atomic_pointer_t *pointer)
 ```
 
 
-#### _mulle_atomic_pointer_add
+#### `_mulle_atomic_pointer_add`
 
 ```
 void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *address,
@@ -177,7 +175,7 @@ Returns the result, not the previous value like increment/decrement
 These functions exist to avoid C compiler type conversion warnings.
 Currently it is assumed that `sizeof( void *)` == `sizeof( (void (*)())`.
 
-#### _mulle_atomic_functionpointer_nonatomic_read
+#### `_mulle_atomic_functionpointer_nonatomic_read`
 
 ```
 mulle_functionpointer_t   _mulle_atomic_functionpointer_nonatomic_read(
@@ -188,7 +186,7 @@ Read the contents of a `mulle_atomic_functionpointer_t` unsafely. Useful when
 you know that access is single-threaded.
 
 
-#### _mulle_atomic_functionpointer_nonatomic_write
+#### `_mulle_atomic_functionpointer_nonatomic_write`
 
 ```
 void   _mulle_atomic_functionpointer_nonatomic_write(
@@ -199,7 +197,7 @@ void   _mulle_atomic_functionpointer_nonatomic_write(
 Write into the contents of a `mulle_atomic_functionpointer_t` unsafely. Useful
 when you know that access is single-threaded.
 
-#### _mulle_atomic_functionpointer_read
+#### `_mulle_atomic_functionpointer_read`
 
 ```
 mulle_functionpointer_t  _mulle_atomic_functionpointer_read(
@@ -209,7 +207,7 @@ mulle_functionpointer_t  _mulle_atomic_functionpointer_read(
 Read the contents of a  `mulle_atomic_functionpointer_t` atomically.
 
 
-#### _mulle_atomic_functionpointer_write
+#### `_mulle_atomic_functionpointer_write`
 
 ```
 void  _mulle_atomic_functionpointer_write(
@@ -221,7 +219,7 @@ Write to the contents of a  `mulle_atomic_functionpointer_t` atomically. This
 is not used very often, you usually use CAS.
 
 
-#### __mulle_atomic_functionpointer_cas
+#### `__mulle_atomic_functionpointer_cas`
 
 ```
 mulle_functionpointer_t  __mulle_atomic_functionpointer_cas(
@@ -235,7 +233,7 @@ contents match **expect**. Will return the value that was found. If the
 returned value is **expect**, you know that the swap was succesful.
 
 
-#### _mulle_atomic_functionpointer_cas
+#### `_mulle_atomic_functionpointer_cas`
 
 ```
 int   _mulle_atomic_functionpointer_cas(
@@ -250,7 +248,7 @@ contents match **expect**. Will return non-zero if the swap was successful.
 
 ## Memory barrier / fence
 
-#### mulle_atomic_memory_barrier
+#### `mulle_atomic_memory_barrier`
 
 ```
 void   mulle_atomic_memory_barrier( void)
