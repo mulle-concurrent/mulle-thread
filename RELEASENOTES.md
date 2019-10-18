@@ -1,3 +1,7 @@
+### 4.1.12
+
+* fix travis
+
 ### 4.1.11
 
 * Various small improvements
