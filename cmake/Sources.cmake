@@ -31,7 +31,7 @@ src/mulle-thread-standalone.c
 if( MSVC)
    set( SOURCES
 ${SOURCES}
-src/mulle_thread_windows.c
+src/mulle-thread-windows.c
 )
 endif()
 

@@ -42,14 +42,14 @@
 #include <threads.h>
 
 
-typedef once_flag   mulle_thread_once_t;
+//typedef once_flag   mulle_thread_once_t;
 typedef mtx_t       mulle_thread_mutex_t;
 typedef tss_t       mulle_thread_tss_t;
 typedef thrd_t      mulle_thread_t;
 typedef int         mulle_thread_native_rval_t;
 
 
-#define MULLE_THREAD_ONCE_INIT   ONCE_FLAG_INIT
+//#define MULLE_THREAD_ONCE_INIT   ONCE_FLAG_INIT
 
 
 #pragma mark -
@@ -102,12 +102,12 @@ static inline void   mulle_thread_yield( void)
 }
 
 
-static inline void   mulle_thread_once( mulle_thread_once_t  *once,
-                                        void (*init)( void))
-{
-   call_once( once, init);
-}
-
+//static inline void   mulle_thread_once( mulle_thread_once_t  *once,
+//                                        void (*init)( void))
+//{
+//   call_once( once, init);
+//}
+//
 
 #pragma mark -
 #pragma mark Lock

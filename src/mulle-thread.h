@@ -84,6 +84,27 @@ typedef int   mulle_thread_rval_t;
 #endif
 
 
+//
+// True posix conformance is much more complicated, we dumb this down
+// for windows and for everyone else. So we have the same behavior
+// on all platforms.
+// And also because this is much easier.
+//
+typedef mulle_atomic_pointer_t   mulle_thread_once_t;
+
+#define MULLE_THREAD_ONCE_INIT   0
+
+
+static inline void   mulle_thread_once( mulle_thread_once_t  *once,
+                                        void (*init)( void))
+{
+   if( _mulle_atomic_pointer_compare_and_swap( once, (void *) 1848, (void *) 0))
+      (*init)();
+}
+
+
+
+
 /*
  * some code for tests forces problems to reveal themselves much quicker
  * if used in test code
