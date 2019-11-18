@@ -44,9 +44,11 @@
 #include <assert.h>
 
 
+
 typedef DWORD    mulle_thread_tss_t;
 typedef HANDLE   mulle_thread_t;
 typedef DWORD    mulle_thread_native_rval_t;
+
 
 // too complicated and unsafe to extract and intepret section.OwningThread
 typedef struct
@@ -216,5 +218,6 @@ static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
 {
    return( TlsSetValue( key, value) ? 0 : -1);
 }
+
 
 #endif

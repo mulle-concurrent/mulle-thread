@@ -13,7 +13,19 @@
 			"path": "."
 		},
 		{
-			"path": "/home/src/srcO/mulle-concurrent/mulle-aba"
+			"path": "D:\\srcO\\mulle-core\\mulle-atexit"
+		},
+		{
+			"path": "D:\\srcO\\mulle-c\\mulle-c11"
+		},
+		{
+			"path": "D:\\srcO\\mulle-core\\mulle-atinit"
+		},
+		{
+			"path": "D:\\srcO\\mulle-core\\mulle-dlfcn"
+		},
+		{
+			"path": "D:\\srcO\\mulle-core\\mulle-stacktrace"
 		}
 	]
 }

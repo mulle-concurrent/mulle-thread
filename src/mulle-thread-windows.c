@@ -262,4 +262,5 @@ void   mulle_thread_windows_destroy_tss( void)
    LeaveCriticalSection( &global.lock);
 }
 
+
 #endif

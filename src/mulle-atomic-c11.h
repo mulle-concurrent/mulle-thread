@@ -46,9 +46,9 @@
 //
 // this is due to the mintomic heritage
 //
-typedef _Atomic( void *)       mulle_atomic_pointer_t;
-
 typedef void   (*mulle_functionpointer_t)();
+
+typedef _Atomic( void *)                    mulle_atomic_pointer_t;
 typedef _Atomic( mulle_functionpointer_t)   mulle_atomic_functionpointer_t;
 
 # pragma mark -

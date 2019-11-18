@@ -18,6 +18,13 @@ Since thread has `<stdatomic.h>` and `<threads.h>`, eventually this project
 could become superflous. In the meantime though it's a convenient abstraction
 on threads and atomic operations.
 
+### Warning 
+
+`mulle_thread_once` doesn't guarantee, that exceptions or thread cancellation 
+within the init function will clear the once flag for a second run. In fact 
+it will not.
+
+
 Build Status | Release Version
 -------------|-----------------------------------
 [![Build Status](https://travis-ci.org/mulle-concurrent/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-concurrent/mulle-thread) | ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-concurrent/mulle-thread.svg) [![Build Status](https://travis-ci.org/mulle-concurrent/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-concurrent/mulle-thread)
