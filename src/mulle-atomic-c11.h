@@ -369,6 +369,7 @@ MULLE_C_ALWAYS_INLINE static inline int
 }
 
 
+// this returns actual
 MULLE_C_ALWAYS_INLINE static inline void  *
    __mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
                                void *value,
@@ -396,16 +397,17 @@ MULLE_C_ALWAYS_INLINE static inline void  *
    }
 #else
    atomic_compare_exchange_strong_explicit( address,
-                                          &actual,
-                                          value,
-                                          memory_order_relaxed,
-                                          memory_order_relaxed);
+                                            &actual,
+                                            value,
+                                            memory_order_relaxed,
+                                            memory_order_relaxed);
 #endif
 
    return( actual);
 }
 
 
+// this returns a flag if the operation was successful
 MULLE_C_ALWAYS_INLINE static inline int
    _mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
                               void *value,

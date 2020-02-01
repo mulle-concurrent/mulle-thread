@@ -127,17 +127,18 @@ static inline int  mulle_thread_mutex_init( mulle_thread_mutex_t *lock)
 }
 
 
+// mutexes already put up mem barriers
 static inline int  mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 {
-   int   rval;
-
-   rval = pthread_mutex_lock( lock);
-   if( ! rval)
-      mulle_atomic_memory_barrier();
-   return( rval);
+   return( pthread_mutex_lock( lock));
 }
 
 
+//
+// 0: success
+// EBUSY: locked
+// EINVAL: ...
+//
 static inline int  mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
 {
    return( pthread_mutex_trylock( lock));
