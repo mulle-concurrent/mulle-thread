@@ -189,7 +189,7 @@ static void   mulle_thread_tss_init( void)
       default : return;
 
       case 2  : InterlockedDecrement( &global.inited);  // competing initalizer, undo
-                mulle_thread_yield();            // and wait
+                mulle_thread_yield();                   // and wait
                 continue;
       }
    }
