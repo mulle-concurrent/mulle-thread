@@ -1,3 +1,9 @@
+## 4.2.0
+
+* removed superflous memory barrier call in `mulle_thread_mutex_lock`
+* `mulle_thread_once` is a simplification of `pthread_once` with reduced semantics
+
+
 ### 4.1.12
 
 * fix travis

@@ -21,7 +21,7 @@ if( NOT (${CMAKE_SYSTEM_NAME} MATCHES "Android" OR ${CMAKE_SYSTEM_NAME} MATCHES 
       #
       if( PTHREADS_LIBRARY)
          #
-         # Add to PTHREADS_LIBRARY list.
+         # Add PTHREADS_LIBRARY to OS_SPECIFIC_LIBRARIES list.
          # Disable with: `mulle-sourcetree mark pthread no-cmakeadd`
          #
          set( OS_SPECIFIC_LIBRARIES

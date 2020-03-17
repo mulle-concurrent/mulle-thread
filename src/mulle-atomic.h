@@ -91,7 +91,7 @@ MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
    _mulle_atomic_functionpointer_set( mulle_atomic_functionpointer_t *address,
                                       mulle_functionpointer_t value)
 {
-   mulle_functionpointer_t   expect;   
+   mulle_functionpointer_t   expect;
    mulle_functionpointer_t   previous;
 
 	expect = value; // contents don't matter, let compiler not get a heart attack
@@ -107,7 +107,7 @@ MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
 
 #pragma mark - old API
 
-static inline int   
+static inline int
    _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
                                            void *value,
                                            void *expect)
