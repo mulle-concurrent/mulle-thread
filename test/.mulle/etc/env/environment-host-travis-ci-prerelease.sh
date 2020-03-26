@@ -1,3 +1,4 @@
+# Fill it with mulle-env envirionment --scope  set <key> <value>
 #
 # mulle-thread nodetype: ${MULLE_THREAD_NODETYPE:-tar}
 #
