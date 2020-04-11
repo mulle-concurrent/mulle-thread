@@ -34,20 +34,25 @@ Build Status | Release Version
 
 Install the prerequisites first:
 
-| Prerequisites                                 |
-|-----------------------------------------------|
-| [mulle-c11](//github.com/mulle-c/mulle-c11) |
+Prerequisites                                        | Note
+-----------------------------------------------------|------------------------------
+[mulle-c11](//github.com/mulle-c/mulle-c11)          |
+[mintomic](//github.com/mulle-concurrent/mintomic)   | Don't build this, instead unpack it into the mulle-thread folder and rename the directory `mintomic`
 
-Then build and install
+
+Install into /usr/local:
 
 ```
 mkdir build 2> /dev/null
 (
    cd build ;
-   cmake .. ;
+   cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
+         -DCMAKE_PREFIX_PATH=/usr/local \
+         -DCMAKE_BUILD_TYPE=Release .. ;
    make install
 )
 ```
+
 
 Or let [mulle-sde](//github.com/mulle-sde) build it for you with `mulle-sde craft`.
 
