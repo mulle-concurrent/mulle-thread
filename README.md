@@ -30,17 +30,38 @@ Build Status | Release Version
 [![Build Status](https://travis-ci.org/mulle-concurrent/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-concurrent/mulle-thread) | ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-concurrent/mulle-thread.svg) [![Build Status](https://travis-ci.org/mulle-concurrent/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-concurrent/mulle-thread)
 
 
+
+## Add 
+
+Use [mulle-sde](//github.com/mulle-sde) to add mulle-thread to your project:
+
+```
+mulle-sde dependency add --c --github mulle-concurrent mulle-thread
+```
+
 ## Install
 
-Install the prerequisites first:
+### mulle-sde
 
-Prerequisites                                        | Note
------------------------------------------------------|------------------------------
-[mulle-c11](//github.com/mulle-c/mulle-c11)          |
-[mintomic](//github.com/mulle-concurrent/mintomic)   | Don't build this, instead unpack it into the mulle-thread folder and rename the directory `mintomic`
+Use [mulle-sde](//github.com/mulle-sde) to build and install mulle-thread and all dependencies:
+
+```
+mulle-sde install --prefix /usr/local \
+   https://github.com/mulle-concurrent/mulle-thread/archive/latest.tar.gz
+```
+
+### Manual Installation
 
 
-Install into /usr/local:
+Install the requirements:
+
+Requirements                                         | Description
+-----------------------------------------------------|-----------------------
+[mulle-c11](//github.com/mulle-c/mulle-c11)          | Compiler glue header
+[mintomic](//github.com/mulle-concurrent/mintomic)   | **Don't build this!** Unpack it into the mulle-thread folder and rename the directory to `mintomic`
+
+
+Install into `/usr/local`:
 
 ```
 mkdir build 2> /dev/null
@@ -52,10 +73,6 @@ mkdir build 2> /dev/null
    make install
 )
 ```
-
-
-Or let [mulle-sde](//github.com/mulle-sde) build it for you with `mulle-sde craft`.
-
 
 ## API
 
