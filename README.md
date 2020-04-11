@@ -30,6 +30,14 @@ Build Status | Release Version
 [![Build Status](https://travis-ci.org/mulle-concurrent/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-concurrent/mulle-thread) | ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-concurrent/mulle-thread.svg) [![Build Status](https://travis-ci.org/mulle-concurrent/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-concurrent/mulle-thread)
 
 
+## API
+
+* [Atomic Operations](dox/API_ATOMIC.md)
+* [Threads](dox/API_THREAD.md)
+* [Mutex](dox/API_MUTEX.md)
+* [Thread Local Storage](dox/API_TSS.md)
+
+
 
 ## Add 
 
@@ -73,14 +81,6 @@ mkdir build 2> /dev/null
    make install
 )
 ```
-
-## API
-
-* [Atomic Operations](dox/API_ATOMIC.md)
-* [Threads](dox/API_THREAD.md)
-* [Mutex](dox/API_MUTEX.md)
-* [Thread Local Storage](dox/API_TSS.md)
-
 
 ### Platforms
 
