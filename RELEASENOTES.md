@@ -1,3 +1,7 @@
+### 4.2.1
+
+* new mulle-sde project structure
+
 ## 4.2.0
 
 * removed superflous memory barrier call in `mulle_thread_mutex_lock`

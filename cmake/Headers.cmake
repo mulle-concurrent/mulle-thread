@@ -20,7 +20,7 @@ include( _Headers)
 # Add ignored headers back in so that the generators pick them up
 #
 set( PUBLIC_HEADERS
-"src/_mulle-thread-include.h"
+"src/reflect/_mulle-thread-include.h"
 ${PUBLIC_HEADERS}
 )
 
@@ -32,11 +32,11 @@ set( INSTALL_PUBLIC_HEADERS ${PUBLIC_HEADERS})
 # which aren't valid outside of the project scope.
 #
 set( INSTALL_PRIVATE_HEADERS ${PRIVATE_HEADERS})
-list( REMOVE_ITEM INSTALL_PRIVATE_HEADERS "include-private.h")
+list( REMOVE_ITEM INSTALL_PRIVATE_HEADERS "src/include-private.h")
 
 # add ignored headers back in so that the generators pick them up
 set( PRIVATE_HEADERS
-"src/_mulle-thread-include-private.h"
+"src/reflect/_mulle-thread-include-private.h"
 ${PRIVATE_HEADERS}
 )
 
