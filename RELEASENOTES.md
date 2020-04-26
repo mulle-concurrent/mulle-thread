@@ -1,3 +1,7 @@
+### 4.2.2
+
+* add stdthreads library for FreeBSD
+
 ### 4.2.1
 
 * new mulle-sde project structure
