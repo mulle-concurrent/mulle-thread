@@ -21,6 +21,17 @@
 //    remove for os:   `mulle-sourcetree mark mulle-c11 no-os-<osname>`
 # include <mulle-c11/mulle-c11.h>   // mulle-c11
 
+// How to tweak the following stdthreads #include
+//    remove:          `mulle-sourcetree mark stdthreads no-header`
+//    rename:          `mulle-sourcetree mark stdthreads set include whatever.h`
+//    toggle #import:  `mulle-sourcetree mark stdthreads [no-]import`
+//    toggle public:   `mulle-sourcetree mark stdthreads [no-]public`
+//    toggle optional: `mulle-sourcetree mark stdthreads [no-]require`
+//    remove for os:   `mulle-sourcetree mark stdthreads no-os-<osname>`
+# if defined( BSD4_3)
+#  include <stdthreads.h>   // stdthreads
+# endif
+
 // How to tweak the following pthread #include
 //    remove:          `mulle-sourcetree mark pthread no-header`
 //    rename:          `mulle-sourcetree mark pthread set include whatever.h`

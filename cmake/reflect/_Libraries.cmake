@@ -8,6 +8,36 @@ if( MULLE_TRACE_INCLUDE)
 endif()
 
 #
+# Generated from sourcetree: stdthreads;no-all-load,no-cmakeinherit,no-import,no-share,only-os-freebsd;
+# Disable with: `mulle-sourcetree mark stdthreads no-link`
+#
+if( ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+   if( NOT STDTHREADS_LIBRARY)
+      find_library( STDTHREADS_LIBRARY NAMES stdthreads)
+      message( STATUS "STDTHREADS_LIBRARY is ${STDTHREADS_LIBRARY}")
+      #
+      # The order looks ascending, but due to the way this file is read
+      # it ends up being descending, which is what we need.
+      #
+      if( STDTHREADS_LIBRARY)
+         #
+         # Add STDTHREADS_LIBRARY to OS_SPECIFIC_LIBRARIES list.
+         # Disable with: `mulle-sourcetree mark stdthreads no-cmakeadd`
+         #
+         set( OS_SPECIFIC_LIBRARIES
+            ${OS_SPECIFIC_LIBRARIES}
+            ${STDTHREADS_LIBRARY}
+            CACHE INTERNAL "need to cache this"
+         )
+         # intentionally left blank
+      else()
+         message( FATAL_ERROR "STDTHREADS_LIBRARY was not found")
+      endif()
+   endif()
+endif()
+
+
+#
 # Generated from sourcetree: pthread;no-all-load,no-import,no-os-android,no-os-mingw;pthreads,pthread
 # Disable with: `mulle-sourcetree mark pthread no-link`
 #
