@@ -115,8 +115,7 @@ static inline void   mulle_thread_yield( void)
 // }
 
 
-#pragma mark -
-#pragma mark Lock
+#pragma mark - Lock
 
 // 0 is success!
 
@@ -157,8 +156,7 @@ static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 }
 
 
-#pragma mark -
-#pragma mark Thread Local Storage
+#pragma mark - Thread Local Storage
 
 // different parameters, rval always last
 // a returned zero key is valid!

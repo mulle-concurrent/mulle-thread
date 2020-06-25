@@ -58,8 +58,7 @@ typedef struct
 } mulle_thread_mutex_t;
 
 
-#pragma mark -
-#pragma mark Threads
+#pragma mark - Threads
 
 MULLE_C_CONST_RETURN
 static inline mulle_thread_t  mulle_thread_self( void)
@@ -117,8 +116,7 @@ static inline void   mulle_thread_yield(void)
 }
 
 
-#pragma mark -
-#pragma mark Lock
+#pragma mark - Lock
 
 static inline int   mulle_thread_mutex_init( mulle_thread_mutex_t *lock)
 {
@@ -173,8 +171,7 @@ static inline int   mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 }
 
 
-#pragma mark -
-#pragma mark Thread Local Storage
+#pragma mark - Thread Local Storage
 
 //
 // Don't call mulle_thread_tss_init after having called mulle_thread_tss_done
