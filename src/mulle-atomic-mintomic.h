@@ -55,8 +55,7 @@ typedef mint_atomicPtr_t   mulle_atomic_functionpointer_t;
 typedef void   (*mulle_functionpointer_t)();
 
 
-#pragma mark -
-#pragma mark value pointers
+#pragma mark - value pointers
 
 MULLE_C_ALWAYS_INLINE static inline void   *
    _mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *address)
@@ -152,8 +151,7 @@ MULLE_C_ALWAYS_INLINE static inline int
 }
 
 
-#pragma mark -
-#pragma mark function pointers
+#pragma mark - function pointers
 
 MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
    _mulle_atomic_functionpointer_nonatomic_read( mulle_atomic_functionpointer_t *address)
@@ -238,15 +236,14 @@ MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
 {
    assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
-   return( (mulle_functionpointer_t) __mulle_atomic_pointer_weakcas( (mulle_atomic_pointer_t *) address, 
-   																						value, 
+   return( (mulle_functionpointer_t) __mulle_atomic_pointer_weakcas( (mulle_atomic_pointer_t *) address,
+   																						value,
    																						expect));
 }
 
 
 
-#pragma mark -
-#pragma mark atomic arithmetic
+#pragma mark - atomic arithmetic
 
 MULLE_C_ALWAYS_INLINE static inline void   *
    _mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
@@ -271,8 +268,7 @@ MULLE_C_ALWAYS_INLINE static inline void  *
 }
 
 
-#pragma mark -
-#pragma mark barrier
+#pragma mark - barrier
 
 MULLE_C_ALWAYS_INLINE static inline void
    mulle_atomic_memory_barrier( void)

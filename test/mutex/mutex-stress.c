@@ -53,8 +53,7 @@ struct
    1
 };
 
-#pragma mark -
-#pragma mark run test
+#pragma mark - run test
 
 static void    multi_threaded_test_each_thread( void)
 {

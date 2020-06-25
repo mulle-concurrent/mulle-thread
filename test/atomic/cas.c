@@ -54,8 +54,7 @@ char  *mulle_aba_thread_name( void);
 
 static mulle_atomic_pointer_t    central;
 
-#pragma mark -
-#pragma mark run test
+#pragma mark - run test
 
 static void    run_atomic_add_test( void)
 {

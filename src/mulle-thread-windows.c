@@ -167,8 +167,7 @@ static void   destructor_table_execute_destructors( struct destructor_table *tab
 }
 
 
-#pragma mark -
-#pragma mark "API"
+#pragma mark - "API"
 
 static struct
 {
