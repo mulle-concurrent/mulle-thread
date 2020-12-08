@@ -20,7 +20,7 @@ include( _Sources)
 #
 
 set( SOURCES
-src/linkage.c
+src/mulle-thread-linkage.c
 )
 
 set( STANDALONE_SOURCES
