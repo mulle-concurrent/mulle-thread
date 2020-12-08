@@ -50,6 +50,8 @@ set( ALL_OBJECT_FILES
 
 set_property( TARGET "_1_${EXECUTABLE_NAME}" PROPERTY CXX_STANDARD 11)
 
+# RPATH must be ahead of add_executable
+include( InstallRpath OPTIONAL)
 
 if( LINK_PHASE)
    add_executable( "${EXECUTABLE_NAME}"
