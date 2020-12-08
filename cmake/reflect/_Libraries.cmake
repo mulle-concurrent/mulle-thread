@@ -8,8 +8,8 @@ if( MULLE_TRACE_INCLUDE)
 endif()
 
 #
-# Generated from sourcetree: stdthreads;no-all-load,no-cmakeinherit,no-import,no-share,only-os-freebsd;
-# Disable with: `mulle-sourcetree mark stdthreads no-link`
+# Generated from sourcetree: stdthreads;no-all-load,no-build,no-cmakeinherit,no-delete,no-dependency,no-fs,no-import,no-share,no-update,only-os-freebsd;
+# Disable with: `mulle-sourcetree mark stdthreads `
 #
 if( ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
    if( NOT STDTHREADS_LIBRARY)
@@ -38,8 +38,8 @@ endif()
 
 
 #
-# Generated from sourcetree: pthread;no-all-load,no-import,no-os-android,no-os-mingw;pthreads,pthread
-# Disable with: `mulle-sourcetree mark pthread no-link`
+# Generated from sourcetree: pthread;no-all-load,no-build,no-delete,no-dependency,no-fs,no-import,no-os-android,no-os-mingw,no-update;pthreads,pthread
+# Disable with: `mulle-sourcetree mark pthread `
 #
 if( NOT (${CMAKE_SYSTEM_NAME} MATCHES "Android" OR ${CMAKE_SYSTEM_NAME} MATCHES "Windows"))
    if( NOT PTHREADS_LIBRARY)

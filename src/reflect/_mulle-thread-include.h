@@ -13,34 +13,49 @@
 #define _mulle_thread_include_h__
 
 // How to tweak the following mulle-c11 #include
-//    remove:          `mulle-sourcetree mark mulle-c11 no-header`
-//    rename:          `mulle-sourcetree mark mulle-c11 set include whatever.h`
-//    toggle #import:  `mulle-sourcetree mark mulle-c11 [no-]import`
-//    toggle public:   `mulle-sourcetree mark mulle-c11 [no-]public`
-//    toggle optional: `mulle-sourcetree mark mulle-c11 [no-]require`
-//    remove for os:   `mulle-sourcetree mark mulle-c11 no-os-<osname>`
-# include <mulle-c11/mulle-c11.h>   // mulle-c11
+//    remove:             `mulle-sourcetree mark mulle-c11 no-header`
+//    rename:             `mulle-sde dependency|library set mulle-c11 include whatever.h`
+//    toggle #import:     `mulle-sourcetree mark mulle-c11 [no-]import`
+//    toggle localheader: `mulle-sourcetree mark mulle-c11 [no-]localheader`
+//    toggle public:      `mulle-sourcetree mark mulle-c11 [no-]public`
+//    toggle optional:    `mulle-sourcetree mark mulle-c11 [no-]require`
+//    remove for os:      `mulle-sourcetree mark mulle-c11 no-os-<osname>`
+# if defined( __has_include) && __has_include("mulle-c11.h")
+#   include "mulle-c11.h"   // mulle-c11
+# else
+#   include <mulle-c11/mulle-c11.h>   // mulle-c11
+#endif
 
 // How to tweak the following stdthreads #include
-//    remove:          `mulle-sourcetree mark stdthreads no-header`
-//    rename:          `mulle-sourcetree mark stdthreads set include whatever.h`
-//    toggle #import:  `mulle-sourcetree mark stdthreads [no-]import`
-//    toggle public:   `mulle-sourcetree mark stdthreads [no-]public`
-//    toggle optional: `mulle-sourcetree mark stdthreads [no-]require`
-//    remove for os:   `mulle-sourcetree mark stdthreads no-os-<osname>`
+//    remove:             `mulle-sourcetree mark stdthreads no-header`
+//    rename:             `mulle-sde dependency|library set stdthreads include whatever.h`
+//    toggle #import:     `mulle-sourcetree mark stdthreads [no-]import`
+//    toggle localheader: `mulle-sourcetree mark stdthreads [no-]localheader`
+//    toggle public:      `mulle-sourcetree mark stdthreads [no-]public`
+//    toggle optional:    `mulle-sourcetree mark stdthreads [no-]require`
+//    remove for os:      `mulle-sourcetree mark stdthreads no-os-<osname>`
 # if defined( BSD4_3)
-#  include <stdthreads.h>   // stdthreads
+# if defined( __has_include) && __has_include("stdthreads.h")
+#    include "stdthreads.h"   // stdthreads
+# else
+#    include <stdthreads.h>   // stdthreads
+#endif
 # endif
 
 // How to tweak the following pthread #include
-//    remove:          `mulle-sourcetree mark pthread no-header`
-//    rename:          `mulle-sourcetree mark pthread set include whatever.h`
-//    toggle #import:  `mulle-sourcetree mark pthread [no-]import`
-//    toggle public:   `mulle-sourcetree mark pthread [no-]public`
-//    toggle optional: `mulle-sourcetree mark pthread [no-]require`
-//    remove for os:   `mulle-sourcetree mark pthread no-os-<osname>`
+//    remove:             `mulle-sourcetree mark pthread no-header`
+//    rename:             `mulle-sde dependency|library set pthread include whatever.h`
+//    toggle #import:     `mulle-sourcetree mark pthread [no-]import`
+//    toggle localheader: `mulle-sourcetree mark pthread [no-]localheader`
+//    toggle public:      `mulle-sourcetree mark pthread [no-]public`
+//    toggle optional:    `mulle-sourcetree mark pthread [no-]require`
+//    remove for os:      `mulle-sourcetree mark pthread no-os-<osname>`
 # if ! defined( __android__) && ! defined( _WIN32)
-#  include <pthread.h>   // pthread
+# if defined( __has_include) && __has_include("pthread.h")
+#    include "pthread.h"   // pthread
+# else
+#    include <pthread.h>   // pthread
+#endif
 # endif
 
 #endif
