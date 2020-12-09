@@ -29,8 +29,12 @@ int   main( void)
    mulle_thread_t               thread;
    mulle_thread_rval_t          rval;
 
+// stupid fix for stupid compilers
+#if MULLE_THREAD_ONCE_INIT
    static mulle_thread_once_t   once = MULLE_THREAD_ONCE_INIT;
-
+#else
+   static mulle_thread_once_t   once;
+#endif
    mulle_thread_once( &once, call_me_once);
    mulle_thread_once( &once, call_me_once);
 
