@@ -1,0 +1,17 @@
+{
+   "name" : "mulle-thread",
+   "version" : "4.2.3",
+   "description" : "🔠 Cross-platform thread/mutex/tss/atomic operations in C",
+   "homepage" : "https://github.com/mulle-concurrent/mulle-thread",
+   "bugs" : "https://github.com/mulle-concurrent/mulle-thread/issues",
+   "keywords" : [],
+   "license" : "BSD-3-Clause",
+   "repository" : {
+      "type" : "git",
+      "url" : "mulle-concurrent/mulle-thread"
+   },
+   "dependencies" : {
+      "mulle-c11" : "mulle-c/mulle-c11",
+      "mintomic" : "mulle-concurrent/mintomic"
+   }
+}
