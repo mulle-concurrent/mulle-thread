@@ -1,3 +1,7 @@
+### 4.2.3
+
+* use github actions instead of travis, upgrade mulle-sde
+
 ### 4.2.2
 
 * add stdthreads library for FreeBSD
