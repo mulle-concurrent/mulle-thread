@@ -68,7 +68,7 @@ static inline mulle_thread_t  mulle_thread_self( void)
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_create( void (*f)( void *),
+static inline int   mulle_thread_create( mulle_thread_rval_t (*f)( void *),
                                          void *arg,
                                          mulle_thread_t *thread)
 {
@@ -86,10 +86,9 @@ static inline void   mulle_thread_exit( mulle_thread_rval_t rval)
 }
 
 
-// parameters different to pthreads!
 static inline mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
 {
-   mulle_thread_native_rval_t   storage;
+   mulle_thread_native_rval_t   rval;
 
    if( WaitForSingleObject( thread, INFINITE))
    {
@@ -97,9 +96,9 @@ static inline mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
       return( (mulle_thread_rval_t) -1);
    }
 
-   storage = (mulle_thread_native_rval_t) -1;
-   GetExitCodeThread( thread, &storage);
-   return( (mulle_thread_rval_t) storage);
+   rval = (mulle_thread_native_rval_t) -1;
+   GetExitCodeThread( thread, &rval);
+   return( (mulle_thread_rval_t) rval);
 }
 
 
