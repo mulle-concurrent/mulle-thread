@@ -1,6 +1,7 @@
 #include <mulle-thread/mulle-thread.h>
 #include <stdio.h>
 
+
 static char                 *shared_value  = "VfL Bochum 1848";
 static char                 *shared_value2 = "VfL Bochum";
 static mulle_thread_tss_t   key;
@@ -15,7 +16,7 @@ static void   destruktor( void *p)
 }
 
 
-static void   thread_main( void *arg)
+static mulle_thread_rval_t   thread_main( void *arg)
 {
    // destruktor may only run if tss has been set in current thread
    printf( "thread set\n");
@@ -30,9 +31,9 @@ static void   thread_main( void *arg)
 // destruktor doesn't run in current thread, which is not neccessarily a
 // pthread (?)
 //
-int   main( void)
+int   main( int argc, char *argv[])
 {
-   mulle_thread_t      thread;
+   mulle_thread_t   thread;
 
    printf( "create\n");
    if( mulle_thread_tss_create( destruktor, &key))

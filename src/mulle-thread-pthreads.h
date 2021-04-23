@@ -62,11 +62,12 @@ static inline mulle_thread_t  mulle_thread_self( void)
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_create( void (*f)(void *),
+// p_thread is a return value
+static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *),
                                          void *arg,
-                                         mulle_thread_t *thread)
+                                         mulle_thread_t *p_thread)
 {
-   return( pthread_create( thread, NULL, (void *(*)()) f, arg));
+   return( pthread_create( p_thread, NULL, (void *(*)()) f, arg));
 }
 
 

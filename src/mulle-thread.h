@@ -38,9 +38,10 @@
 //
 // community version is always even
 //
-#define MULLE_THREAD_VERSION  ((4 << 20) | (2 << 8) | 3)
+#define MULLE_THREAD_VERSION  ((4 << 20) | (2 << 8) | 4)
 
 #include "include.h"
+
 #include <stddef.h>
 #include <stdlib.h>
 
@@ -63,6 +64,7 @@
 #endif
 
 typedef int   mulle_thread_rval_t;
+#define mulle_thread_return()  return( 0) // bogus, exit is returned differently
 
 #if HAVE_C11_THREADS && ! defined( MULLE_THREAD_USE_PTHREADS)
 # if TRACE_INCLUDE
