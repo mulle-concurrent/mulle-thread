@@ -11,6 +11,7 @@ var/
 
 environment-os-*.sh
 environment-host-*.sh
+!environment-host-ci-*.sh
 
 # various cruft
 
