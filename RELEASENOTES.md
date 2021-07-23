@@ -1,3 +1,7 @@
+### 4.3.0
+
+* changed return value of thread function in `mulle_thread_create`
+
 ### 4.2.3
 
 * use github actions instead of travis, upgrade mulle-sde
