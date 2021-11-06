@@ -36,7 +36,9 @@ mulle_thread_create( mulle_thread_rval_t (*f)(void *),
 
 **f** is the thread function with **arg** as its argument.
 The created thread is returned in **thread**. Obviously **arg** should not
-be a pointer to stack memory.
+be a pointer to stack memory. `mulle_thread_rval_t` can be `void` or `int`
+depending on platform. The return value will be ignored though. Use
+`mulle_thread_return()` in your code to avoid warnings.
 
 A return value of 0 indicates success.
 
