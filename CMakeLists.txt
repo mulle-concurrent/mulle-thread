@@ -2,6 +2,9 @@ cmake_minimum_required( VERSION 3.1)
 
 project( mulle-thread C)
 
+add_definitions( -DMULLE_THREAD_EXTERN_GLOBAL=extern)
+
+
 
 ### mulle-sde environment
 

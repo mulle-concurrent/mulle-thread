@@ -51,8 +51,7 @@ typedef void              *mulle_thread_native_rval_t;
 
 //#define MULLE_THREAD_ONCE_INIT   PTHREAD_ONCE_INIT
 
-#pragma mark -
-#pragma Threads
+#pragma mark - Threads
 
 MULLE_C_CONST_RETURN
 static inline mulle_thread_t  mulle_thread_self( void)

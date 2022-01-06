@@ -35,6 +35,7 @@ src/include-private.h
 set( PUBLIC_GENERATED_HEADERS
 src/reflect/_mulle-thread-include.h
 src/reflect/_mulle-thread-provide.h
+src/reflect/_mulle-thread-versioncheck.h
 )
 
 #

@@ -39,6 +39,7 @@ stash/
 build/
 kitchen/
 dependency/
-mintomic/
+mintomic
+
 .mulle-sourcetree-fix
 *.sublime-workspace
