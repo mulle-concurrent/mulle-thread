@@ -1,3 +1,8 @@
+## 4.4.0
+
+* Various small improvements
+
+
 ### 4.3.0
 
 * changed return value of thread function in `mulle_thread_create`
