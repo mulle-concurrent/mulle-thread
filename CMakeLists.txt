@@ -1,8 +1,7 @@
-cmake_minimum_required( VERSION 3.1)
+cmake_minimum_required( VERSION 3.15)
 
 project( mulle-thread C)
 
-add_definitions( -DMULLE_THREAD_EXTERN_GLOBAL=extern)
 
 
 

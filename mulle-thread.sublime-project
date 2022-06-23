@@ -2,16 +2,7 @@
 	"folders":
 	[
 		{
-			"folder_exclude_patterns":
-			[
-				"build",
-				".mulle-*",
-				".git",
-				"stash",
-				".unison*"
-			],
 			"path": "."
 		}
 	]
-
 }

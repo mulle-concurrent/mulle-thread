@@ -176,10 +176,10 @@ static inline int   mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 // Don't call mulle_thread_tss_init after having called mulle_thread_tss_done
 // (in the same thread, except if you are single-threaded)
 //
-MULLE_THREAD_EXTERN_GLOBAL
+MULLE_THREAD_GLOBAL
 void   mulle_thread_tss_init( void);
 
-MULLE_THREAD_EXTERN_GLOBAL
+MULLE_THREAD_GLOBAL
 void   mulle_thread_tss_done( void);
 
 
@@ -208,6 +208,7 @@ static inline void   mulle_thread_tss_free( mulle_thread_tss_t key)
 
 static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 {
+   // if you SIGSEGV here, it probably means: your stack is overflown
    return( TlsGetValue( key));
 }
 
