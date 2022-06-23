@@ -1,3 +1,7 @@
+### 4.4.1
+
+* change GLOBALs for Windows
+
 ## 4.4.0
 
 * Various small improvements
