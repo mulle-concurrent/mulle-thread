@@ -27,7 +27,7 @@ it will not.
 
 | Release Version
 |-----------------------------------
-[![Build Status](https://travis-ci.org/mulle-concurrent/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-concurrent/mulle-thread) | ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-concurrent/mulle-thread.svg?branch=release) [![Build Status](https://travis-ci.org/mulle-concurrent/mulle-thread.svg?branch=release)](https://travis-ci.org/mulle-concurrent/mulle-thread)
+[![Build Status](//github.com/mulle-concurrent/mulle-thread/CI/badge.svg?branch=release)](//github.com/mulle-concurrent/mulle-thread) | ![Mulle kybernetiK tag](//img.shields.io/github/tag/mulle-concurrent/mulle-thread.svg?branch=release) [![Build Status](//github.com/mulle-concurrent/mulle-thread/CI/badge.svg?branch=release)](//github.com/mulle-concurrent/mulle-thread)
 
 
 ## API
@@ -59,7 +59,7 @@ Use [mulle-sde](//github.com/mulle-sde) to build and install mulle-thread and al
 
 ```
 mulle-sde install --prefix /usr/local \
-   https://github.com/mulle-concurrent/mulle-thread/archive/latest.tar.gz
+   //github.com/mulle-concurrent/mulle-thread/archive/latest.tar.gz
 ```
 
 ### Manual Installation
