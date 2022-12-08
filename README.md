@@ -37,6 +37,25 @@ it will not.
 * [Thread Local Storage](dox/API_TSS.md)
 
 
+### Convenience macro for mutex
+
+An easy way to get a locked code region is to use:
+
+``` c
+void   foo( mulle_thread_mutex_t *mutex)
+{
+   mulle_thread_mutex_do( mutex)
+   {
+      // code block is now executed with mutex locked
+   }
+   // mutex is unlocked again
+}
+```
+
+`break` and `continue` will exit the block and unlock the mutex. But when you
+use `return` the function exists and the mutex remains locked.
+
+
 ### You are here
 
 ![Overview](overview.dot.svg)

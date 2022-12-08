@@ -5,6 +5,7 @@
 int   main( void)
 {
    mulle_thread_mutex_t  lock;
+   int                   rval;
 
    printf( "init\n");
    if( mulle_thread_mutex_init( &lock))
@@ -15,30 +16,30 @@ int   main( void)
       return( 1);
 
    printf( "trylock\n");
-   switch( mulle_thread_mutex_trylock( &lock))
+   rval = mulle_thread_mutex_trylock( &lock);
+   if( ! rval)
    {
-   case -1 :
-      return( 1);
-
-   case 0 :
       printf( "mistake\n");
       return( 2);
    }
+
+   if( rval != EBUSY)
+      return( 1);
 
    printf( "unlock\n");
    if( mulle_thread_mutex_unlock( &lock))
       return( 1);
 
    printf( "trylock\n");
-   switch( mulle_thread_mutex_trylock( &lock))
+   rval = mulle_thread_mutex_trylock( &lock);
+   if( rval == EBUSY)
    {
-   case -1 :
-      return( 1);
-
-   case 1 :
       printf( "mistake\n");
       return( 2);
    }
+
+   if( rval)
+      return( 1);
 
    printf( "unlock\n");
    if( mulle_thread_mutex_unlock( &lock))

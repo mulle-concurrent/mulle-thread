@@ -38,7 +38,7 @@
 //
 // community version is always even
 //
-#define MULLE_THREAD_VERSION  ((4 << 20) | (4 << 8) | 1)
+#define MULLE_THREAD_VERSION  ((4 << 20) | (5 << 8) | 0)
 
 #include "include.h"
 
@@ -47,6 +47,7 @@
 
 
 #include "mulle-atomic.h"
+
 
 
 // clang lies about __STDC_NO_THREADS__
@@ -62,6 +63,7 @@
 #  endif
 # endif
 #endif
+
 
 typedef int   mulle_thread_rval_t;
 #define mulle_thread_return()  return( 0) // bogus, exit is returned differently
@@ -105,6 +107,19 @@ static inline void   mulle_thread_once( mulle_thread_once_t  *once,
 }
 
 
+//
+// You can't have another mulle_thread_mutex_do inside a mulle_thread_mutex_do
+// but it's bad deadlocking idea anway
+//
+#define mulle_thread_mutex_do( name)                                           \
+   for( int  mulle_thread_mutex_do__i = ( mulle_thread_mutex_lock( &name), 0); \
+        mulle_thread_mutex_do__i < 1;                                          \
+        mulle_thread_mutex_unlock( &name), mulle_thread_mutex_do__i++)         \
+                                                                               \
+      for( int  mulle_thread_mutex_do__j = 0; /* break protection */           \
+           mulle_thread_mutex_do__j < 1;                                       \
+           mulle_thread_mutex_do__j++)
+
 /*
  * some code for tests forces problems to reveal themselves much quicker
  * if used in test code
@@ -142,6 +157,7 @@ static inline void  MULLE_THREAD_UNPLEASANT_RACE_YIELD()
 #define MULLE_THREAD_UNPLEASANT_RACE_YIELD()  do {} while( 0)
 
 #endif
+
 
 
 #ifdef __has_include

@@ -1,3 +1,8 @@
+## 4.5.0
+
+* add `mulle_thread_mutex_do` convenience macro
+
+
 ### 4.4.1
 
 * change GLOBALs for Windows

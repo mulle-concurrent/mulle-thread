@@ -1,0 +1,6 @@
+init
+do
+trylock
+trylock
+unlock
+done
