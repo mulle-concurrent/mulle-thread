@@ -46,3 +46,4 @@ mintomic
 .mulle-make-build-dir
 version.old
 .gdb_history
+.ackrc

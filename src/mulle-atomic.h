@@ -142,4 +142,5 @@ static inline int
    return( _mulle_atomic_functionpointer_cas( address, value, expect));
 }
 
+
 #endif
