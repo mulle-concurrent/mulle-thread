@@ -1,1 +1,1 @@
-mulle-thread;${MULLE_THREAD_NODETYPE:-tar};no-all-load,no-import;85E1D35A-F5D7-45D4-AC2C-1F737CB49626;${MULLE_THREAD_URL:-https://github.com/mulle-concurrent/mulle-thread/archive/${MULLE_TAG}.tar.gz};${MULLE_THREAD_BRANCH};${MULLE_THREAD_TAG:-latest};;
+mulle-thread;${MULLE__THREAD_NODETYPE:-tar};no-all-load,no-import;85E1D35A-F5D7-45D4-AC2C-1F737CB49626;${MULLE_THREAD_URL:-https://github.com/mulle-concurrent/mulle-thread/archive/${MULLE_TAG}.tar.gz};${MULLE__THREAD_BRANCH};${MULLE__THREAD_TAG:-latest};;
