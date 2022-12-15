@@ -71,6 +71,12 @@ mulle-sde dependency add --c --github mulle-concurrent mulle-thread
 
 ## Install
 
+
+> #### Ubuntu note
+>
+> You might need `libpthread-stubs0-dev` for `libpthread.a`
+>
+
 ### mulle-sde
 
 Use [mulle-sde](//github.com/mulle-sde) to build and install mulle-thread and all dependencies:
