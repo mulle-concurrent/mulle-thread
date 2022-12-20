@@ -8,7 +8,7 @@
    "license" : "BSD-3-Clause",
    "repository" : {
       "type" : "git",
-      "url" : "mulle-concurrent/mulle-thread"
+      "url" : "github:mulle-concurrent/mulle-thread"
    },
    "dependencies" : {
       "mulle-c11" : "git://github.com/mulle-c/mulle-c11",
