@@ -50,7 +50,7 @@
 //    toggle optional:     `mulle-sde dependency mark pthread [no-]require`
 //    remove for platform: `mulle-sde dependency mark pthread no-platform-<uname>`
 //        (use `mulle-sourcetree-to-c --unames` to list known values)
-# if ! defined( __android__) && ! defined( _WIN32)
+# if ! defined( __ANDROID__) && ! defined( _WIN32)
 # include <pthread.h>   // pthread
 #endif
 

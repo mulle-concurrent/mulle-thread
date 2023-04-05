@@ -156,7 +156,7 @@ MULLE_C_ALWAYS_INLINE static inline int
 MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
    _mulle_atomic_functionpointer_nonatomic_read( mulle_atomic_functionpointer_t *address)
 {
-   assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
    return( (mulle_functionpointer_t) _mulle_atomic_pointer_nonatomic_read( (mulle_atomic_pointer_t *) address));
 }
@@ -166,7 +166,7 @@ MULLE_C_ALWAYS_INLINE static inline void
    _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *address,
                                                   mulle_functionpointer_t value)
 {
-   assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
    _mulle_atomic_pointer_nonatomic_write( (mulle_atomic_pointer_t *) address, (void *) value);
 }
@@ -175,7 +175,7 @@ MULLE_C_ALWAYS_INLINE static inline void
 MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
    _mulle_atomic_functionpointer_read( mulle_atomic_functionpointer_t *address)
 {
-   assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
    return( (mulle_functionpointer_t) _mulle_atomic_pointer_read( (mulle_atomic_pointer_t *) address));
 }
@@ -185,7 +185,7 @@ MULLE_C_ALWAYS_INLINE static inline void
    _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address,
                                         mulle_functionpointer_t value)
 {
-   assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
    _mulle_atomic_pointer_write( (mulle_atomic_pointer_t *) address, (void *) value);
 }
@@ -197,7 +197,7 @@ MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
                                        mulle_functionpointer_t value,
                                        mulle_functionpointer_t expect)
 {
-   assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
    return( (mulle_functionpointer_t) __mulle_atomic_pointer_cas( (mulle_atomic_pointer_t *) address,
                                                                  (void *) value,
@@ -210,7 +210,7 @@ MULLE_C_ALWAYS_INLINE static inline int
                                       mulle_functionpointer_t value,
                                       mulle_functionpointer_t expect)
 {
-   assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
    return( _mulle_atomic_pointer_cas( (mulle_atomic_pointer_t *) address,
                                       (void *) value,
@@ -223,7 +223,7 @@ MULLE_C_ALWAYS_INLINE static inline int
                                           mulle_functionpointer_t value,
                                           mulle_functionpointer_t expect)
 {
-   assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
    return( _mulle_atomic_pointer_weakcas( (mulle_atomic_pointer_t *) address, value, expect));
 }
@@ -234,7 +234,7 @@ MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
                                            mulle_functionpointer_t value,
                                            mulle_functionpointer_t expect)
 {
-   assert( sizeof( void *) == sizeof( mulle_functionpointer_t));
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
    return( (mulle_functionpointer_t) __mulle_atomic_pointer_weakcas( (mulle_atomic_pointer_t *) address,
    																						value,

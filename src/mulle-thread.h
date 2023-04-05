@@ -38,7 +38,7 @@
 //
 // community version is always even
 //
-#define MULLE_THREAD_VERSION  ((4 << 20) | (5 << 8) | 0)
+#define MULLE_THREAD_VERSION  ((4 << 20) | (5 << 8) | 1)
 
 #include "include.h"
 
@@ -48,6 +48,11 @@
 
 #include "mulle-atomic.h"
 
+// not sure how dragonflybsd manages to impress, that it really has
+// <threads.h>, but then doesn't. fine...
+#ifdef __DragonFly__
+# define MULLE_THREAD_USE_PTHREADS 1
+#endif
 
 
 // clang lies about __STDC_NO_THREADS__

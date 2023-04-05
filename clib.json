@@ -1,0 +1,31 @@
+{
+   "name" : "mulle-thread",
+   "version" : "4.5.0",
+   "description" : "Cross-platform thread/mutex/tss/atomic operations in C",
+   "keywords" : [],
+   "license" : "BSD-3-Clause",
+   "repo" : "mulle-concurrent/mulle-thread",
+   "src" : [
+      "src/generic/include-private.h",
+      "src/generic/include.h",
+      "src/mintomic-empty.c",
+      "src/mulle-atomic-c11.h",
+      "src/mulle-atomic-mintomic.h",
+      "src/mulle-atomic.h",
+      "src/mulle-thread-c11.h",
+      "src/mulle-thread-linkage.c",
+      "src/mulle-thread-pthreads.h",
+      "src/mulle-thread-standalone.c",
+      "src/mulle-thread-windows.c",
+      "src/mulle-thread-windows.h",
+      "src/mulle-thread.h",
+      "src/reflect/_mulle-thread-include-private.h",
+      "src/reflect/_mulle-thread-include.h",
+      "src/reflect/_mulle-thread-provide.h",
+      "src/reflect/_mulle-thread-versioncheck.h"
+   ],
+   "dependencies" : {
+      "mulle-c/mulle-c11": "*",
+      "mulle-concurrent/mintomic": "*"
+   }
+}
