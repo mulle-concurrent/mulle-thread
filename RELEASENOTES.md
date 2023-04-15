@@ -1,3 +1,8 @@
+### 4.5.1
+
+* remove package.json as it conflicts with clib.json
+* compile fix for dragonfly and android
+
 ## 4.5.0
 
 * add `mulle_thread_mutex_do` convenience macro
