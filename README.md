@@ -2,6 +2,11 @@
 
 #### 🔠 Cross-platform thread/mutex/tss/atomic operations in C
 
+
+# mulle-thread
+
+#### 🔠 Cross-platform thread/mutex/tss/atomic operations in C
+
 **mulle-thread** is a set of **C** wrapper headers for a simplified
 subset of thread functions and for a limited range of atomic operations that
 strongly mimics the thread standard, even if thread is not available. On Windows it
@@ -29,6 +34,12 @@ it will not.
 |-----------------------------------
 | [![Build Status](https://github.com/mulle-concurrent/mulle-thread/workflows/CI/badge.svg?branch=release)](//github.com/mulle-concurrent/mulle-thread) ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-concurrent/mulle-thread/workflows/CI/badge.svg?branch=release)
 
+
+| Release Version                                       | Release Notes
+|-------------------------------------------------------|--------------
+| ![Mulle kybernetiK tag](https://img.shields.io/github/tag//mulle-thread.svg?branch=release) [![Build Status](https://github.com//mulle-thread/workflows/CI/badge.svg?branch=release)](//github.com//mulle-thread/actions)| [RELEASENOTES](RELEASENOTES.md) |
+
+
 ## API
 
 * [Atomic Operations](dox/API_ATOMIC.md)
@@ -37,7 +48,8 @@ it will not.
 * [Thread Local Storage](dox/API_TSS.md)
 
 
-### Convenience macro for mutex
+
+## Convenience macro for mutex
 
 An easy way to get a locked code region is to use:
 
@@ -56,9 +68,7 @@ void   foo( mulle_thread_mutex_t *mutex)
 use `return` the function exists and the mutex remains locked.
 
 
-### You are here
 
-![Overview](overview.dot.svg)
 
 
 ## Add
@@ -66,38 +76,40 @@ use `return` the function exists and the mutex remains locked.
 Use [mulle-sde](//github.com/mulle-sde) to add mulle-thread to your project:
 
 ``` sh
-mulle-sde dependency add --c --github mulle-concurrent mulle-thread
+mulle-sde add github:/
 ```
+
+To only add the sources of mulle-thread with dependency
+sources use [clib](https://github.com/clibs/clib):
+
+
+``` sh
+clib install --out src/ /
+```
+
+Add `-isystem src/` to your `CFLAGS` and compile all the sources that were downloaded with your project.
+
 
 ## Install
 
-
-> #### Ubuntu note
->
-> You might need `libpthread-stubs0-dev` for `libpthread.a`
->
-
-### mulle-sde
+### Install with mulle-sde
 
 Use [mulle-sde](//github.com/mulle-sde) to build and install mulle-thread and all dependencies:
 
 ``` sh
 mulle-sde install --prefix /usr/local \
-   https://github.com/mulle-concurrent/mulle-thread/archive/latest.tar.gz
+   https://github.com///archive/latest.tar.gz
 ```
 
 ### Manual Installation
 
-
 Install the requirements:
 
-Requirements                                         | Description
------------------------------------------------------|-----------------------
-[mulle-c11](//github.com/mulle-c/mulle-c11)          | Compiler glue header
-[mintomic](//github.com/mulle-concurrent/mintomic)   | **Don't build this!** Unpack it into the mulle-thread folder and rename the directory to `mintomic`
+| Requirements                                 | Description
+|----------------------------------------------|-----------------------
+| [mulle-c11](https://github.com/mulle-c/mulle-c11)             | 🔀 Cross-platform C compiler glue (and some cpp conveniences)
 
-
-Install into `/usr/local`:
+Install **mulle-thread** into `/usr/local` with [cmake](https://cmake.org):
 
 ``` sh
 cmake -B build \
@@ -108,41 +120,8 @@ cmake --build build --config Release &&
 cmake --install build --config Release
 ```
 
-### Platforms
-
-* OS X
-* iOS
-* Linux
-* FreeBSD
-* Windows
-
-### Compilers
-
-* clang
-* gcc
-* MSVC
-
-> thread support in clang as of v3.8 is lacking, as there is no `<threads.h>`.
-> The fallback is **pthreads**.
-
-
-### Architectures
-
-If `<stdatomic.h>` is not available for your architecture, then **mulle-thread**
-is limited to:
-
-* x86
-* x86_64
-* arm
-
-That is because of [mintomic](//mintomic.github.io/) limitations. **mintomic**
-is the original source for the provided atomic operations. Unfortunately it's not
-really active anymore, so for example ARM64 doesn't work. **mulle-thread** will
-use mintomic only, if `<stdatomic.h>` is not available.
-
-
 ## Author
 
-[Nat!](//www.mulle-kybernetik.com/weblog) for
-[Mulle kybernetiK](//www.mulle-kybernetik.com) and
-[Codeon GmbH](//www.codeon.de)
+[Nat!](https://mulle-kybernetik.com/weblog) for Mulle kybernetiK
+
+
