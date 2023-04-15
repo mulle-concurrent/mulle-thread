@@ -1,0 +1,23 @@
+{
+   project =
+   {
+      description="🔠 Cross-platform thread/mutex/tss/atomic operations in C";
+      domain="github";
+      name="mulle-thread";
+      user="mulle-concurrent";
+      repo="mulle-thread";
+      homepage="https://github.com/mulle-concurrent/mulle-thread";
+      license="BSD-3-Clause"
+   };
+   dependencies =
+   (
+      {
+         description="🔀 Cross-platform C compiler glue (and some cpp conveniences)";
+         domain="github";
+         name="mulle-c11";
+         repo="mulle-c11";
+         url="https://github.com/mulle-c/mulle-c11";
+         user="mulle-c";
+      }
+   )
+}
