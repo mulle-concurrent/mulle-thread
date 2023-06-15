@@ -38,7 +38,7 @@
 //
 // community version is always even
 //
-#define MULLE_THREAD_VERSION  ((4 << 20) | (5 << 8) | 1)
+#define MULLE__THREAD_VERSION  ((4 << 20) | (5 << 8) | 1)
 
 #include "include.h"
 
@@ -129,7 +129,7 @@ static inline void   mulle_thread_once( mulle_thread_once_t  *once,
  * some code for tests forces problems to reveal themselves much quicker
  * if used in test code
  */
-#if defined( MULLE_TEST)
+#if defined( MULLE_TEST) && ! defined( NO_MULLE_THREAD_UNPLEASANT_RACE_YIELD)
 
 #include "include.h"
 #include <stdlib.h>
