@@ -21,13 +21,13 @@
 
 #include "_mulle-thread-include.h"
 
-#ifdef MULLE_THREAD_BUILD
-# define MULLE_THREAD_GLOBAL    MULLE_C_GLOBAL
+#ifdef MULLE__THREAD_BUILD
+# define MULLE__THREAD_GLOBAL    MULLE_C_GLOBAL
 #else
 # if defined( MULLE_THREAD_INCLUDE_DYNAMIC) || (defined( MULLE_INCLUDE_DYNAMIC) && ! defined( MULLE_THREAD_INCLUDE_STATIC))
-#  define MULLE_THREAD_GLOBAL   MULLE_C_EXTERN_GLOBAL
+#  define MULLE__THREAD_GLOBAL   MULLE_C_EXTERN_GLOBAL
 # else
-#  define MULLE_THREAD_GLOBAL   extern
+#  define MULLE__THREAD_GLOBAL   extern
 # endif
 #endif
 

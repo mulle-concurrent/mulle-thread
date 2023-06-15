@@ -169,7 +169,7 @@ static inline void   mulle_thread_tss_free( mulle_thread_tss_t key)
 
 static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 {
-   // if you SIGSEGV here, it probably means: your stack is overflown
+   // if you SIGSEGV here, it probably means: your stack has overflown
    return( tss_get( key));
 }
 

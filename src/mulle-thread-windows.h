@@ -176,10 +176,10 @@ static inline int   mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 // Don't call mulle_thread_tss_init after having called mulle_thread_tss_done
 // (in the same thread, except if you are single-threaded)
 //
-MULLE_THREAD_GLOBAL
+MULLE__THREAD_GLOBAL
 void   mulle_thread_tss_init( void);
 
-MULLE_THREAD_GLOBAL
+MULLE__THREAD_GLOBAL
 void   mulle_thread_tss_done( void);
 
 
