@@ -204,7 +204,7 @@ int   _main(int argc, const char * argv[])
 
    for( i = 1; i <= MAX_ITERATIONS; i++)
    {
-      for( j = 1; j <= MAX_THREADS; j += j)
+      for( j = 1; j <= MAX_THREADS; j++)
       {
          multi_threaded_test( j);
       }
