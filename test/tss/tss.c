@@ -24,6 +24,7 @@ static mulle_thread_rval_t   thread_main( void *arg)
       mulle_thread_exit( 1);
 
    mulle_thread_exit( 0);
+   mulle_thread_return();
 }
 
 
