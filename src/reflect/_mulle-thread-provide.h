@@ -9,8 +9,8 @@
  *
  *      mulle-sde environment set MULLE_MATCH_TO_C_RUN DISABLE
  */
-#ifndef mulle_thread_provide_h__
-#define mulle_thread_provide_h__
+#ifndef _mulle__thread__provide_h__
+#define _mulle__thread__provide_h__
 
 
 #include "mulle-atomic-c11.h"
