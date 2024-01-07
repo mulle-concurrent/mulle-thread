@@ -49,6 +49,10 @@ typedef pthread_key_t     mulle_thread_tss_t;
 typedef pthread_t         mulle_thread_t;
 typedef void              *mulle_thread_native_rval_t;
 
+typedef mulle_thread_rval_t   mulle_thread_function_t( void *);
+typedef void                  mulle_thread_callback_t( void *);
+
+
 //#define MULLE_THREAD_ONCE_INIT   PTHREAD_ONCE_INIT
 
 #pragma mark - Threads
@@ -62,7 +66,7 @@ static inline mulle_thread_t  mulle_thread_self( void)
 
 // parameters different to pthreads!
 // p_thread is a return value
-static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *),
+static inline int   mulle_thread_create( mulle_thread_function_t *f,
                                          void *arg,
                                          mulle_thread_t *p_thread)
 {
@@ -115,6 +119,7 @@ static inline void   mulle_thread_yield( void)
 // }
 
 
+
 #pragma mark - Lock
 
 // 0 is success!
@@ -160,7 +165,8 @@ static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 
 // different parameters, rval always last
 // a returned zero key is valid!
-static inline int   mulle_thread_tss_create( void (*f)( void *), mulle_thread_tss_t *key)
+static inline int   mulle_thread_tss_create( mulle_thread_callback_t *f,
+                                             mulle_thread_tss_t *key)
 {
    return( pthread_key_create( key, f));
 }
