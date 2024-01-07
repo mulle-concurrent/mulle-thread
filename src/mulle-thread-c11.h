@@ -49,6 +49,9 @@ typedef thrd_t      mulle_thread_t;
 typedef int         mulle_thread_native_rval_t;
 
 
+typedef mulle_thread_rval_t   mulle_thread_function_t( void *);
+typedef void                  mulle_thread_callback_t( void *);
+
 //#define MULLE_THREAD_ONCE_INIT   ONCE_FLAG_INIT
 
 
@@ -63,7 +66,7 @@ static inline mulle_thread_t  mulle_thread_self( void)
 
 
 // p_thread is a return value
-static inline int   mulle_thread_create( mulle_thread_rval_t (*f)(void *),
+static inline int   mulle_thread_create( mulle_thread_function_t *f,
                                          void *arg,
                                          mulle_thread_t *p_thread)
 {
@@ -154,7 +157,8 @@ static inline int   mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 // a returned zero key is valid!
 // destruktor is likely NOT to be called on main thread
 //
-static inline int   mulle_thread_tss_create( void (*f)( void *), mulle_thread_tss_t *key)
+static inline int   mulle_thread_tss_create( mulle_thread_callback_t f,
+                                             mulle_thread_tss_t *key)
 {
    assert( key);
    return( tss_create( key, (tss_dtor_t) f) == thrd_success ? 0 : -1);

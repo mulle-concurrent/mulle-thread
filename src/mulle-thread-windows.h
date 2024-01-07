@@ -49,6 +49,9 @@ typedef DWORD    mulle_thread_tss_t;
 typedef HANDLE   mulle_thread_t;
 typedef DWORD    mulle_thread_native_rval_t;
 
+typedef mulle_thread_rval_t   mulle_thread_function_t( void *);
+typedef void                  mulle_thread_callback_t( void *);
+
 
 // too complicated and unsafe to extract and intepret section.OwningThread
 typedef struct
@@ -68,7 +71,7 @@ static inline mulle_thread_t  mulle_thread_self( void)
 
 
 // parameters different to pthreads!
-static inline int   mulle_thread_create( mulle_thread_rval_t (*f)( void *),
+static inline int   mulle_thread_create( mulle_thread_function_t *f,
                                          void *arg,
                                          mulle_thread_t *thread)
 {
@@ -183,7 +186,8 @@ MULLE__THREAD_GLOBAL
 void   mulle_thread_tss_done( void);
 
 
-static inline int   mulle_thread_tss_create( void(*f)(void *), mulle_thread_tss_t *key)
+static inline int   mulle_thread_tss_create( mulle_thread_callback_t *f,
+                                             mulle_thread_tss_t *key)
 {
    extern int   mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *));
 
