@@ -19,5 +19,16 @@
          url="https://github.com/mulle-c/mulle-c11";
          user="mulle-c";
       }
-   )
+   );
+   embedded =
+   (
+      {
+         description="For more information, see [the documentation](http://mintomic.github.io/) or the accompanying blog post, [Introducing Mintomic](http://preshing.com/20130505/introducing-mintomic-a-small-portable-lock-free-api).";
+         domain="github";
+         name="mintomic";
+         repo="mintomic";
+         url="https://github.com/mulle-concurrent/mintomic";
+         user="mulle-concurrent";
+      }
+   );
 }
