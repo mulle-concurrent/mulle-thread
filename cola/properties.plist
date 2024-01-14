@@ -7,7 +7,7 @@
       user="mulle-concurrent";
       repo="mulle-thread";
       homepage="https://github.com/mulle-concurrent/mulle-thread";
-      license="BSD-3-Clause"
+      license="BSD-3-Clause";
    };
    dependencies =
    (
