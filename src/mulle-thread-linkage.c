@@ -38,8 +38,19 @@
 // but you can live without it in .a
 unsigned long   __mulle_thread_version__ = 0x0000;
 
-// we include this, if we need it
-
+// we include mintomic, if we need it
+//
+// if we are building with mulle-core this file is in "src/mulle-thread" and
+// "mintomic_gcc.c" is in "mintomic/mintomic_gcc.c" -> "../../mintomic"
+//
+// if we are building alone, this file is in "src" and "mintomic_gcc.c" is
+// in "mintomic/src/mintomic/mintomic_gcc.c" "../mintomic/src/mintomic"
+//
 #if __STDC_VERSION__ < 201112L || defined( __STDC_NO_ATOMICS__)
-# include "../mintomic/src/mintomic/mintomic_gcc.c"
+// variable defined by Executable.cmake
+# ifdef MULLE__CORE_BUILD
+#  include "../../mintomic/mintomic_gcc.c"
+# else
+#  include "../mintomic/src/mintomic/mintomic_gcc.c"
+# endif
 #endif
