@@ -43,7 +43,7 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
 
 
 #
-# Generated from sourcetree: 8fd8130b-1d75-4633-89b4-57e61467847e;pthread;no-all-load,no-build,no-delete,no-dependency,no-fs,no-import,no-platform-android,no-platform-mingw,no-update;pthreads,pthread
+# Generated from sourcetree: 8fd8130b-1d75-4633-89b4-57e61467847e;pthread;no-all-load,no-build,no-delete,no-dependency,no-fs,no-import,no-platform-android,no-platform-mingw,no-require,no-update;pthreads,pthread
 # Disable with : `mulle-sourcetree mark pthread `
 # Disable for this platform: `mulle-sourcetree mark pthread no-cmake-platform-${MULLE_UNAME}`
 # Disable for a sdk: `mulle-sourcetree mark pthread no-cmake-sdk-<name>`
@@ -105,8 +105,8 @@ if( NOT (${CMAKE_SYSTEM_NAME} MATCHES "Android" OR ${CMAKE_SYSTEM_NAME} MATCHES 
             endif()
          endforeach()
       else()
-         # Disable with: `mulle-sourcetree mark pthread no-require-link`
-         message( FATAL_ERROR "PTHREAD_LIBRARY was not found")
+         # Enable with: `mulle-sourcetree mark pthread require`
+         message( STATUS "PTHREAD_LIBRARY is missing but it is marked as \"no-require\"")
       endif()
    endif()
    endif()
