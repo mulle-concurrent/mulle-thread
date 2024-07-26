@@ -224,4 +224,7 @@ static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
 }
 
 
+//
+// TODO: use CreateEventA to implement pthread_cond style conditions
+//
 #endif

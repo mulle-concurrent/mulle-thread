@@ -54,6 +54,15 @@ typedef _Atomic( mulle_functionpointer_t)   mulle_atomic_functionpointer_t;
 # pragma mark -
 # pragma mark function pointer set and get
 
+// new
+MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
+   _mulle_atomic_functionpointer_read_nonatomic( mulle_atomic_functionpointer_t *p)
+{
+   return( *(mulle_functionpointer_t *) p);
+}
+
+
+// old
 MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
    _mulle_atomic_functionpointer_nonatomic_read( mulle_atomic_functionpointer_t *p)
 {
@@ -61,6 +70,16 @@ MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
 }
 
 
+// new
+MULLE_C_ALWAYS_INLINE static inline void
+   _mulle_atomic_functionpointer_write_nonatomic( mulle_atomic_functionpointer_t *p,
+                                                  mulle_functionpointer_t value)
+{
+   *(mulle_functionpointer_t *) p = value;
+}
+
+
+// old
 MULLE_C_ALWAYS_INLINE static inline void
    _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *p,
    	                                            mulle_functionpointer_t value)
@@ -118,7 +137,9 @@ MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
                                                       memory_order_relaxed);
       decor = "";
       if( ! result)
-         decor = "FAILED to";
+      {
+         decor  = "FAILED to";
+      }
       fprintf( stderr, "%s: %sswap %p %p -> %p (%p)\n",
          pthread_name(), decor, address, expect, value, actual);
    }
@@ -129,6 +150,7 @@ MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
                                           memory_order_relaxed,
                                           memory_order_relaxed);
 #endif
+   // https://stackoverflow.com/questions/20179315/why-does-stdatomic-compare-exchange-update-the-expected-value
    return( actual);
 }
 
@@ -256,6 +278,20 @@ MULLE_C_ALWAYS_INLINE static inline void *
    return( *(void **) p);
 }
 
+MULLE_C_ALWAYS_INLINE static inline void *
+   _mulle_atomic_pointer_read_nonatomic( mulle_atomic_pointer_t *p)
+{
+   return( *(void **) p);
+}
+
+
+
+MULLE_C_ALWAYS_INLINE static inline void
+   _mulle_atomic_pointer_write_nonatomic( mulle_atomic_pointer_t *p, void *value)
+{
+   *(void **) p = value;
+}
+
 
 MULLE_C_ALWAYS_INLINE static inline void
    _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *p, void *value)
@@ -293,9 +329,9 @@ MULLE_C_ALWAYS_INLINE static inline void
 # pragma mark primitive code
 
 MULLE_C_ALWAYS_INLINE static inline void   *
-   __mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
-                                   void *value,
-                                   void *expect)
+   __mulle_atomic_pointer_cas_weak( mulle_atomic_pointer_t *address,
+                                    void *value,
+                                    void *expect)
 {
    void    *actual;
 
@@ -329,10 +365,19 @@ MULLE_C_ALWAYS_INLINE static inline void   *
 }
 
 
+MULLE_C_ALWAYS_INLINE static inline void   *
+   __mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
+                                   void *value,
+                                   void *expect)
+{
+   return( __mulle_atomic_pointer_cas_weak( address, value, expect));
+}
+
+
 MULLE_C_ALWAYS_INLINE static inline int
-   _mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
-                                  void *value,
-                                  void *expect)
+   _mulle_atomic_pointer_cas_weak( mulle_atomic_pointer_t *address,
+                                   void *value,
+                                   void *expect)
 {
    void    *actual;
    int     result;
@@ -367,6 +412,16 @@ MULLE_C_ALWAYS_INLINE static inline int
 
    return( result);
 }
+
+
+MULLE_C_ALWAYS_INLINE static inline int
+   _mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
+                                  void *value,
+                                  void *expect)
+{
+   return( _mulle_atomic_pointer_cas_weak( address, value, expect));
+}
+
 
 
 // this returns actual
