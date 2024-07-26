@@ -112,6 +112,18 @@ static inline void   mulle_thread_yield( void)
 }
 
 
+//
+// AS there is no PR_GET_NAME, this is useless
+//
+// static inline void   mulle_thread_set_name( char *name)
+// {
+//     prctl( PR_SET_NAME, thread_name, 0, 0, 0);
+// }
+//
+
+
+
+
 // static inline void   mulle_thread_once( mulle_thread_once_t  *once,
 //                                         void (*init)( void))
 // {

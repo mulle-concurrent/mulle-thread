@@ -38,7 +38,7 @@
 //
 // community version is always even
 //
-#define MULLE__THREAD_VERSION  ((4UL << 20) | (5 << 8) | 3)
+#define MULLE__THREAD_VERSION  ((4UL << 20) | (6 << 8) | 0)
 
 #include "include.h"
 
@@ -94,6 +94,13 @@ typedef int   mulle_thread_rval_t;
 
 
 //
+// currently we say that a mutex must be cleaned up with a "done" call
+// platforms that do not need this, can set this to 0 and then you can
+// get rid of some -dealloc overhead
+//
+#define MULLE_THREAD_MUTEX_NEEDS_DONE   1
+#define MULLE_THREAD_COND_NEEDS_DONE    1 // for the future
+//
 // True posix conformance is much more complicated, we dumb this down
 // for windows and for everyone else. So we have the same behavior
 // on all platforms.
@@ -104,25 +111,49 @@ typedef mulle_atomic_pointer_t   mulle_thread_once_t;
 #define MULLE_THREAD_ONCE_INIT   0
 
 
+// the old, not so useful interface
 static inline void   mulle_thread_once( mulle_thread_once_t  *once,
                                         void (*init)( void))
 {
-   if( _mulle_atomic_pointer_compare_and_swap( once, (void *) 1848, (void *) 0))
+   if( _mulle_atomic_pointer_compare_and_swap( once,
+                                               (void *) 1848,
+                                               (void *) MULLE_THREAD_ONCE_INIT))
       (*init)();
 }
 
 
+// the new, more useful interface
+static inline void   mulle_thread_once_call( mulle_thread_once_t  *once,
+                                             void (*init)( void *),
+                                             void *userinfo)
+{
+   if( _mulle_atomic_pointer_compare_and_swap( once,
+                                               (void *) 1848,
+                                               (void *) MULLE_THREAD_ONCE_INIT))
+      (*init)( userinfo);
+}
+
+// convenient interface
+#define mulle_thread_once_do( name)                                              \
+   static mulle_thread_once_t   name = MULLE_THREAD_ONCE_INIT;                   \
+   if( _mulle_atomic_pointer_compare_and_swap( &name,                            \
+                                               (void *) 1848,                    \
+                                               (void *) MULLE_THREAD_ONCE_INIT))
+
+
+
 //
 // You can't have another mulle_thread_mutex_do inside a mulle_thread_mutex_do
-// but it's bad deadlocking idea anway
+// but it's a bad deadlocking idea anyway. Using a name and not a pointer is
+// consistent with mulle-buffer.
 //
-#define mulle_thread_mutex_do( name)                                           \
-   for( int  mulle_thread_mutex_do__i = ( mulle_thread_mutex_lock( &name), 0); \
-        mulle_thread_mutex_do__i < 1;                                          \
-        mulle_thread_mutex_unlock( &name), mulle_thread_mutex_do__i++)         \
-                                                                               \
-      for( int  mulle_thread_mutex_do__j = 0; /* break protection */           \
-           mulle_thread_mutex_do__j < 1;                                       \
+#define mulle_thread_mutex_do( mutex)                                           \
+   for( int  mulle_thread_mutex_do__i = ( mulle_thread_mutex_lock( &mutex), 0); \
+        mulle_thread_mutex_do__i < 1;                                           \
+        mulle_thread_mutex_unlock( &mutex), mulle_thread_mutex_do__i++)         \
+                                                                                \
+      for( int  mulle_thread_mutex_do__j = 0; /* break protection */            \
+           mulle_thread_mutex_do__j < 1;                                        \
            mulle_thread_mutex_do__j++)
 
 /*
