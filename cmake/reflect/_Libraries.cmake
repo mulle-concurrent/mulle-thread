@@ -18,28 +18,32 @@ endif()
 # Disable for a sdk: `mulle-sourcetree mark stdthreads no-cmake-sdk-<name>`
 #
 if( ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-   if( NOT STDTHREADS_LIBRARY)
-      find_library( STDTHREADS_LIBRARY NAMES
-         stdthreads
-      )
-      message( STATUS "STDTHREADS_LIBRARY is ${STDTHREADS_LIBRARY}")
-      #
-      # The order looks ascending, but due to the way this file is read
-      # it ends up being descending, which is what we need.
-      #
-      if( STDTHREADS_LIBRARY)
+   if( COLLECT_OS_SPECIFIC_LIBRARIES_AS_NAMES)
+      list( APPEND OS_SPECIFIC_LIBRARIES "stdthreads")
+   else()
+      if( NOT STDTHREADS_LIBRARY)
+         find_library( STDTHREADS_LIBRARY NAMES
+            stdthreads
+         )
+         message( STATUS "STDTHREADS_LIBRARY is ${STDTHREADS_LIBRARY}")
          #
-         # Add STDTHREADS_LIBRARY to OS_SPECIFIC_LIBRARIES list.
-         # Disable with: `mulle-sourcetree mark stdthreads no-cmake-add`
+         # The order looks ascending, but due to the way this file is read
+         # it ends up being descending, which is what we need.
          #
-         list( APPEND OS_SPECIFIC_LIBRARIES ${STDTHREADS_LIBRARY})
-         # intentionally left blank
-      else()
-         # Disable with: `mulle-sourcetree mark stdthreads no-require-link`
-         message( FATAL_ERROR "STDTHREADS_LIBRARY was not found")
+         if( STDTHREADS_LIBRARY)
+            #
+            # Add STDTHREADS_LIBRARY to OS_SPECIFIC_LIBRARIES list.
+            # Disable with: `mulle-sourcetree mark stdthreads no-cmake-add`
+            #
+            list( APPEND OS_SPECIFIC_LIBRARIES ${STDTHREADS_LIBRARY})
+            # intentionally left blank
+         else()
+            # Disable with: `mulle-sourcetree mark stdthreads no-require-link`
+            message( SEND_ERROR "STDTHREADS_LIBRARY was not found")
+         endif()
       endif()
    endif()
-   endif()
+endif()
 
 
 #
@@ -49,64 +53,68 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
 # Disable for a sdk: `mulle-sourcetree mark pthread no-cmake-sdk-<name>`
 #
 if( NOT (${CMAKE_SYSTEM_NAME} MATCHES "Android" OR ${CMAKE_SYSTEM_NAME} MATCHES "Windows"))
-   if( NOT PTHREAD_LIBRARY)
-      find_library( PTHREAD_LIBRARY NAMES
-         pthreads
-         pthread
-      )
-      message( STATUS "PTHREAD_LIBRARY is ${PTHREAD_LIBRARY}")
-      #
-      # The order looks ascending, but due to the way this file is read
-      # it ends up being descending, which is what we need.
-      #
-      if( PTHREAD_LIBRARY)
+   if( COLLECT_OS_SPECIFIC_LIBRARIES_AS_NAMES)
+      list( APPEND OS_SPECIFIC_LIBRARIES "pthreads")
+   else()
+      if( NOT PTHREAD_LIBRARY)
+         find_library( PTHREAD_LIBRARY NAMES
+            pthreads
+            pthread
+         )
+         message( STATUS "PTHREAD_LIBRARY is ${PTHREAD_LIBRARY}")
          #
-         # Add PTHREAD_LIBRARY to OS_SPECIFIC_LIBRARIES list.
-         # Disable with: `mulle-sourcetree mark pthread no-cmake-add`
+         # The order looks ascending, but due to the way this file is read
+         # it ends up being descending, which is what we need.
          #
-         list( APPEND OS_SPECIFIC_LIBRARIES ${PTHREAD_LIBRARY})
-         #
-         # Inherit information from dependency.
-         # Encompasses: no-cmake-searchpath,no-cmake-dependency,no-cmake-loader
-         # Disable with: `mulle-sourcetree mark pthread no-cmake-inherit`
-         #
-         # temporarily expand CMAKE_MODULE_PATH
-         get_filename_component( _TMP_PTHREAD_ROOT "${PTHREAD_LIBRARY}" DIRECTORY)
-         get_filename_component( _TMP_PTHREAD_ROOT "${_TMP_PTHREAD_ROOT}" DIRECTORY)
-         #
-         #
-         # Search for "Definitions.cmake" and "DependenciesAndLibraries.cmake" to include.
-         # Disable with: `mulle-sourcetree mark pthread no-cmake-dependency`
-         #
-         foreach( _TMP_PTHREAD_NAME "pthreads" "pthread")
-            set( _TMP_PTHREAD_DIR "${_TMP_PTHREAD_ROOT}/include/${_TMP_PTHREAD_NAME}/cmake")
-            # use explicit path to avoid "surprises"
-            if( IS_DIRECTORY "${_TMP_PTHREAD_DIR}")
-               list( INSERT CMAKE_MODULE_PATH 0 "${_TMP_PTHREAD_DIR}")
-               # we only want top level INHERIT_OBJC_LOADERS, so disable them
-               if( NOT NO_INHERIT_OBJC_LOADERS)
-                  set( NO_INHERIT_OBJC_LOADERS OFF)
+         if( PTHREAD_LIBRARY)
+            #
+            # Add PTHREAD_LIBRARY to OS_SPECIFIC_LIBRARIES list.
+            # Disable with: `mulle-sourcetree mark pthread no-cmake-add`
+            #
+            list( APPEND OS_SPECIFIC_LIBRARIES ${PTHREAD_LIBRARY})
+            #
+            # Inherit information from dependency.
+            # Encompasses: no-cmake-searchpath,no-cmake-dependency,no-cmake-loader
+            # Disable with: `mulle-sourcetree mark pthread no-cmake-inherit`
+            #
+            # temporarily expand CMAKE_MODULE_PATH
+            get_filename_component( _TMP_PTHREAD_ROOT "${PTHREAD_LIBRARY}" DIRECTORY)
+            get_filename_component( _TMP_PTHREAD_ROOT "${_TMP_PTHREAD_ROOT}" DIRECTORY)
+            #
+            #
+            # Search for "Definitions.cmake" and "DependenciesAndLibraries.cmake" to include.
+            # Disable with: `mulle-sourcetree mark pthread no-cmake-dependency`
+            #
+            foreach( _TMP_PTHREAD_NAME "pthreads" "pthread")
+               set( _TMP_PTHREAD_DIR "${_TMP_PTHREAD_ROOT}/include/${_TMP_PTHREAD_NAME}/cmake")
+               # use explicit path to avoid "surprises"
+               if( IS_DIRECTORY "${_TMP_PTHREAD_DIR}")
+                  list( INSERT CMAKE_MODULE_PATH 0 "${_TMP_PTHREAD_DIR}")
+                  # we only want top level INHERIT_OBJC_LOADERS, so disable them
+                  if( NOT NO_INHERIT_OBJC_LOADERS)
+                     set( NO_INHERIT_OBJC_LOADERS OFF)
+                  endif()
+                  list( APPEND _TMP_INHERIT_OBJC_LOADERS ${NO_INHERIT_OBJC_LOADERS})
+                  set( NO_INHERIT_OBJC_LOADERS ON)
+                  #
+                  include( "${_TMP_PTHREAD_DIR}/DependenciesAndLibraries.cmake" OPTIONAL)
+                  #
+                  list( GET _TMP_INHERIT_OBJC_LOADERS -1 NO_INHERIT_OBJC_LOADERS)
+                  list( REMOVE_AT _TMP_INHERIT_OBJC_LOADERS -1)
+                  list( REMOVE_ITEM CMAKE_MODULE_PATH "${_TMP_PTHREAD_DIR}")
+                  #
+                  unset( PTHREAD_DEFINITIONS)
+                  include( "${_TMP_PTHREAD_DIR}/Definitions.cmake" OPTIONAL)
+                  list( APPEND INHERITED_DEFINITIONS ${PTHREAD_DEFINITIONS})
+                  break()
+               else()
+                  message( STATUS "${_TMP_PTHREAD_DIR} not found")
                endif()
-               list( APPEND _TMP_INHERIT_OBJC_LOADERS ${NO_INHERIT_OBJC_LOADERS})
-               set( NO_INHERIT_OBJC_LOADERS ON)
-               #
-               include( "${_TMP_PTHREAD_DIR}/DependenciesAndLibraries.cmake" OPTIONAL)
-               #
-               list( GET _TMP_INHERIT_OBJC_LOADERS -1 NO_INHERIT_OBJC_LOADERS)
-               list( REMOVE_AT _TMP_INHERIT_OBJC_LOADERS -1)
-               list( REMOVE_ITEM CMAKE_MODULE_PATH "${_TMP_PTHREAD_DIR}")
-               #
-               unset( PTHREAD_DEFINITIONS)
-               include( "${_TMP_PTHREAD_DIR}/Definitions.cmake" OPTIONAL)
-               list( APPEND INHERITED_DEFINITIONS ${PTHREAD_DEFINITIONS})
-               break()
-            else()
-               message( STATUS "${_TMP_PTHREAD_DIR} not found")
-            endif()
-         endforeach()
-      else()
-         # Enable with: `mulle-sourcetree mark pthread require`
-         message( STATUS "PTHREAD_LIBRARY is missing but it is marked as \"no-require\"")
+            endforeach()
+         else()
+            # Enable with: `mulle-sourcetree mark pthread require`
+            message( STATUS "PTHREAD_LIBRARY is missing but it is marked as \"no-require\"")
+         endif()
       endif()
    endif()
-   endif()
+endif()

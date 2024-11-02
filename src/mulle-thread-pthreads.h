@@ -53,7 +53,7 @@ typedef mulle_thread_rval_t   mulle_thread_function_t( void *);
 typedef void                  mulle_thread_callback_t( void *);
 
 
-//#define MULLE_THREAD_ONCE_INIT   PTHREAD_ONCE_INIT
+//#define MULLE_THREAD_ONCE_DATA   PTHREAD_ONCE_INIT
 
 #pragma mark - Threads
 
