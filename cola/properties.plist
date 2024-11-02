@@ -3,6 +3,8 @@
    {
       description="🔠 Cross-platform thread/mutex/tss/atomic operations in C";
       domain="github";
+      language="c";
+      dialect="c";
       name="mulle-thread";
       user="mulle-concurrent";
       repo="mulle-thread";
