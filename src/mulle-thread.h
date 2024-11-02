@@ -108,7 +108,10 @@ typedef int   mulle_thread_rval_t;
 //
 typedef mulle_atomic_pointer_t   mulle_thread_once_t;
 
-#define MULLE_THREAD_ONCE_INIT   0
+#define MULLE_THREAD_ONCE_DATA   0
+
+// old name
+#define MULLE_THREAD_ONCE_INIT   MULLE_THREAD_ONCE_DATA
 
 
 // the old, not so useful interface
@@ -117,7 +120,7 @@ static inline void   mulle_thread_once( mulle_thread_once_t  *once,
 {
    if( _mulle_atomic_pointer_compare_and_swap( once,
                                                (void *) 1848,
-                                               (void *) MULLE_THREAD_ONCE_INIT))
+                                               (void *) MULLE_THREAD_ONCE_DATA))
       (*init)();
 }
 
@@ -129,16 +132,16 @@ static inline void   mulle_thread_once_call( mulle_thread_once_t  *once,
 {
    if( _mulle_atomic_pointer_compare_and_swap( once,
                                                (void *) 1848,
-                                               (void *) MULLE_THREAD_ONCE_INIT))
+                                               (void *) MULLE_THREAD_ONCE_DATA))
       (*init)( userinfo);
 }
 
 // convenient interface
 #define mulle_thread_once_do( name)                                              \
-   static mulle_thread_once_t   name = MULLE_THREAD_ONCE_INIT;                   \
+   static mulle_thread_once_t   name = MULLE_THREAD_ONCE_DATA;                   \
    if( _mulle_atomic_pointer_compare_and_swap( &name,                            \
                                                (void *) 1848,                    \
-                                               (void *) MULLE_THREAD_ONCE_INIT))
+                                               (void *) MULLE_THREAD_ONCE_DATA))
 
 
 

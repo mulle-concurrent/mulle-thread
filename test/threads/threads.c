@@ -30,8 +30,8 @@ int   main( void)
    mulle_thread_rval_t          rval;
 
 // stupid fix for stupid compilers
-#if MULLE_THREAD_ONCE_INIT
-   static mulle_thread_once_t   once = MULLE_THREAD_ONCE_INIT;
+#if MULLE_THREAD_ONCE_DATA
+   static mulle_thread_once_t   once = MULLE_THREAD_ONCE_DATA;
 #else
    static mulle_thread_once_t   once;
 #endif
