@@ -1,3 +1,14 @@
+## 4.6.0
+
+** BREAKING** `_INIT` macros are now `_DATA` macros for consistency with other mulle libraries
+
+* convenience macro `mulle_thread_once_do` added
+* `_mulle_atomic_pointer_weakcas` and sibling functions are now named `__mulle_atomic_functionpointer_cas_weak` (but the old name still exists)
+* `_mulle_atomic_pointer_nonatomic_write` and siblings are now named `_mulle_atomic_functionpointer_write_nonatomic` but the old names still exist
+
+* made pthread an optional link. This is helpful because sometimes cmake can't find the library, but the linker can (for example when cross compiling to 32 bit with -m32)
+
+
 ### 4.5.3
 
 * Various small improvements
