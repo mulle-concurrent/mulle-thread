@@ -1,3 +1,7 @@
+### 4.6.1
+
+Various small improvements
+
 ## 4.6.0
 
 ** BREAKING** `_INIT` macros are now `_DATA` macros for consistency with other mulle libraries

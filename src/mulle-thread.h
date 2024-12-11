@@ -38,7 +38,7 @@
 //
 // community version is always even
 //
-#define MULLE__THREAD_VERSION  ((4UL << 20) | (6 << 8) | 0)
+#define MULLE__THREAD_VERSION  ((4UL << 20) | (6 << 8) | 1)
 
 #include "include.h"
 
