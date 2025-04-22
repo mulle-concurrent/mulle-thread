@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.14)
 
-project( mulle-thread VERSION 4.6.1 LANGUAGES C)
+project( mulle-thread VERSION 4.6.2 LANGUAGES C)
 
 
 

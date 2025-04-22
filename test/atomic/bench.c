@@ -162,7 +162,9 @@ struct thread_info
 
 static mulle_thread_rval_t   run_test( struct thread_info *info)
 {
+#ifndef MULLE_TEST_VALGRIND
    mulle_thread_tss_set( name_thread_key, strdup( info->name));
+#endif
 
    // all thread should start at same time...
    _wait_around( info->n_threads);
@@ -263,8 +265,10 @@ int   main( int argc, const char * argv[])
    rval = mulle_thread_tss_create( free, &name_thread_key);
    assert( ! rval);
 
+#ifndef MULLE_TEST_VALGRIND
    rval = mulle_thread_tss_set( name_thread_key, strdup( "main"));
    assert( ! rval);
+#endif
 
    test( run_atomic_better_read_cas);
    test( run_atomic_read_cas);

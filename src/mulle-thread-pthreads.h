@@ -52,7 +52,8 @@ typedef void              *mulle_thread_native_rval_t;
 typedef mulle_thread_rval_t   mulle_thread_function_t( void *);
 typedef void                  mulle_thread_callback_t( void *);
 
-
+// MEMO: windows can't do static initializes for CRITICAL_SECTION
+//#define MULLE_THREAD_MUTEX_DATA   PTHREAD_MUTEX_INITIALIZER
 //#define MULLE_THREAD_ONCE_DATA   PTHREAD_ONCE_INIT
 
 #pragma mark - Threads
