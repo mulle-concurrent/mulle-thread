@@ -103,7 +103,9 @@ struct thread_info
 
 static mulle_thread_rval_t   run_test( struct thread_info *info)
 {
+#ifndef MULLE_TEST_VALGRIND
    mulle_thread_tss_set( timestamp_thread_key, strdup( info->name));
+#endif
 
    _wait_around( info->n_threads);
    multi_threaded_test_each_thread();
@@ -198,8 +200,10 @@ int   _main(int argc, const char * argv[])
    rval = mulle_thread_tss_create( free, &timestamp_thread_key);
    assert( ! rval);
 
+#ifndef MULLE_TEST_VALGRIND
    rval = mulle_thread_tss_set( timestamp_thread_key, strdup( "main"));
    assert( ! rval);
+#endif
 
 #if MULLE_ABA_TRACE
    fprintf( stderr, "%s\n", mulle_aba_thread_name());
