@@ -37,9 +37,9 @@ it will not.
 
 
 
-| Release Version                                       | Release Notes
-|-------------------------------------------------------|--------------
-| ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-concurrent/mulle-thread.svg) [![Build Status](https://github.com/mulle-concurrent/mulle-thread/workflows/CI/badge.svg)](//github.com/mulle-concurrent/mulle-thread/actions) | [RELEASENOTES](RELEASENOTES.md) |
+| Release Version                                       | Release Notes  | AI Documentation
+|-------------------------------------------------------|----------------|---------------
+| ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-concurrent/mulle-thread.svg) [![Build Status](https://github.com/mulle-concurrent/mulle-thread/workflows/CI/badge.svg)](//github.com/mulle-concurrent/mulle-thread/actions) | [RELEASENOTES](RELEASENOTES.md) | [DeepWiki for mulle-thread](https://deepwiki.com/mulle-concurrent/mulle-thread)
 
 
 ## API
