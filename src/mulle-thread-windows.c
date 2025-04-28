@@ -177,7 +177,7 @@ static struct
 } global;
 
 
-static void   mulle_thread_tss_init( void)
+void   mulle_thread_tss_init( void)
 {
    for(;;)
    {
@@ -195,7 +195,7 @@ static void   mulle_thread_tss_init( void)
 }
 
 
-static void   mulle_thread_tss_done( void)
+void   mulle_thread_tss_done( void)
 {
    for(;;)
    {

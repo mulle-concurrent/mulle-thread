@@ -55,23 +55,23 @@
 #endif
 
 
-// clang lies about __STDC_NO_THREADS__
+// clang lies about __STDC_NO_THREADS__, gcc does not necessary
+// windows thinks it has threads.h but its apparently something else ?
 
-#ifndef HAVE_C11_THREADS
-# ifdef __clang__
-#  if __has_include(<threads.h>)
-#    define HAVE_C11_THREADS 1
-#  endif
-# else
-#  if __STDC_VERSION__ >= 201112L && ! defined( __STDC_NO_THREADS__)
-#   define HAVE_C11_THREADS  1
+#ifndef _WIN32
+# ifndef HAVE_C11_THREADS
+#  if defined( __has_include) || defined( __clang__) || (defined(__GNUC__) && (__GNUC__ >= 5))
+#   if __has_include(<threads.h>)
+#     define HAVE_C11_THREADS 1
+#   endif
+#  else
+#   if __STDC_VERSION__ >= 201112L && ! defined( __STDC_NO_THREADS__)
+#    define HAVE_C11_THREADS  1
+#   endif
 #  endif
 # endif
 #endif
 
-
-typedef int   mulle_thread_rval_t;
-#define mulle_thread_return()  return( 0) // bogus, exit is returned differently
 
 #if HAVE_C11_THREADS && ! defined( MULLE_THREAD_USE_PTHREADS)
 # if TRACE_INCLUDE
