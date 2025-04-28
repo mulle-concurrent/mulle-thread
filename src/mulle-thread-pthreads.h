@@ -42,6 +42,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+typedef void   *mulle_thread_rval_t;
+#define mulle_thread_return()  return( NULL)
+
 
 //typedef pthread_once_t    mulle_thread_once_t;
 typedef pthread_mutex_t   mulle_thread_mutex_t;
@@ -71,7 +74,7 @@ static inline int   mulle_thread_create( mulle_thread_function_t *f,
                                          void *arg,
                                          mulle_thread_t *p_thread)
 {
-   return( pthread_create( p_thread, NULL, (void *(*)()) f, arg));
+   return( pthread_create( p_thread, NULL, f, arg));
 }
 
 
@@ -99,7 +102,7 @@ static inline int   mulle_thread_detach( mulle_thread_t thread)
 }
 
 
-static inline void   mulle_thread_exit( mulle_thread_rval_t rval)
+static inline void   mulle_thread_exit( int rval)
 {
    pthread_exit( (void *) (intptr_t) rval);
 }

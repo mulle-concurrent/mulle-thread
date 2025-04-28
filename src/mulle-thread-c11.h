@@ -41,6 +41,9 @@
 #include <errno.h>
 #include <threads.h>
 
+typedef int   mulle_thread_rval_t;
+#define mulle_thread_return()  return( 0) // bogus, exit is returned differently
+
 
 //typedef once_flag   mulle_thread_once_t;
 typedef mtx_t       mulle_thread_mutex_t;
@@ -95,7 +98,7 @@ static inline int   mulle_thread_detach( mulle_thread_t thread)
 }
 
 
-static inline void   mulle_thread_exit( mulle_thread_rval_t rval)
+static inline void   mulle_thread_exit( int rval)
 {
    thrd_exit( rval);
 }

@@ -43,7 +43,8 @@
 #include <errno.h>
 #include <assert.h>
 
-
+typedef unsigned int   mulle_thread_rval_t;
+#define mulle_thread_return()  return( 0)
 
 typedef DWORD    mulle_thread_tss_t;
 typedef HANDLE   mulle_thread_t;
@@ -80,7 +81,7 @@ static inline int   mulle_thread_create( mulle_thread_function_t *f,
 }
 
 
-static inline void   mulle_thread_exit( mulle_thread_rval_t rval)
+static inline void   mulle_thread_exit( int rval)
 {
    extern void  mulle_thread_windows_destroy_tss( void);
 
