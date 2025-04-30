@@ -69,7 +69,7 @@
 
 #pragma mark - additional API
 
-MULLE_C_ALWAYS_INLINE static inline void *
+MULLE_C_STATIC_ALWAYS_INLINE void *
    _mulle_atomic_pointer_set( mulle_atomic_pointer_t *address,
                               void  *value)
 {
@@ -87,7 +87,7 @@ MULLE_C_ALWAYS_INLINE static inline void *
 }
 
 
-MULLE_C_ALWAYS_INLINE static inline mulle_functionpointer_t
+MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
    _mulle_atomic_functionpointer_set( mulle_atomic_functionpointer_t *address,
                                       mulle_functionpointer_t value)
 {
