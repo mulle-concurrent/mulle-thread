@@ -62,6 +62,7 @@ typedef void                  mulle_thread_callback_t( void *);
 #pragma mark - Threads
 
 MULLE_C_CONST_RETURN
+MULLE_C_NO_INSTRUMENT_FUNCTION
 static inline mulle_thread_t  mulle_thread_self( void)
 {
    return( pthread_self());
@@ -181,27 +182,34 @@ static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 
 // different parameters, rval always last
 // a returned zero key is valid!
-static inline int   mulle_thread_tss_create( mulle_thread_callback_t *f,
+// on windows these are not inlineable...
+MULLE_C_STATIC_ALWAYS_INLINE
+int   mulle_thread_tss_create( mulle_thread_callback_t *f,
                                              mulle_thread_tss_t *key)
 {
    return( pthread_key_create( key, f));
 }
 
 
-static inline void   mulle_thread_tss_free( mulle_thread_tss_t key)
+MULLE_C_STATIC_ALWAYS_INLINE
+void   mulle_thread_tss_free( mulle_thread_tss_t key)
 {
    pthread_key_delete( key);
 }
 
 
-static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 {
    // if you SIGSEGV here, it probably means: your stack is overflown
    return( pthread_getspecific( key));
 }
 
 
-static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int  mulle_thread_tss_set( mulle_thread_tss_t key,
                                          void *value)
 {
    return( pthread_setspecific( key, value));

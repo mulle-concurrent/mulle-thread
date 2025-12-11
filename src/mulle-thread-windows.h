@@ -65,6 +65,7 @@ typedef struct
 #pragma mark - Threads
 
 MULLE_C_CONST_RETURN
+MULLE_C_NO_INSTRUMENT_FUNCTION
 static inline mulle_thread_t  mulle_thread_self( void)
 {
    return( GetCurrentThread());
@@ -190,7 +191,8 @@ void   mulle_thread_tss_done( void);
 static inline int   mulle_thread_tss_create( mulle_thread_callback_t *f,
                                              mulle_thread_tss_t *key)
 {
-   extern int   mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *));
+   MULLE__THREAD_GLOBAL
+   int   mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *));
 
    *key = TlsAlloc();
    if( *key == TLS_OUT_OF_INDEXES)
@@ -204,22 +206,26 @@ static inline int   mulle_thread_tss_create( mulle_thread_callback_t *f,
 
 static inline void   mulle_thread_tss_free( mulle_thread_tss_t key)
 {
-   extern void  mulle_thread_windows_remove_tss( mulle_thread_tss_t key);
+   MULLE__THREAD_GLOBAL
+   void  mulle_thread_windows_remove_tss( mulle_thread_tss_t key);
 
    mulle_thread_windows_remove_tss( key);
    TlsFree( key);
 }
 
 
-static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 {
    // if you SIGSEGV here, it probably means: your stack is overflown
    return( TlsGetValue( key));
 }
 
 
-static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
-                                         void *value)
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int  mulle_thread_tss_set( mulle_thread_tss_t key, void *value)
 {
    return( TlsSetValue( key, value) ? 0 : -1);
 }

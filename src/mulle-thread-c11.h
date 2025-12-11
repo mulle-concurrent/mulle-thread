@@ -163,29 +163,34 @@ static inline int   mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 // a returned zero key is valid!
 // destruktor is likely NOT to be called on main thread
 //
-static inline int   mulle_thread_tss_create( mulle_thread_callback_t f,
-                                             mulle_thread_tss_t *key)
+MULLE_C_STATIC_ALWAYS_INLINE
+int   mulle_thread_tss_create( mulle_thread_callback_t f,
+                               mulle_thread_tss_t *key)
 {
    assert( key);
    return( tss_create( key, (tss_dtor_t) f) == thrd_success ? 0 : -1);
 }
 
 
-static inline void   mulle_thread_tss_free( mulle_thread_tss_t key)
+MULLE_C_STATIC_ALWAYS_INLINE
+void   mulle_thread_tss_free( mulle_thread_tss_t key)
 {
    tss_delete( key);
 }
 
 
-static inline void   *mulle_thread_tss_get( mulle_thread_tss_t key)
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *mulle_thread_tss_get( mulle_thread_tss_t key)
 {
    // if you SIGSEGV here, it probably means: your stack has overflown
    return( tss_get( key));
 }
 
 
-static inline int  mulle_thread_tss_set( mulle_thread_tss_t key,
-                                         void *value)
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int  mulle_thread_tss_set( mulle_thread_tss_t key, void *value)
 {
    return( tss_set( key, value) == thrd_success ? 0 : -1);
 }

@@ -39,7 +39,7 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
             # intentionally left blank
          else()
             # Disable with: `mulle-sourcetree mark stdthreads no-require-link`
-            message( SEND_ERROR "STDTHREADS_LIBRARY was not found")
+            message( SEND_ERROR "STDTHREADS_LIBRARY was not found in stdthreads")
          endif()
       endif()
    endif()

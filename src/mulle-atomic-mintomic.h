@@ -57,35 +57,45 @@ typedef void   (*mulle_functionpointer_t)();
 
 #pragma mark - value pointers
 
-MULLE_C_STATIC_ALWAYS_INLINE void   *
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
    _mulle_atomic_pointer_read_nonatomic( mulle_atomic_pointer_t *address)
 {
    return( address->_nonatomic);
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE void   *
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
    _mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *address)
 {
    return( address->_nonatomic);
 }
 
 // old
-MULLE_C_STATIC_ALWAYS_INLINE void
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
    _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *address, void *value)
 {
    address->_nonatomic = value;
 }
 
 // new
-MULLE_C_STATIC_ALWAYS_INLINE void
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
    _mulle_atomic_pointer_write_nonatomic( mulle_atomic_pointer_t *address, void *value)
 {
    address->_nonatomic = value;
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE void  *
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
    _mulle_atomic_pointer_read( mulle_atomic_pointer_t *address)
 {
    void   *result;
@@ -102,7 +112,9 @@ MULLE_C_STATIC_ALWAYS_INLINE void  *
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE void
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
    _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address,
                               void *value)
 {
@@ -111,7 +123,9 @@ MULLE_C_STATIC_ALWAYS_INLINE void
 
 
 
-MULLE_C_STATIC_ALWAYS_INLINE void   *
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
    __mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
                                void *value,
                                void *expect)
@@ -135,7 +149,9 @@ MULLE_C_STATIC_ALWAYS_INLINE void   *
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE void   *
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
    __mulle_atomic_pointer_cas_weak( mulle_atomic_pointer_t *address,
                                    void *value,
                                    void *expect)
@@ -144,7 +160,9 @@ MULLE_C_STATIC_ALWAYS_INLINE void   *
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE void   *
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
    __mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
                                    void *value,
                                    void *expect)
@@ -154,7 +172,9 @@ MULLE_C_STATIC_ALWAYS_INLINE void   *
 
 
 
-MULLE_C_STATIC_ALWAYS_INLINE int
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
    _mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address,
                               void *value,
                               void *expect)
@@ -166,7 +186,9 @@ MULLE_C_STATIC_ALWAYS_INLINE int
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE int
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
    _mulle_atomic_pointer_cas_weak( mulle_atomic_pointer_t *address,
                                    void *value,
                                    void *expect)
@@ -175,7 +197,9 @@ MULLE_C_STATIC_ALWAYS_INLINE int
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE int
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
    _mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
                                   void *value,
                                   void *expect)
@@ -188,7 +212,9 @@ MULLE_C_STATIC_ALWAYS_INLINE int
 #pragma mark - function pointers
 
 // new
-MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
    _mulle_atomic_functionpointer_read_nonatomic( mulle_atomic_functionpointer_t *address)
 {
    MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
@@ -197,7 +223,9 @@ MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
 }
 
 // old
-MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
    _mulle_atomic_functionpointer_nonatomic_read( mulle_atomic_functionpointer_t *address)
 {
    MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
@@ -206,7 +234,9 @@ MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE void
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
    _mulle_atomic_functionpointer_write_nonatomic( mulle_atomic_functionpointer_t *address,
                                                   mulle_functionpointer_t value)
 {
@@ -216,7 +246,9 @@ MULLE_C_STATIC_ALWAYS_INLINE void
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE void
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
    _mulle_atomic_functionpointer_nonatomic_write( mulle_atomic_functionpointer_t *address,
                                                   mulle_functionpointer_t value)
 {
@@ -226,7 +258,9 @@ MULLE_C_STATIC_ALWAYS_INLINE void
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
    _mulle_atomic_functionpointer_read( mulle_atomic_functionpointer_t *address)
 {
    MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
@@ -235,7 +269,9 @@ MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE void
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
    _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address,
                                         mulle_functionpointer_t value)
 {
@@ -246,7 +282,9 @@ MULLE_C_STATIC_ALWAYS_INLINE void
 
 
 
-MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
    __mulle_atomic_functionpointer_cas( mulle_atomic_functionpointer_t *address,
                                        mulle_functionpointer_t value,
                                        mulle_functionpointer_t expect)
@@ -259,7 +297,9 @@ MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE int
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
    _mulle_atomic_functionpointer_cas( mulle_atomic_functionpointer_t *address,
                                       mulle_functionpointer_t value,
                                       mulle_functionpointer_t expect)
@@ -272,7 +312,9 @@ MULLE_C_STATIC_ALWAYS_INLINE int
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE int
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
    _mulle_atomic_functionpointer_cas_weak( mulle_atomic_functionpointer_t *address,
                                            mulle_functionpointer_t value,
                                            mulle_functionpointer_t expect)
@@ -283,7 +325,9 @@ MULLE_C_STATIC_ALWAYS_INLINE int
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE int
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
    _mulle_atomic_functionpointer_weakcas( mulle_atomic_functionpointer_t *address,
                                           mulle_functionpointer_t value,
                                           mulle_functionpointer_t expect)
@@ -295,7 +339,9 @@ MULLE_C_STATIC_ALWAYS_INLINE int
 
 
 
-MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
 	__mulle_atomic_functionpointer_cas_weak( mulle_atomic_functionpointer_t *address,
                                             mulle_functionpointer_t value,
                                             mulle_functionpointer_t expect)
@@ -308,7 +354,9 @@ MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
    __mulle_atomic_functionpointer_weakcas( mulle_atomic_functionpointer_t *address,
                                            mulle_functionpointer_t value,
                                            mulle_functionpointer_t expect)
@@ -323,14 +371,18 @@ MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
 
 #pragma mark - atomic arithmetic
 
-MULLE_C_STATIC_ALWAYS_INLINE void   *
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
    _mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
 {
    return( mint_fetch_add_ptr_relaxed( address, 1));
 }
 
 
-MULLE_C_STATIC_ALWAYS_INLINE void  *
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
    _mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *address)
 {
    return( mint_fetch_add_ptr_relaxed( address, -1));
@@ -338,7 +390,9 @@ MULLE_C_STATIC_ALWAYS_INLINE void  *
 
 
 // returns the result, not the previous value like increment/decrement
-MULLE_C_STATIC_ALWAYS_INLINE void  *
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
    _mulle_atomic_pointer_add( mulle_atomic_pointer_t *address, intptr_t diff)
 {
    return( (void *) ((intptr_t) mint_fetch_add_ptr_relaxed( address, diff) + diff));
@@ -347,7 +401,9 @@ MULLE_C_STATIC_ALWAYS_INLINE void  *
 
 #pragma mark - barrier
 
-MULLE_C_STATIC_ALWAYS_INLINE void
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
    mulle_atomic_memory_barrier( void)
 {
    mint_thread_fence_seq_cst();

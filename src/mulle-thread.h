@@ -115,6 +115,7 @@ typedef mulle_atomic_pointer_t   mulle_thread_once_t;
 
 
 // the old, not so useful interface
+MULLE_C_NO_INSTRUMENT_FUNCTION
 static inline void   mulle_thread_once( mulle_thread_once_t  *once,
                                         void (*init)( void))
 {
@@ -126,6 +127,7 @@ static inline void   mulle_thread_once( mulle_thread_once_t  *once,
 
 
 // the new, more useful interface
+MULLE_C_NO_INSTRUMENT_FUNCTION
 static inline void   mulle_thread_once_call( mulle_thread_once_t  *once,
                                              void (*init)( void *),
                                              void *userinfo)
