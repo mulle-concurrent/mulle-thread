@@ -69,7 +69,9 @@
 
 #pragma mark - additional API
 
-MULLE_C_STATIC_ALWAYS_INLINE void *
+MULLE_C_NO_INSTRUMENT_FUNCTION
+MULLE_C_STATIC_ALWAYS_INLINE
+void *
    _mulle_atomic_pointer_set( mulle_atomic_pointer_t *address,
                               void  *value)
 {
@@ -87,6 +89,7 @@ MULLE_C_STATIC_ALWAYS_INLINE void *
 }
 
 
+MULLE_C_NO_INSTRUMENT_FUNCTION
 MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
    _mulle_atomic_functionpointer_set( mulle_atomic_functionpointer_t *address,
                                       mulle_functionpointer_t value)
@@ -107,7 +110,9 @@ MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
 
 #pragma mark - old API
 
-static inline int
+MULLE_C_NO_INSTRUMENT_FUNCTION
+MULLE_C_STATIC_ALWAYS_INLINE
+int
    _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
                                            void *value,
                                            void *expect)
@@ -116,7 +121,9 @@ static inline int
 }
 
 
-static inline void   *
+MULLE_C_NO_INSTRUMENT_FUNCTION
+MULLE_C_STATIC_ALWAYS_INLINE
+void   *
    __mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
                                             void *value,
                                             void *expect)
@@ -125,7 +132,9 @@ static inline void   *
 }
 
 
-static inline mulle_functionpointer_t
+MULLE_C_NO_INSTRUMENT_FUNCTION
+MULLE_C_STATIC_ALWAYS_INLINE
+mulle_functionpointer_t
    __mulle_atomic_functionpointer_compare_and_swap( mulle_atomic_functionpointer_t *address,
                                                     mulle_functionpointer_t value,
                                                     mulle_functionpointer_t expect)
@@ -134,7 +143,9 @@ static inline mulle_functionpointer_t
 }
 
 
-static inline int
+MULLE_C_NO_INSTRUMENT_FUNCTION
+MULLE_C_STATIC_ALWAYS_INLINE
+int
    _mulle_atomic_functionpointer_compare_and_swap( mulle_atomic_functionpointer_t *address,
                                                    mulle_functionpointer_t value,
                                                    mulle_functionpointer_t expect)
