@@ -1,6 +1,6 @@
 {
    "name" : "mulle-thread",
-   "version" : "4.6.2",
+   "version" : "4.7.0",
    "description" : "🔠 Cross-platform thread/mutex/tss/atomic operations in C",
    "keywords" : [],
    "license" : "BSD-3-Clause",
