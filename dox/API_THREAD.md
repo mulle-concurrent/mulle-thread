@@ -17,7 +17,17 @@ Type                  | Description
 
 #### mulle_thread_self
 
+``` c
+int   mulle_thread_self( mulle_thread_t a, mulle_thread_t b)
 ```
+
+Check if two threads are equal. You must use this function instead of
+just `a == b`, if you want your code to work on windows.
+
+
+#### mulle_thread_equal
+
+``` c
 mulle_thread_t   mulle_thread_self( void)
 ```
 
@@ -26,7 +36,7 @@ Returns the current thread, just like `pthread_self`
 
 #### mulle_thread_create
 
-```
+``` c
 mulle_thread_create( mulle_thread_rval_t (*f)(void *),
                      void *arg,
                      mulle_thread_t *thread)

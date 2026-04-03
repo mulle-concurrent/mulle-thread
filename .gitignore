@@ -63,3 +63,5 @@ test*/**/*.test.*
 !/README.md
 build-*/
 environment-user-*.sh
+.roam
+.graveyard

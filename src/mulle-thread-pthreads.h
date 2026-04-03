@@ -48,9 +48,12 @@ typedef void   *mulle_thread_rval_t;
 
 //typedef pthread_once_t    mulle_thread_once_t;
 typedef pthread_mutex_t   mulle_thread_mutex_t;
+typedef pthread_cond_t    mulle_thread_cond_t;
 typedef pthread_key_t     mulle_thread_tss_t;
 typedef pthread_t         mulle_thread_t;
 typedef void              *mulle_thread_native_rval_t;
+
+typedef uintptr_t         mulle_thread_id_t;
 
 typedef mulle_thread_rval_t   mulle_thread_function_t( void *);
 typedef void                  mulle_thread_callback_t( void *);
@@ -69,13 +72,36 @@ static inline mulle_thread_t  mulle_thread_self( void)
 }
 
 
+// use for debugging output
+MULLE_C_CONST_RETURN
+MULLE_C_NO_INSTRUMENT_FUNCTION
+static inline mulle_thread_id_t   mulle_thread_id( void)
+{
+   return( (mulle_thread_id_t) pthread_self());
+}
+
+
+MULLE_C_CONST_RETURN
+static inline mulle_thread_id_t   mulle_thread_get_id( mulle_thread_t thread)
+{
+   return( (mulle_thread_id_t) thread);
+}
+
+
+
 // parameters different to pthreads!
 // p_thread is a return value
 static inline int   mulle_thread_create( mulle_thread_function_t *f,
                                          void *arg,
                                          mulle_thread_t *p_thread)
 {
-   return( pthread_create( p_thread, NULL, f, arg));
+   if( ! pthread_create( p_thread, NULL, f, arg))
+   {
+      assert( mulle_thread_get_id( *p_thread) != (mulle_thread_id_t) -1);
+      assert( mulle_thread_get_id( *p_thread) != (mulle_thread_id_t) 0);
+      return( 0);
+   }
+   return( -1);
 }
 
 
@@ -175,6 +201,47 @@ static inline int  mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock)
 static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 {
    return( pthread_mutex_destroy( lock));
+}
+
+
+#pragma mark - Condition Variables
+
+static inline int  mulle_thread_cond_init( mulle_thread_cond_t *cond)
+{
+   return( pthread_cond_init( cond, NULL));
+}
+
+
+static inline int  mulle_thread_cond_done( mulle_thread_cond_t *cond)
+{
+   return( pthread_cond_destroy( cond));
+}
+
+
+static inline int  mulle_thread_cond_wait( mulle_thread_cond_t *cond,
+                                            mulle_thread_mutex_t *mutex)
+{
+   return( pthread_cond_wait( cond, mutex));
+}
+
+
+static inline int  mulle_thread_cond_signal( mulle_thread_cond_t *cond)
+{
+   return( pthread_cond_signal( cond));
+}
+
+
+static inline int  mulle_thread_cond_broadcast( mulle_thread_cond_t *cond)
+{
+   return( pthread_cond_broadcast( cond));
+}
+
+
+static inline int  mulle_thread_cond_timedwait( mulle_thread_cond_t *cond,
+                                                 mulle_thread_mutex_t *mutex,
+                                                 struct timespec *abstime)
+{
+   return( pthread_cond_timedwait( cond, mutex, abstime));
 }
 
 

@@ -1,4 +1,5 @@
 # mulle-thread Library Documentation for AI
+<!-- Keywords: threads, concurrency -->
 
 ## 1. Introduction & Purpose
 

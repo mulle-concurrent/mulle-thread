@@ -21,7 +21,7 @@
 
 #include "_mulle-thread-include.h"
 
-#ifdef MULLE__THREAD_BUILD
+#if defined( MULLE__THREAD_BUILD) || defined( MULLE__CORE_BUILD)
 # define MULLE__THREAD_GLOBAL    MULLE_C_GLOBAL
 #else
 # if defined( MULLE_THREAD_INCLUDE_DYNAMIC) || (defined( MULLE_INCLUDE_DYNAMIC) && ! defined( MULLE_THREAD_INCLUDE_STATIC))

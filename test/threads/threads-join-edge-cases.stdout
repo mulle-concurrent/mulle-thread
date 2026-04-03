@@ -1,0 +1,16 @@
+=== Thread Join Edge Cases Test ===
+
+Test 1: Normal join...
+PASS: Normal join returned correct value
+
+Test 2: Join on slow thread...
+Waiting for slow thread...
+PASS: Slow thread join returned correct value
+
+Test 3: Detach thread...
+PASS: Thread detached successfully
+
+Test 4: Multiple threads join...
+PASS: All threads joined successfully
+
+=== All tests passed ===

@@ -1,0 +1,11 @@
+main: creating TSS key with destructor
+main: creating thread
+main: joining thread
+thread: allocating TSS data
+thread: setting TSS value
+thread: getting TSS value
+thread: exiting normally
+tss_destructor called
+main: thread joined
+main: freeing TSS key
+main: exiting

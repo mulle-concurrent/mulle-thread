@@ -41,6 +41,24 @@
 #include <stdio.h>
 
 
+mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
+{
+   mulle_thread_native_rval_t   rval;
+   DWORD                        status;
+
+   rval   = (mulle_thread_native_rval_t) -1;
+   status = WaitForSingleObject( thread, INFINITE);
+   if( status)
+   {
+      errno = EINVAL;
+      return( (mulle_thread_rval_t) rval);
+   }
+
+   GetExitCodeThread( thread, &rval);
+   return( (mulle_thread_rval_t) rval);
+}
+
+
 #pragma mark tss destruktor
 
 struct destructor_table_entry
@@ -177,6 +195,54 @@ static struct
 } global;
 
 
+static int   mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *))
+{
+   int   rval;
+
+   mulle_thread_tss_init();
+
+   EnterCriticalSection( &global.lock);
+   {
+      rval = destructor_table_add_destructor_for_key( &global.table, f, key);
+   }
+   LeaveCriticalSection( &global.lock);
+
+   // rval == -1 is actually catastrophic/leaky
+   assert( ! rval);
+   return( rval);
+}
+
+
+static void   mulle_thread_windows_remove_tss( mulle_thread_tss_t key)
+{
+   assert( global.inited);
+
+   EnterCriticalSection( &global.lock);
+   {
+      destructor_table_remove_destructor_for_key( global.table, key);
+   }
+   LeaveCriticalSection( &global.lock);
+
+   mulle_thread_tss_done();
+}
+
+
+static void   mulle_thread_windows_destroy_tss( void)
+{
+   assert( global.inited);
+
+   //
+   // is it a problem that we are doing this while being locked ?
+   // if yes, copy the table and run it outside of the lock
+   //
+   EnterCriticalSection( &global.lock);
+   {
+      destructor_table_execute_destructors( global.table);
+   }
+   LeaveCriticalSection( &global.lock);
+}
+
+
 void   mulle_thread_tss_init( void)
 {
    for(;;)
@@ -203,7 +269,7 @@ void   mulle_thread_tss_done( void)
       {
       case 0  : assert( 0 && "mulle_thread_tss_done called too often");
                 return;
-      case 1  : mulle_thread_yield();
+      case 1  : //mulle_thread_yield();
                 DeleteCriticalSection( &global.lock);
                 free( global.table);
                 global.table = NULL;
@@ -214,51 +280,107 @@ void   mulle_thread_tss_done( void)
 }
 
 
-int   mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *))
+int   mulle_thread_tss_create( mulle_thread_callback_t *f,
+                               mulle_thread_tss_t *key)
 {
-   int   rval;
-
-   mulle_thread_tss_init();
-
-   EnterCriticalSection( &global.lock);
+   *key = TlsAlloc();
+   if( *key == TLS_OUT_OF_INDEXES)
    {
-      rval = destructor_table_add_destructor_for_key( &global.table, f, key);
+      *key = 0;
+      return(-1);
    }
-   LeaveCriticalSection( &global.lock);
-
-   // rval == -1 is actually catastrophic/leaky
-   assert( ! rval);
-   return( rval);
+   return( mulle_thread_windows_add_tss( *key, f));
 }
 
 
-void   mulle_thread_windows_remove_tss( mulle_thread_tss_t key)
+void   mulle_thread_tss_free( mulle_thread_tss_t key)
 {
-   assert( global.inited);
-
-   EnterCriticalSection( &global.lock);
-   {
-      destructor_table_remove_destructor_for_key( global.table, key);
-   }
-   LeaveCriticalSection( &global.lock);
-
-   mulle_thread_tss_done();
+   mulle_thread_windows_remove_tss( key);
+   TlsFree( key);
 }
 
 
-void   mulle_thread_windows_destroy_tss( void)
+void   mulle_thread_windows_destroy_tss_if_needed( void)
 {
-   assert( global.inited);
+   if( global.inited >= 2)
+      mulle_thread_windows_destroy_tss();
+}
 
-   //
-   // is it a problem that we are doing this while being locked ?
-   // if yes, copy the table and run it outside of the lock
-   //
-   EnterCriticalSection( &global.lock);
+
+void   mulle_thread_exit( int rval)
+{
+   mulle_thread_windows_destroy_tss();
+   _endthreadex( rval);
+}
+
+
+/**
+ **/
+int   mulle_thread_cond_wait( mulle_thread_cond_t *cond,
+                              mulle_thread_mutex_t *mutex)
+{
+   int   result;
+
+   // Clear owner before SleepConditionVariableCS releases the mutex
+   _mulle_atomic_pointer_write( &mutex->owner, (void *) 0);
+
+   result = SleepConditionVariableCS( cond, &mutex->section, INFINITE) ? 0 : -1;
+
+   // Restore owner after SleepConditionVariableCS re-acquires the mutex
+   _mulle_atomic_pointer_write( &mutex->owner, (void *) (intptr_t) mulle_thread_id());
+
+   return( result);
+}
+
+
+int   mulle_thread_cond_timedwait( mulle_thread_cond_t *cond,
+                                   mulle_thread_mutex_t *mutex,
+                                   struct timespec *abstime)
+{
+   BOOL             success;
+   DWORD            error;
+   DWORD            milliseconds;
+   FILETIME         ft;
+   long long        diff_ns;
+   ULARGE_INTEGER   abs_100ns;
+   ULARGE_INTEGER   now_100ns;
+
+   // Convert absolute timespec to relative milliseconds
+   if( abstime)
    {
-      destructor_table_execute_destructors( global.table);
+      // Get current time as 100-nanosecond intervals since 1601
+      GetSystemTimeAsFileTime( &ft);
+      now_100ns.LowPart  = ft.dwLowDateTime;
+      now_100ns.HighPart = ft.dwHighDateTime;
+
+      // Convert abstime to same format (FILETIME epoch is 1601, Unix epoch is 1970)
+      // Difference: 11644473600 seconds
+      abs_100ns.QuadPart = ((ULONGLONG) abstime->tv_sec + 11644473600ULL) * 10000000ULL + abstime->tv_nsec / 100;
+
+      diff_ns = (abs_100ns.QuadPart - now_100ns.QuadPart) * 100LL;
+      milliseconds = (DWORD) (diff_ns / 1000000LL);
+      if( diff_ns <= 0)
+         milliseconds = 0;
    }
-   LeaveCriticalSection( &global.lock);
+   else
+      milliseconds = INFINITE;
+
+   // Clear owner before SleepConditionVariableCS releases the mutex
+   _mulle_atomic_pointer_write( &mutex->owner, (void *) 0);
+
+   success = SleepConditionVariableCS( cond, &mutex->section, milliseconds);
+
+   // Restore owner after SleepConditionVariableCS re-acquires the mutex
+   _mulle_atomic_pointer_write( &mutex->owner, (void *) (intptr_t) mulle_thread_id());
+
+   if( ! success)
+   {
+      error = GetLastError();
+      if( error == ERROR_TIMEOUT)
+         return( ETIMEDOUT);
+      return( -1);
+   }
+   return( 0);
 }
 
 

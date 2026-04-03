@@ -37,6 +37,11 @@
 
 #include "include.h"
 
+// Must include mulle-c11-bool.h before windows.h to avoid BOOL conflicts
+#ifndef MULLE_BOOL_DEFINED
+# error "you need to include <mulle-c11/mulle-c11-bool.h> before including <windows.h>"
+#endif
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <process.h>
@@ -44,23 +49,39 @@
 #include <assert.h>
 
 typedef unsigned int   mulle_thread_rval_t;
-#define mulle_thread_return()  return( 0)
+
+MULLE__THREAD_GLOBAL
+void   mulle_thread_windows_destroy_tss_if_needed( void);
+
+#define mulle_thread_return()  do { mulle_thread_windows_destroy_tss_if_needed(); return( 0); } while(0)
 
 typedef DWORD    mulle_thread_tss_t;
 typedef HANDLE   mulle_thread_t;
 typedef DWORD    mulle_thread_native_rval_t;
 
+typedef uintptr_t   mulle_thread_id_t;
+
 typedef mulle_thread_rval_t   mulle_thread_function_t( void *);
 typedef void                  mulle_thread_callback_t( void *);
 
 
-// too complicated and unsafe to extract and intepret section.OwningThread
+// too complicated and unsafe to extract and interpret section.OwningThread
 typedef struct
 {
-   CRITICAL_SECTION  section;
-   mulle_thread_t    owner;
+   CRITICAL_SECTION         section;
+   mulle_atomic_pointer_t   owner;
 } mulle_thread_mutex_t;
 
+
+typedef CONDITION_VARIABLE   mulle_thread_cond_t;
+
+
+static inline uintptr_t   mulle_thread_dword_as_uintptr_t( DWORD value)
+{
+   LONG      signed32 = (LONG) value;   // reinterpret the bits as signed 32-bit
+   intptr_t  extended = signed32;       // sign-extend to 64-bit
+   return( (uintptr_t) extended);
+}
 
 #pragma mark - Threads
 
@@ -68,43 +89,60 @@ MULLE_C_CONST_RETURN
 MULLE_C_NO_INSTRUMENT_FUNCTION
 static inline mulle_thread_t  mulle_thread_self( void)
 {
+   // on windows this is always -2 a pseudo handle
    return( GetCurrentThread());
+}
+
+// use this for debugging output
+MULLE_C_CONST_RETURN
+MULLE_C_NO_INSTRUMENT_FUNCTION
+static inline mulle_thread_id_t   mulle_thread_id( void)
+{
+   return( (mulle_thread_id_t) mulle_thread_dword_as_uintptr_t( GetCurrentThreadId()));
+}
+
+
+// use this for debugging output
+MULLE_C_CONST_RETURN
+static inline mulle_thread_id_t   mulle_thread_get_id( mulle_thread_t thread)
+{
+   return( (mulle_thread_id_t) mulle_thread_dword_as_uintptr_t( GetThreadId( thread)));
 }
 
 
 // parameters different to pthreads!
 static inline int   mulle_thread_create( mulle_thread_function_t *f,
                                          void *arg,
-                                         mulle_thread_t *thread)
+                                         mulle_thread_t *p_thread)
 {
-   *thread = (HANDLE) _beginthreadex( NULL, 0, (_beginthreadex_proc_type) f, arg, 0, NULL);
-   return( *thread ? 0 : -1);
-}
+   unsigned   threadId;   /* not strictly needed, but shows parameter use */
+   HANDLE     handle;
 
-
-static inline void   mulle_thread_exit( int rval)
-{
-   extern void  mulle_thread_windows_destroy_tss( void);
-
-   mulle_thread_windows_destroy_tss();
-   _endthreadex( rval);
-}
-
-
-static inline mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
-{
-   mulle_thread_native_rval_t   rval;
-
-   if( WaitForSingleObject( thread, INFINITE))
+   handle = (HANDLE) _beginthreadex( NULL,
+                                     0,
+                                     (_beginthreadex_proc_type) f,
+                                     arg,
+                                     0,
+                                     &threadId);
+   *p_thread = handle;
+   if( handle)
    {
-      errno = EINVAL;
-      return( (mulle_thread_rval_t) -1);
+      assert( threadId != (unsigned) -1);
+      assert( threadId != (unsigned) 0);
+      return( 0);
    }
-
-   rval = (mulle_thread_native_rval_t) -1;
-   GetExitCodeThread( thread, &rval);
-   return( (mulle_thread_rval_t) rval);
+   return( -1);
 }
+
+
+MULLE__THREAD_GLOBAL
+void   mulle_thread_exit( int rval);
+
+
+
+MULLE__THREAD_GLOBAL
+mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread);
+
 
 
 // http://stackoverflow.com/questions/12744324/how-to-detach-a-thread-on-windows-c
@@ -125,7 +163,7 @@ static inline void   mulle_thread_yield(void)
 static inline int   mulle_thread_mutex_init( mulle_thread_mutex_t *lock)
 {
    InitializeCriticalSection( &lock->section);
-   lock->owner = 0;
+   _mulle_atomic_pointer_write_nonatomic( &lock->owner, 0);
 
    return( 0);
 }
@@ -133,8 +171,11 @@ static inline int   mulle_thread_mutex_init( mulle_thread_mutex_t *lock)
 
 static inline int   mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 {
+   mulle_thread_id_t   self_id;
+
+   self_id = mulle_thread_id();
    EnterCriticalSection( &lock->section);
-   lock->owner = mulle_thread_self();
+   _mulle_atomic_pointer_write( &lock->owner, (void *) self_id);
 
    return( 0);
 }
@@ -142,16 +183,21 @@ static inline int   mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 
 static inline int   mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
 {
+   mulle_thread_id_t   owner_id;
+   mulle_thread_id_t   self_id;
+
    //
    // in win it's ok to reenter a critical, but that's not OK in
    // pthreads. So if it's locked and we own, then... it's busy
    //
-   if( lock->owner == mulle_thread_self())
+   owner_id = (mulle_thread_id_t) _mulle_atomic_pointer_read( &lock->owner);
+   self_id  = mulle_thread_id();
+   if( owner_id == self_id)
       return( EBUSY);
 
    if( TryEnterCriticalSection( &lock->section))
    {
-      lock->owner = mulle_thread_self();  // a bit late though possibly!
+      _mulle_atomic_pointer_write( &lock->owner, (void *) self_id);
       return( 0);
    }
    return( EBUSY);
@@ -160,9 +206,9 @@ static inline int   mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
 
 static inline int   mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock)
 {
-   assert( lock->owner == mulle_thread_self());
+   assert( _mulle_atomic_pointer_read_nonatomic( &lock->owner) == (void *) mulle_thread_id());
 
-   lock->owner = 0;
+   _mulle_atomic_pointer_write( &lock->owner, (void *) 0);
    LeaveCriticalSection( &lock->section);
    return( 0);
 }
@@ -174,6 +220,47 @@ static inline int   mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
    return( 0);
 }
 
+
+#pragma mark - Condition Variables
+
+static inline int   mulle_thread_cond_init( mulle_thread_cond_t *cond)
+{
+   InitializeConditionVariable( cond);
+   return( 0);
+}
+
+
+static inline int   mulle_thread_cond_done( mulle_thread_cond_t *cond)
+{
+   // Windows condition variables don't need cleanup
+   (void) cond;
+   return( 0);
+}
+
+
+static inline int   mulle_thread_cond_signal( mulle_thread_cond_t *cond)
+{
+   WakeConditionVariable( cond);
+   return( 0);
+}
+
+
+static inline int   mulle_thread_cond_broadcast( mulle_thread_cond_t *cond)
+{
+   WakeAllConditionVariable( cond);
+   return( 0);
+}
+
+
+MULLE__THREAD_GLOBAL
+int   mulle_thread_cond_wait( mulle_thread_cond_t *cond,
+                              mulle_thread_mutex_t *mutex);
+
+
+MULLE__THREAD_GLOBAL
+int   mulle_thread_cond_timedwait( mulle_thread_cond_t *cond,
+                                   mulle_thread_mutex_t *mutex,
+                                   struct timespec *abstime);
 
 #pragma mark - Thread Local Storage
 
@@ -187,31 +274,11 @@ void   mulle_thread_tss_init( void);
 MULLE__THREAD_GLOBAL
 void   mulle_thread_tss_done( void);
 
-
-static inline int   mulle_thread_tss_create( mulle_thread_callback_t *f,
-                                             mulle_thread_tss_t *key)
-{
-   MULLE__THREAD_GLOBAL
-   int   mulle_thread_windows_add_tss( mulle_thread_tss_t key, void(*f)(void *));
-
-   *key = TlsAlloc();
-   if( *key == TLS_OUT_OF_INDEXES)
-   {
-      *key = 0;
-      return(-1);
-   }
-   return( mulle_thread_windows_add_tss( *key, f));
-}
-
-
-static inline void   mulle_thread_tss_free( mulle_thread_tss_t key)
-{
-   MULLE__THREAD_GLOBAL
-   void  mulle_thread_windows_remove_tss( mulle_thread_tss_t key);
-
-   mulle_thread_windows_remove_tss( key);
-   TlsFree( key);
-}
+MULLE__THREAD_GLOBAL
+int   mulle_thread_tss_create( mulle_thread_callback_t *f,
+                               mulle_thread_tss_t *key);
+MULLE__THREAD_GLOBAL
+void   mulle_thread_tss_free( mulle_thread_tss_t key);
 
 
 MULLE_C_STATIC_ALWAYS_INLINE
@@ -229,7 +296,6 @@ int  mulle_thread_tss_set( mulle_thread_tss_t key, void *value)
 {
    return( TlsSetValue( key, value) ? 0 : -1);
 }
-
 
 //
 // TODO: use CreateEventA to implement pthread_cond style conditions

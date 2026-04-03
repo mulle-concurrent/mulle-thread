@@ -1,0 +1,13 @@
+=== Recursive Once Test ===
+
+First call:
+Init called at depth 1 (call_count=1)
+  Making recursive call from depth 1
+  Returned from recursive call at depth 1
+
+After first call: call_count=1, recursive_depth=1
+
+Second call (should be no-op):
+After second call: call_count=1, recursive_depth=1
+
+=== Test passed ===

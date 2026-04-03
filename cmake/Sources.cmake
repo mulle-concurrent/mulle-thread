@@ -20,18 +20,22 @@ include( _Sources)
 #
 
 set( SOURCES
-src/mulle-thread-linkage.c
+src/mulle-thread.c
 )
 
 set( STANDALONE_SOURCES
-src/mulle-thread-standalone.c
+src/mulle-thread.c
 )
 
 
-if( MSVC)
+if( WIN32)
    set( SOURCES
-${SOURCES}
-src/mulle-thread-windows.c
-)
+      ${SOURCES}
+      src/mulle-thread-windows.c
+   )
+   set( STANDALONE_SOURCES
+      ${STANDALONE_SOURCES}
+      src/mulle-thread-windows.c
+   )
 endif()
 
