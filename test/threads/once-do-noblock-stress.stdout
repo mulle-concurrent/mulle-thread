@@ -1,0 +1,2 @@
+test passed: all 10 values initialized
+note: 0 values had multiple init calls (expected for noblock)

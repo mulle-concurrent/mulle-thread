@@ -47,7 +47,7 @@ endif()
 
 
 #
-# Generated from sourcetree: 8fd8130b-1d75-4633-89b4-57e61467847e;pthread;no-all-load,no-build,no-delete,no-dependency,no-fs,no-import,no-platform-android,no-platform-mingw,no-require,no-update;pthreads,pthread
+# Generated from sourcetree: 8fd8130b-1d75-4633-89b4-57e61467847e;pthread;no-all-load,no-build,no-delete,no-dependency,no-fs,no-import,no-platform-android,no-platform-mingw,no-platform-windows,no-require,no-update;pthreads,pthread
 # Disable with : `mulle-sourcetree mark pthread `
 # Disable for this platform: `mulle-sourcetree mark pthread no-cmake-platform-${MULLE_UNAME}`
 # Disable for a sdk: `mulle-sourcetree mark pthread no-cmake-sdk-<name>`
@@ -90,22 +90,25 @@ if( NOT (${CMAKE_SYSTEM_NAME} MATCHES "Android" OR ${CMAKE_SYSTEM_NAME} MATCHES 
                # use explicit path to avoid "surprises"
                if( IS_DIRECTORY "${_TMP_PTHREAD_DIR}")
                   list( INSERT CMAKE_MODULE_PATH 0 "${_TMP_PTHREAD_DIR}")
-                  # we only want top level INHERIT_OBJC_LOADERS, so disable them
-                  if( NOT NO_INHERIT_OBJC_LOADERS)
-                     set( NO_INHERIT_OBJC_LOADERS OFF)
+                  # we only want top level INHERIT_OBJC_DEPS, so disable them
+                  if( NOT NO_INHERIT_OBJC_DEPS)
+                     set( NO_INHERIT_OBJC_DEPS OFF)
                   endif()
-                  list( APPEND _TMP_INHERIT_OBJC_LOADERS ${NO_INHERIT_OBJC_LOADERS})
-                  set( NO_INHERIT_OBJC_LOADERS ON)
+                  list( APPEND _TMP_INHERIT_OBJC_DEPS ${NO_INHERIT_OBJC_DEPS})
+                  set( NO_INHERIT_OBJC_DEPS ON)
                   #
                   include( "${_TMP_PTHREAD_DIR}/DependenciesAndLibraries.cmake" OPTIONAL)
                   #
-                  list( GET _TMP_INHERIT_OBJC_LOADERS -1 NO_INHERIT_OBJC_LOADERS)
-                  list( REMOVE_AT _TMP_INHERIT_OBJC_LOADERS -1)
+                  list( GET _TMP_INHERIT_OBJC_DEPS -1 NO_INHERIT_OBJC_DEPS)
+                  list( REMOVE_AT _TMP_INHERIT_OBJC_DEPS -1)
                   list( REMOVE_ITEM CMAKE_MODULE_PATH "${_TMP_PTHREAD_DIR}")
                   #
                   unset( PTHREAD_DEFINITIONS)
+                  unset( PTHREAD_RENDEZVOUS_GLOBALS)
                   include( "${_TMP_PTHREAD_DIR}/Definitions.cmake" OPTIONAL)
                   list( APPEND INHERITED_DEFINITIONS ${PTHREAD_DEFINITIONS})
+                  include( "${_TMP_PTHREAD_DIR}/Definitions.cmake" OPTIONAL)
+                  list( APPEND RENDEZVOUS_GLOBALS ${PTHREAD_RENDEZVOUS_GLOBALS})
                   break()
                else()
                   message( STATUS "${_TMP_PTHREAD_DIR} not found")

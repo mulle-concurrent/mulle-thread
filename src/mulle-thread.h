@@ -100,6 +100,7 @@
 //
 #define MULLE_THREAD_MUTEX_NEEDS_DONE   1
 #define MULLE_THREAD_COND_NEEDS_DONE    1 // for the future
+
 //
 // True posix conformance is much more complicated, we dumb this down
 // for windows and for everyone else. So we have the same behavior
@@ -109,47 +110,148 @@
 typedef mulle_atomic_pointer_t   mulle_thread_once_t;
 
 #define MULLE_THREAD_ONCE_DATA   0
+#define MULLE_THREAD_ONCE_BUSY   1848
+#define MULLE_THREAD_ONCE_DONE   1
 
 // old name
 #define MULLE_THREAD_ONCE_INIT   MULLE_THREAD_ONCE_DATA
 
 
+// recursive once: tracks thread ID to allow same thread to proceed
+typedef struct
+{
+   mulle_atomic_pointer_t   _state;
+   mulle_atomic_pointer_t   _thread_id;
+} mulle_thread_once_recursive_t;
+
+#define MULLE_THREAD_ONCE_RECURSIVE_INIT   ((mulle_thread_once_recursive_t) { MULLE_THREAD_ONCE_INIT, 0 })
+
+
 // the old, not so useful interface
 MULLE_C_NO_INSTRUMENT_FUNCTION
-static inline void   mulle_thread_once( mulle_thread_once_t  *once,
-                                        void (*init)( void))
-{
-   if( _mulle_atomic_pointer_compare_and_swap( once,
-                                               (void *) 1848,
-                                               (void *) MULLE_THREAD_ONCE_DATA))
-      (*init)();
-}
-
+MULLE__THREAD_GLOBAL
+void   mulle_thread_once( mulle_thread_once_t  *once,
+                          void (*init)( void));
 
 // the new, more useful interface
 MULLE_C_NO_INSTRUMENT_FUNCTION
-static inline void   mulle_thread_once_call( mulle_thread_once_t  *once,
-                                             void (*init)( void *),
-                                             void *userinfo)
+MULLE__THREAD_GLOBAL
+void   mulle_thread_once_call( mulle_thread_once_t  *once,
+                               void (*init)( void *),
+                               void *userinfo);
+
+// recursive variant: same thread can call again without deadlock
+MULLE_C_NO_INSTRUMENT_FUNCTION
+MULLE__THREAD_GLOBAL
+void   mulle_thread_once_call_recursive( mulle_thread_once_recursive_t  *once,
+                                         void (*init)( void *),
+                                         void *userinfo);
+
+// convenience wrapper
+MULLE_C_NO_INSTRUMENT_FUNCTION
+static inline void   mulle_thread_once_recursive( mulle_thread_once_recursive_t  *once,
+                                                   void (*init)( void))
+{
+   mulle_thread_once_call_recursive( once, (void (*)(void *)) init, NULL);
+}
+
+// non-blocking variants (old behavior)
+MULLE_C_NO_INSTRUMENT_FUNCTION
+static inline void   mulle_thread_once_noblock( mulle_thread_once_t  *once,
+                                                 void (*init)( void))
 {
    if( _mulle_atomic_pointer_compare_and_swap( once,
-                                               (void *) 1848,
-                                               (void *) MULLE_THREAD_ONCE_DATA))
+                                               (void *) MULLE_THREAD_ONCE_BUSY,
+                                               (void *) MULLE_THREAD_ONCE_INIT))
+   {
+      (*init)();
+      mulle_atomic_memory_barrier();
+   }
+}
+
+MULLE_C_NO_INSTRUMENT_FUNCTION
+static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
+                                                      void (*init)( void *),
+                                                      void *userinfo)
+{
+   if( _mulle_atomic_pointer_compare_and_swap( once,
+                                               (void *) MULLE_THREAD_ONCE_BUSY,
+                                               (void *) MULLE_THREAD_ONCE_INIT))
+   {
       (*init)( userinfo);
+      mulle_atomic_memory_barrier();
+   }
 }
 
 // convenient interface
-#define mulle_thread_once_do( name)                                              \
-   static mulle_thread_once_t   name = MULLE_THREAD_ONCE_DATA;                   \
-   if( _mulle_atomic_pointer_compare_and_swap( &name,                            \
-                                               (void *) 1848,                    \
-                                               (void *) MULLE_THREAD_ONCE_DATA))
+#define mulle_thread_once_do( name)                                                                 \
+   static mulle_thread_once_t   name = MULLE_THREAD_ONCE_INIT;                                      \
+   for( void *actual = __mulle_atomic_pointer_compare_and_swap( &name,                              \
+                                                                 (void *) MULLE_THREAD_ONCE_BUSY,   \
+                                                                 (void *) MULLE_THREAD_ONCE_INIT);  \
+        actual != (void *) MULLE_THREAD_ONCE_DONE;                                                  \
+        actual = ( mulle_atomic_memory_barrier(),                                                   \
+                   _mulle_atomic_pointer_compare_and_swap( &name,                                   \
+                                                          (void *) MULLE_THREAD_ONCE_DONE,          \
+                                                          (void *) MULLE_THREAD_ONCE_BUSY),         \
+                  (void *) MULLE_THREAD_ONCE_DONE))                                                 \
+      MULLE_C_CONFINED_LOOP                                                                         \
+      for( int  mulle_thread_once_do__j = 0; /* break protection */                                 \
+           mulle_thread_once_do__j < 1;                                                             \
+           mulle_thread_once_do__j++)                                                               \
+         if( actual != MULLE_THREAD_ONCE_INIT)                                                      \
+         {                                                                                          \
+            do                                                                                      \
+               mulle_thread_yield();                                                                \
+            while( _mulle_atomic_pointer_read( &name) != (void *) MULLE_THREAD_ONCE_DONE);          \
+            mulle_atomic_memory_barrier();                                                          \
+            break;                                                                                  \
+         }                                                                                          \
+         else
 
+// convenient recursive interface
+#define mulle_thread_once_do_recursive( name)                                                       \
+   static mulle_thread_once_recursive_t   name = MULLE_THREAD_ONCE_RECURSIVE_INIT;                  \
+   mulle_thread_id_t  mulle_thread_once_do_recursive__tid = mulle_thread_id();                      \
+   for( void *actual = ((mulle_thread_id_t) _mulle_atomic_pointer_read( &name._thread_id) ==        \
+                        mulle_thread_once_do_recursive__tid)                                        \
+                       ? (void *) MULLE_THREAD_ONCE_DONE                                            \
+                       : __mulle_atomic_pointer_compare_and_swap( &name._state,                     \
+                                                                 (void *) MULLE_THREAD_ONCE_BUSY,   \
+                                                                 (void *) MULLE_THREAD_ONCE_INIT);  \
+        actual != (void *) MULLE_THREAD_ONCE_DONE;                                                  \
+        actual = ( _mulle_atomic_pointer_write( &name._thread_id, NULL),                            \
+                   mulle_atomic_memory_barrier(),                                                   \
+                   _mulle_atomic_pointer_compare_and_swap( &name._state,                            \
+                                                          (void *) MULLE_THREAD_ONCE_DONE,          \
+                                                          (void *) MULLE_THREAD_ONCE_BUSY),         \
+                  (void *) MULLE_THREAD_ONCE_DONE))                                                 \
+      MULLE_C_CONFINED_LOOP                                                                         \
+      for( int  mulle_thread_once_do_recursive__j = 0; /* break protection */                       \
+           mulle_thread_once_do_recursive__j < 1;                                                   \
+           mulle_thread_once_do_recursive__j++)                                                     \
+         if( actual != MULLE_THREAD_ONCE_INIT)                                                      \
+         {                                                                                          \
+            do                                                                                      \
+               mulle_thread_yield();                                                                \
+            while( _mulle_atomic_pointer_read( &name._state) != (void *) MULLE_THREAD_ONCE_DONE);   \
+            mulle_atomic_memory_barrier();                                                          \
+            break;                                                                                  \
+         }                                                                                          \
+         else                                                                                       \
+            if( (_mulle_atomic_pointer_write( &name._thread_id,                                     \
+                                             (void *) mulle_thread_once_do_recursive__tid), 1))
 
+// convenient non-blocking interface (old behavior)
+#define mulle_thread_once_do_noblock( name)                                             \
+   static mulle_thread_once_t   name = MULLE_THREAD_ONCE_INIT;                          \
+   if( _mulle_atomic_pointer_compare_and_swap( &name,                                   \
+                                               (void *) MULLE_THREAD_ONCE_BUSY,         \
+                                               (void *) MULLE_THREAD_ONCE_INIT))
 
 //
-// You can't have another mulle_thread_mutex_do inside a mulle_thread_mutex_do
-// but it's a bad deadlocking idea anyway. Using a name and not a pointer is
+// You can't have another mulle_thread_mutex_do inside a mulle_thread_mutex_do.
+// It's a bad deadlocking idea anyway. Using a name and not a pointer is
 // consistent with mulle-buffer.
 //
 #define mulle_thread_mutex_do( mutex)                                           \
@@ -157,6 +259,7 @@ static inline void   mulle_thread_once_call( mulle_thread_once_t  *once,
         mulle_thread_mutex_do__i < 1;                                           \
         mulle_thread_mutex_unlock( &mutex), mulle_thread_mutex_do__i++)         \
                                                                                 \
+      MULLE_C_CONFINED_LOOP                                                     \
       for( int  mulle_thread_mutex_do__j = 0; /* break protection */            \
            mulle_thread_mutex_do__j < 1;                                        \
            mulle_thread_mutex_do__j++)
@@ -171,6 +274,7 @@ static inline void   mulle_thread_once_call( mulle_thread_once_t  *once,
 #include <stdlib.h>
 //#define _XOPEN_SOURCE  // user should define this not us
 #include <time.h>
+
 
 static inline void  MULLE_THREAD_UNPLEASANT_RACE_YIELD()
 {

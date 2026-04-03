@@ -22,7 +22,7 @@
 //    remove #include: `mulle-sde dependency mark mulle-c11 no-header`
 //    rename              : `mulle-sde dependency|library set mulle-c11 include whatever.h`
 //    reorder             : `mulle-sde dependency move mulle-c11 <up|down>`
-//    toggle #include: `mulle-sde dependency mark mulle-c11 [no-]import`
+//    toggle objc         : `mulle-sde dependency mark mulle-c11 [no-]import`
 //    toggle public       : `mulle-sde dependency mark mulle-c11 [no-]public`
 //    toggle optional     : `mulle-sde dependency mark mulle-c11 [no-]require`
 //    remove for platform : `mulle-sde dependency mark mulle-c11 no-platform-<uname>`
@@ -37,7 +37,7 @@
 //    remove #include: `mulle-sde dependency mark stdthreads no-header`
 //    rename              : `mulle-sde dependency|library set stdthreads include whatever.h`
 //    reorder             : `mulle-sde dependency move stdthreads <up|down>`
-//    toggle #include: `mulle-sde dependency mark stdthreads [no-]import`
+//    toggle objc         : `mulle-sde dependency mark stdthreads [no-]import`
 //    toggle public       : `mulle-sde dependency mark stdthreads [no-]public`
 //    toggle optional     : `mulle-sde dependency mark stdthreads [no-]require`
 //    remove for platform : `mulle-sde dependency mark stdthreads no-platform-<uname>`
@@ -54,12 +54,12 @@
 //    remove #include: `mulle-sde dependency mark pthread no-header`
 //    rename              : `mulle-sde dependency|library set pthread include whatever.h`
 //    reorder             : `mulle-sde dependency move pthread <up|down>`
-//    toggle #include: `mulle-sde dependency mark pthread [no-]import`
+//    toggle objc         : `mulle-sde dependency mark pthread [no-]import`
 //    toggle public       : `mulle-sde dependency mark pthread [no-]public`
 //    toggle optional     : `mulle-sde dependency mark pthread [no-]require`
 //    remove for platform : `mulle-sde dependency mark pthread no-platform-<uname>`
 //        (use `mulle-sourcetree-to-c --unames` to list known values)
-# if ! defined( __ANDROID__) && ! defined( _WIN32)
+# if ! defined( __ANDROID__) && ! defined( _WIN32) && ! defined( _WIN32)
 # ifdef __has_include
 #  if __has_include(<pthread.h>)
 #    include <pthread.h>   // pthread

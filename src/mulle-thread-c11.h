@@ -47,9 +47,12 @@ typedef int   mulle_thread_rval_t;
 
 //typedef once_flag   mulle_thread_once_t;
 typedef mtx_t       mulle_thread_mutex_t;
+typedef cnd_t       mulle_thread_cond_t;
 typedef tss_t       mulle_thread_tss_t;
 typedef thrd_t      mulle_thread_t;
 typedef int         mulle_thread_native_rval_t;
+
+typedef uintptr_t   mulle_thread_id_t;
 
 
 typedef mulle_thread_rval_t   mulle_thread_function_t( void *);
@@ -64,10 +67,27 @@ typedef void                  mulle_thread_callback_t( void *);
 #pragma mark -
 #pragma Threads
 
+
 MULLE_C_CONST_RETURN
+MULLE_C_NO_INSTRUMENT_FUNCTION
 static inline mulle_thread_t  mulle_thread_self( void)
 {
    return( thrd_current());
+}
+
+
+// use this for debugging output
+MULLE_C_CONST_RETURN
+MULLE_C_NO_INSTRUMENT_FUNCTION
+static inline mulle_thread_id_t   mulle_thread_id( void)
+{
+   return( (mulle_thread_id_t) thrd_current());
+}
+
+MULLE_C_CONST_RETURN
+static inline mulle_thread_id_t   mulle_thread_get_id( mulle_thread_t thread)
+{
+   return( (mulle_thread_id_t) thread);
 }
 
 
@@ -76,7 +96,13 @@ static inline int   mulle_thread_create( mulle_thread_function_t *f,
                                          void *arg,
                                          mulle_thread_t *p_thread)
 {
-   return( thrd_create( p_thread, (thrd_start_t) f, arg) == thrd_success ? 0 : -1);
+   if( thrd_create( p_thread, (thrd_start_t) f, arg) == thrd_success)
+   {
+      assert( mulle_thread_get_id( *p_thread) != (mulle_thread_id_t) -1);
+      assert( mulle_thread_get_id( *p_thread) != (mulle_thread_id_t) 0);
+      return( 0);
+   }
+   return( -1);
 }
 
 
@@ -154,6 +180,53 @@ static inline int   mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 {
    mtx_destroy( lock);
    return( 0);
+}
+
+
+#pragma mark - Condition Variables
+
+static inline int   mulle_thread_cond_init( mulle_thread_cond_t *cond)
+{
+   return( cnd_init( cond) == thrd_success ? 0 : -1);
+}
+
+
+static inline int   mulle_thread_cond_done( mulle_thread_cond_t *cond)
+{
+   cnd_destroy( cond);
+   return( 0);
+}
+
+
+static inline int   mulle_thread_cond_wait( mulle_thread_cond_t *cond,
+                                             mulle_thread_mutex_t *mutex)
+{
+   return( cnd_wait( cond, mutex) == thrd_success ? 0 : -1);
+}
+
+
+static inline int   mulle_thread_cond_signal( mulle_thread_cond_t *cond)
+{
+   return( cnd_signal( cond) == thrd_success ? 0 : -1);
+}
+
+
+static inline int   mulle_thread_cond_broadcast( mulle_thread_cond_t *cond)
+{
+   return( cnd_broadcast( cond) == thrd_success ? 0 : -1);
+}
+
+
+static inline int   mulle_thread_cond_timedwait( mulle_thread_cond_t *cond,
+                                                  mulle_thread_mutex_t *mutex,
+                                                  struct timespec *abstime)
+{
+   int   result;
+
+   result = cnd_timedwait( cond, mutex, abstime);
+   if( result == thrd_timedout)
+      return( ETIMEDOUT);
+   return( result == thrd_success ? 0 : -1);
 }
 
 

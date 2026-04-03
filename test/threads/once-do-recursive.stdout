@@ -1,0 +1,20 @@
+=== Recursive Once Do Test ===
+
+First call:
+Entering recursive_function at depth 1
+  Once block executed (call_count=1)
+  Calling recursively from depth 1
+Entering recursive_function at depth 2
+Exiting recursive_function at depth 2
+  Returned to depth 1
+Exiting recursive_function at depth 1
+
+After first call: call_count=1
+
+Second call (should skip once block):
+Entering recursive_function at depth 99
+Exiting recursive_function at depth 99
+
+After second call: call_count=1
+
+=== Test passed ===

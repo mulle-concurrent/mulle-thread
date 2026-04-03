@@ -1,17 +1,3 @@
-# Everything is boring
-*
-
-# Except for src, src is interesting
-!src/
-!tests/
-
-# Except for mulle-sourcetree where we like the etc directory...
+# It used to be that everything is boring, but thats no good anymore
+# MULLE_MATCH_PATH is the way, to add positives
 #
-# If we specifically exclude !.mulle-sourcetree/etc only, that's no good for
-# mulle-find, which collects top-level directories only. So we specifcally
-# ignore some known boring subfolders only
-#
-!.mulle-sourcetree/
-.mulle-sourcetree/var/
-.mulle-sourcetree/share/
-
