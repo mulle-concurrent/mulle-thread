@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest] # macos-latest,
+        os: [ macos-latest, ubuntu-latest] # 
 
     steps:
     - name: Set MULLE_HOSTNAME
