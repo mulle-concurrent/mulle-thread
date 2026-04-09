@@ -1,9 +1,12 @@
-## 4.7.0
+## 4.8.0
 
 
 
-feat: add instrumentation support for atomic and thread operations
 
-* atomic pointer and function pointer operations now support no-instrument markers
-* thread-local storage (TSS) functions now support no-instrument markers
-* thread self identification now supports no-instrument markers
+
+
+
+feature: expose inline threading helpers for portable C API
+
+* Add header-level static inline helpers for thread IDs `(mulle_thread_id,` `mulle_thread_get_id).`
+* Provide inline condition variable APIs `(mulle_thread_cond_init/done/wait/signal/broadcast/timedwait),` TSS helpers, and `once/once_recursive` helpers so callers can use a consistent API across platforms.
