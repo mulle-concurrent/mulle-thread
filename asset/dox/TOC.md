@@ -1,203 +1,174 @@
 # mulle-thread Library Documentation for AI
-<!-- Keywords: threads, concurrency -->
-
+<!-- Keywords: thread, mutex, tss, atomic, portability -->
 ## 1. Introduction & Purpose
 
-`mulle-thread` is a C library that provides a simplified, cross-platform API for fundamental concurrency primitives. It abstracts platform-specific implementations for threads, mutexes, thread-local storage (TSS), and atomic operations into a single, portable interface.
-
-It solves the problem of writing portable multithreaded C code by creating a common API that works across POSIX-compliant systems (using pthreads), Windows, and systems with C11 threads support. Its main advantages are simplicity and portability, allowing developers to use a consistent threading model everywhere.
+- mulle-thread is a small C wrapper API offering cross-platform thread, mutex, condition variable, thread-local-storage (TSS) and basic atomic operations.
+- Solves portability differences between C11 threads, POSIX pthreads and Windows threads by providing a consistent, minimal API surface.
+- Key features: thread creation/join/detach, mutex lock/unlock/trylock, condition variables, TSS create/get/set, once-init utilities, and a compact atomic pointer/function-pointer helper API.
+- Relationship: component of mulle-core-style ecosystem; depends on mulle-c11 and optionally mintomic for atomics; falls back to pthreads or Windows native implementations.
 
 ## 2. Key Concepts & Design Philosophy
 
-The library's design is a **thin abstraction layer** over native platform APIs. It selects the appropriate backend at compile time (`pthreads`, Windows API, or C11 `threads.h`) and maps its own functions and data types to the native equivalents.
-
-- **Simplicity:** The API exposes a minimal, essential set of features for multithreading, avoiding the complexity of more advanced options available in native libraries.
-- **Portability:** The primary goal is to write multithreaded code once and have it compile and run correctly on different operating systems.
-- **Atomic Operations:** The library provides a core set of atomic operations on `void *` pointers, which are essential for writing lock-free algorithms. It uses `mintomic` or C11's `<stdatomic.h>` as a backend.
-- **Resource Management:** The library includes convenience macros like `mulle_thread_mutex_do` to simplify locking and unlocking, reducing the risk of deadlocks or forgetting to release a mutex.
+- Thin, explicit wrappers: public API lives in mulle-thread.h and mulle-atomic.h. Platform specifics are implemented in *_pthreads.h, *_c11.h or *_windows.h.
+- Provide a stable, simplified interface even when underlying platform APIs differ.
+- Convenience macros (mulle_thread_mutex_do, mulle_thread_once_do) encourage idiomatic usage but require care (see pitfalls).
+- Emphasis on portability and predictability rather than advanced features; small surface area for easier analysis and verification.
 
 ## 3. Core API & Data Structures
 
-The API is divided into four main areas, each with its own set of functions and data types defined in `mulle-thread.h` and `mulle-atomic.h`.
+### 3.1. [mulle-atomic.h]
 
-### 3.1. `mulle-thread.h`
+- Purpose: small set of atomic helpers for pointer and function-pointer operations, selecting C11 stdatomic or mintomic implementations.
+- Notable API:
+  - _mulle_atomic_pointer_set(address, value) — atomically set pointer, returns previous.
+  - _mulle_atomic_pointer_compare_and_swap(address, value, expect) — CAS returning int success.
+  - __mulle_atomic_pointer_compare_and_swap(...) — CAS returning previous pointer.
+  - _mulle_atomic_functionpointer_set(...) and functionpointer CAS variants.
+  - mulle_atomic_memory_barrier() (implementation dependent) — memory barrier.
+- Lifecycle: none (stateless utilities). Use these for lock-free pointer updates and once-init primitives.
 
-#### Thread Management
-- `mulle_thread_t`: A platform-independent type representing a thread handle.
-- `mulle_thread_create(function, arg)`: Creates and starts a new thread that executes the given `function` with `arg` as its parameter. Returns a `mulle_thread_t` handle.
-- `mulle_thread_join(thread)`: Blocks the calling thread until the specified `thread` terminates.
-- `mulle_thread_yield(void)`: Causes the calling thread to relinquish the CPU.
+### 3.2. [mulle-thread.h]
 
-#### Mutex (Mutual Exclusion)
-- `mulle_thread_mutex_t`: A platform-independent mutex type.
-- `mulle_thread_mutex_init(mutex)`: Initializes a mutex.
-- `mulle_thread_mutex_done(mutex)`: Destroys a mutex.
-- `mulle_thread_mutex_lock(mutex)`: Acquires a lock on the mutex, blocking if necessary.
-- `mulle_thread_mutex_unlock(mutex)`: Releases a lock on the mutex.
-- `mulle_thread_mutex_trylock(mutex)`: Attempts to acquire a lock without blocking. Returns `0` on success.
-- `mulle_thread_mutex_do(mutex) { ... }`: A macro that locks the mutex, executes the code block, and automatically unlocks the mutex when the block is exited (including via `break` or `continue`).
+- Purpose: public umbrella header selecting platform backends and providing cross-cutting macros and once-helpers.
+- Key typedefs (platform-dependent; documented in backend headers):
+  - mulle_thread_t, mulle_thread_tss_t, mulle_thread_mutex_t, mulle_thread_cond_t, mulle_thread_id_t, mulle_thread_rval_t.
+- Once-init primitives:
+  - mulle_thread_once_t, mulle_thread_once_recursive_t — state and recursive-once helper.
+  - mulle_thread_once(once, init), mulle_thread_once_call(once, init, userinfo), mulle_thread_once_call_recursive(...).
+  - Macros: mulle_thread_once_do(name), mulle_thread_once_do_recursive(name), mulle_thread_once_do_noblock(name).
+- Convenience macros:
+  - mulle_thread_mutex_do(mutex) — locks, runs block, unlocks. Note: return from inside will not unlock on return.
 
-#### Thread-Specific Storage (TSS)
-- `mulle_thread_tss_t`: A platform-independent key for thread-specific storage.
-- `mulle_thread_tss_create(destructor_function)`: Creates a new TSS key. The optional `destructor_function` is called when a thread exits if its value for this key is not `NULL`.
-- `mulle_thread_tss_get(key)`: Retrieves the value for the given `key` for the current thread.
-- `mulle_thread_tss_set(key, value)`: Sets the value for the given `key` for the current thread.
+### 3.3. [mulle-thread-pthreads.h / mulle-thread-c11.h / mulle-thread-windows.h]
 
-#### Once Initialization
-- `mulle_thread_once_t`: A type used for one-time initialization control.
-- `mulle_thread_once(flag, function)`: Ensures that `function` is called exactly once, even if `mulle_thread_once` is called concurrently from multiple threads.
-
-### 3.2. `mulle-atomic.h`
-
-This header provides atomic operations primarily for `void *` pointers.
-
-- `_mulle_atomic_pointer_t`: The underlying atomic pointer type.
-- `mulle_atomic_pointer_read(ptr)`: Atomically reads the value of a pointer.
-- `mulle_atomic_pointer_write(ptr, value)`: Atomically writes a value to a pointer.
-- `mulle_atomic_pointer_cas(ptr, expected, desired)`: Atomic Compare-And-Swap. If the current value at `ptr` equals `expected`, it is replaced with `desired`. Returns the original value.
-- `mulle_atomic_pointer_add(ptr, value)`: Atomically adds an integer `value` to the pointer.
-- `mulle_atomic_pointer_increment(ptr)`: Atomically increments the pointer value by 1.
-- `mulle_atomic_pointer_decrement(ptr)`: Atomically decrements the pointer value by 1.
+- Purpose: platform-specific implementations. Public API is uniform across these headers.
+- Thread API:
+  - int   mulle_thread_create( mulle_thread_function_t *f, void *arg, mulle_thread_t *p_thread)
+  - mulle_thread_rval_t mulle_thread_join( mulle_thread_t thread)
+  - int   mulle_thread_detach( mulle_thread_t thread)
+  - void  mulle_thread_exit(int rval)
+  - void  mulle_thread_yield(void)
+  - mulle_thread_id_t mulle_thread_id(void), mulle_thread_self(void), mulle_thread_get_id(thread)
+- Mutex API:
+  - int mulle_thread_mutex_init(mulle_thread_mutex_t *lock)
+  - int mulle_thread_mutex_lock(mulle_thread_mutex_t *lock)
+  - int mulle_thread_mutex_trylock(mulle_thread_mutex_t *lock)
+  - int mulle_thread_mutex_unlock(mulle_thread_mutex_t *lock)
+  - int mulle_thread_mutex_done(mulle_thread_mutex_t *lock)
+- Condition variable API:
+  - int mulle_thread_cond_init(mulle_thread_cond_t *cond)
+  - int mulle_thread_cond_done(mulle_thread_cond_t *cond)
+  - int mulle_thread_cond_wait(mulle_thread_cond_t *cond, mulle_thread_mutex_t *mutex)
+  - int mulle_thread_cond_signal(mulle_thread_cond_t *cond)
+  - int mulle_thread_cond_broadcast(mulle_thread_cond_t *cond)
+  - int mulle_thread_cond_timedwait(...)
+- Thread-local storage (TSS):
+  - int mulle_thread_tss_create(mulle_thread_callback_t *f, mulle_thread_tss_t *key)
+  - void mulle_thread_tss_free(mulle_thread_tss_t key)
+  - void *mulle_thread_tss_get(mulle_thread_tss_t key)
+  - int mulle_thread_tss_set(mulle_thread_tss_t key, void *value)
 
 ## 4. Performance Characteristics
 
-- **Overhead:** As a thin wrapper, the performance is nearly identical to the underlying native implementation (pthreads, Windows threads, C11 threads). The overhead of the function call indirection is minimal.
-- **Mutexes:** The performance of mutex operations is determined by the underlying OS scheduler and lock implementation.
-- **Atomics:** Atomic operations are highly optimized and typically translate to single machine instructions on modern hardware.
-- **Thread-Safety:** The library is, by its nature, thread-safe. All functions are designed to be called from multiple threads.
+- Atomics: O(1) per operation (hardware CAS / atomic primitives). Intended for pointer/function-pointer CAS and set operations.
+- Mutex operations: O(1) for lock/unlock, but blocking cost depends on scheduler and number of contending threads.
+- Condition variables: waiting is O(1) (per wait), signaling is O(1) but waking cost depends on contention.
+- Thread creation/join: relatively expensive (OS cost). Prefer worker pools for high-rate tasks.
+- Thread-safety: API is thread-safe where appropriate (atomics, mutex, cond); data structures and object lifecycles are the caller's responsibility. The library provides primitives, not higher-level synchronized containers.
 
 ## 5. AI Usage Recommendations & Patterns
 
-- **Best Practices:** Always `mulle_thread_join` a thread you create to ensure its resources are cleaned up and to avoid detached, "zombie" threads.
-- **Mutexes:** Use `mulle_thread_mutex_do` for simple critical sections to prevent errors from forgetting to unlock. For more complex locking scenarios spanning multiple functions, use `lock` and `unlock` manually, but be extremely careful about all possible code paths.
-- **TSS:** Use thread-specific storage to maintain per-thread state without passing data through every function call. A common use case is for per-thread error handlers or resource pools.
-- **Atomics:** Use atomic operations for simple, high-contention state changes (like counters or flags) where a full mutex would be too heavyweight. Use `mulle_atomic_pointer_cas` as the foundation for building more complex lock-free data structures.
-- **Common Pitfall:** Do not use `return` from inside a `mulle_thread_mutex_do` block, as this will exit the function without unlocking the mutex.
+- Best Practices:
+  - Use the public lifecycle functions (init/done) for mutexes and condvars; do not manipulate platform internals.
+  - Use mulle_thread_mutex_do(mutex) for scoped locking; prefer careful use to avoid returning inside that block (it will not unlock on return).
+  - Prefer using the `_call` once variants when user data is needed.
+  - Use TSS for per-thread destructors where supported; provide a destructor callback when creating TSS if per-thread cleanup is needed.
+- Common Pitfalls:
+  - Do not assume mulle_thread_mutex_do will unlock on function return from inside the block. Avoid return inside the macro block.
+  - When using non-blocking once variants, initialization may be skipped if not carefully handled.
+  - Mixing different backends' raw types (e.g., using pthread APIs directly) can break portability — always use the wrapper API.
+- Idiomatic Usage:
+  - Use mulle_thread_once_do(name) for module-level lazy init.
+  - Use TSS to avoid global locks when each thread needs its own state.
 
 ## 6. Integration Examples
 
 ### Example 1: Creating and Joining a Thread
 
-This example demonstrates the basic lifecycle of a thread.
-*Source: `test/threads/threads.c`*
 ```c
-#include <mulle-thread/mulle-thread.h>
-#include <stdio.h>
+#include "mulle-thread.h"
 
-static int run_thread(void *arg)
+void *
+worker( void *arg)
 {
-    long value = (long)arg;
-    printf("Child thread executing with argument: %ld\n", value);
-    return 0;
+   (void) arg;
+   // do work
+   mulle_thread_return();
 }
 
-int main(void)
+int
+main( void)
 {
-    mulle_thread_t thread;
+   mulle_thread_t   thread;
+   int              rval;
 
-    printf("Main thread: starting child thread.\n");
-    thread = mulle_thread_create(run_thread, (void *)1848L);
-    if (!thread) {
-        fprintf(stderr, "Failed to create thread\n");
-        return 1;
-    }
+   rval = mulle_thread_create( worker, NULL, &thread);
+   if( rval)
+      return( 1);
 
-    mulle_thread_join(thread);
-    printf("Main thread: child thread has finished.\n");
-
-    return 0;
+   (void) mulle_thread_join( thread);
+   return( 0);
 }
 ```
 
-### Example 2: Protecting a Shared Resource with a Mutex
+### Example 2: Mutex scoped block using macro
 
-This example shows how to use a mutex to safely increment a shared counter from multiple threads.
-*Source: `test/mutex/mutex.c`*
 ```c
-#include <mulle-thread/mulle-thread.h>
-#include <stdio.h>
+#include "mulle-thread.h"
 
-#define NUM_THREADS 10
-#define INCREMENTS_PER_THREAD 10000
-
-static mulle_thread_mutex_t lock;
-static int shared_counter = 0;
-
-static int increment_routine(void *arg)
+void
+increment_shared( mulle_thread_mutex_t *m, int *shared)
 {
-    for (int i = 0; i < INCREMENTS_PER_THREAD; i++)
-    {
-        // Use the convenience macro for safe locking
-        mulle_thread_mutex_do(&lock)
-        {
-            shared_counter++;
-        }
-    }
-    return 0;
-}
-
-int main(void)
-{
-    mulle_thread_t threads[NUM_THREADS];
-
-    mulle_thread_mutex_init(&lock);
-
-    for (int i = 0; i < NUM_THREADS; i++)
-        threads[i] = mulle_thread_create(increment_routine, NULL);
-
-    for (int i = 0; i < NUM_THREADS; i++)
-        mulle_thread_join(threads[i]);
-
-    mulle_thread_mutex_done(&lock);
-
-    printf("Final counter value: %d (expected %d)\n", shared_counter, NUM_THREADS * INCREMENTS_PER_THREAD);
-    return 0;
+   mulle_thread_mutex_do( *m)
+   {
+      *shared = *shared + 1;
+   }
 }
 ```
 
-### Example 3: Using Thread-Specific Storage (TSS)
+### Example 3: Using a TSS key with destructor
 
-This example demonstrates how each thread can have its own unique data associated with a TSS key.
-*Source: `test/tss/tss.c`*
 ```c
-#include <mulle-thread/mulle-thread.h>
-#include <stdio.h>
+#include "mulle-thread.h"
 
-static mulle_thread_tss_t  thread_id_key;
-
-static void print_thread_id(void)
+static void
+free_thread_storage( void *p)
 {
-    void *value = mulle_thread_tss_get(thread_id_key);
-    printf("My thread-specific ID is %ld\n", (long)value);
+   free( p);
 }
 
-static int thread_routine(void *arg)
+void
+setup_tls( void)
 {
-    // Set a unique value for this thread
-    mulle_thread_tss_set(thread_id_key, arg);
-    print_thread_id();
-    return 0;
-}
+   mulle_thread_tss_t   key;
 
-int main(void)
-{
-    mulle_thread_t t1, t2;
+   if( ! mulle_thread_tss_create( free_thread_storage, &key))
+   {
+      void  *storage;
 
-    // Create the key. No destructor needed for simple long values.
-    mulle_thread_tss_create(NULL);
-
-    t1 = mulle_thread_create(thread_routine, (void *)1);
-    t2 = mulle_thread_create(thread_routine, (void *)2);
-
-    mulle_thread_join(t1);
-    mulle_thread_join(t2);
-
-    return 0;
+      storage = malloc( 128);
+      mulle_thread_tss_set( key, storage);
+   }
 }
 ```
 
 ## 7. Dependencies
 
-- `mulle-c11`
-- `mintomic` (vendored)
+- Direct mulle-sde / library dependencies:
+  - mulle-c11 (recommended)
+  - mintomic (optional; used when C11 atomics unavailable)
+  - POSIX pthreads (on Unix backends) or Windows API (on Win backends)
 
+
+
+<!-- End of TOC -->
