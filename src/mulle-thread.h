@@ -251,18 +251,68 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
 
 //
 // You can't have another mulle_thread_mutex_do inside a mulle_thread_mutex_do.
-// It's a bad deadlocking idea anyway. Using a name and not a pointer is
+// It's a bad deadlocking idea anyway. Not using a pointer for mutex is
 // consistent with mulle-buffer.
 //
-#define mulle_thread_mutex_do( mutex)                                           \
-   for( int  mulle_thread_mutex_do__i = ( mulle_thread_mutex_lock( &mutex), 0); \
-        mulle_thread_mutex_do__i < 1;                                           \
-        mulle_thread_mutex_unlock( &mutex), mulle_thread_mutex_do__i++)         \
-                                                                                \
-      MULLE_C_CONFINED_LOOP                                                     \
-      for( int  mulle_thread_mutex_do__j = 0; /* break protection */            \
-           mulle_thread_mutex_do__j < 1;                                        \
-           mulle_thread_mutex_do__j++)
+#define _mulle_thread_mutex_do( mutex, name)                                                   \
+   for( int MULLE_C_CONCAT3( mtx_do__, name, __i) = ( mulle_thread_mutex_lock( &mutex), 0);    \
+        MULLE_C_CONCAT3( mtx_do__, name, __i) < 1;                                             \
+        mulle_thread_mutex_unlock( &mutex), MULLE_C_CONCAT3( mtx_do__, name, __i)++)           \
+                                                                                               \
+      MULLE_C_CONFINED_LOOP                                                                    \
+      for( int  MULLE_C_CONCAT3( mtx_do__, name, __j) = 0; /* break protection */              \
+           MULLE_C_CONCAT3( mtx_do__, name, __j) < 1;                                          \
+           MULLE_C_CONCAT3( mtx_do__, name, __j)++)
+
+
+#define mulle_thread_mutex_do( mutex)   \
+   _mulle_thread_mutex_do( mutex, __LINE__)
+
+/*
+ * Recursive mutex — same thread can lock multiple times without deadlock.
+ */
+typedef struct
+{
+   mulle_thread_mutex_t    _mutex;
+   mulle_atomic_pointer_t  _thread_id;  // owning thread id, or NULL
+   mulle_atomic_pointer_t  _depth;      // recursion depth (1-based when locked)
+} mulle_thread_recursive_mutex_t;
+
+
+MULLE_C_NO_INSTRUMENT_FUNCTION
+MULLE__THREAD_GLOBAL
+int   mulle_thread_recursive_mutex_init( mulle_thread_recursive_mutex_t *p);
+
+MULLE_C_NO_INSTRUMENT_FUNCTION
+MULLE__THREAD_GLOBAL
+int   mulle_thread_recursive_mutex_done( mulle_thread_recursive_mutex_t *p);
+
+MULLE_C_NO_INSTRUMENT_FUNCTION
+MULLE__THREAD_GLOBAL
+void  mulle_thread_recursive_mutex_lock( mulle_thread_recursive_mutex_t *p);
+
+MULLE_C_NO_INSTRUMENT_FUNCTION
+MULLE__THREAD_GLOBAL
+void  mulle_thread_recursive_mutex_unlock( mulle_thread_recursive_mutex_t *p);
+
+MULLE_C_NO_INSTRUMENT_FUNCTION
+MULLE__THREAD_GLOBAL
+int   mulle_thread_recursive_mutex_trylock( mulle_thread_recursive_mutex_t *p); // 0=acquired
+
+
+#define _mulle_thread_recursive_mutex_do( mutex, name)                                                  \
+   for( int MULLE_C_CONCAT3( rmtx_do__, name, __i) = ( mulle_thread_recursive_mutex_lock( &mutex), 0);  \
+        MULLE_C_CONCAT3( rmtx_do__, name, __i) < 1;                                                     \
+        mulle_thread_recursive_mutex_unlock( &mutex), MULLE_C_CONCAT3( rmtx_do__, name, __i)++)         \
+                                                                                                        \
+      MULLE_C_CONFINED_LOOP                                                                             \
+      for( int  MULLE_C_CONCAT3( rmtx_do__, name, __j) = 0; /* break protection */                      \
+           MULLE_C_CONCAT3( rmtx_do__, name, __j) < 1;                                                  \
+           MULLE_C_CONCAT3( rmtx_do__, name, __j)++)
+
+
+#define mulle_thread_recursive_mutex_do( mutex)   \
+   _mulle_thread_recursive_mutex_do( mutex, __LINE__)
 
 /*
  * some code for tests forces problems to reveal themselves much quicker
