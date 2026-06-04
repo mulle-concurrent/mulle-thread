@@ -140,6 +140,74 @@ void   mulle_thread_once_call_recursive( mulle_thread_once_recursive_t  *once,
 }
 
 
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int   mulle_thread_recursive_mutex_init( mulle_thread_recursive_mutex_t *p)
+{
+   _mulle_atomic_pointer_write( &p->_thread_id, NULL);
+   _mulle_atomic_pointer_write( &p->_depth, 0);
+   return( mulle_thread_mutex_init( &p->_mutex));
+}
+
+
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int   mulle_thread_recursive_mutex_done( mulle_thread_recursive_mutex_t *p)
+{
+   return( mulle_thread_mutex_done( &p->_mutex));
+}
+
+
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  mulle_thread_recursive_mutex_lock( mulle_thread_recursive_mutex_t *p)
+{
+   mulle_thread_id_t   curr;
+   mulle_thread_id_t   owner;
+
+   curr  = mulle_thread_id();
+   owner = (mulle_thread_id_t) _mulle_atomic_pointer_read( &p->_thread_id);
+
+   if( owner != curr)
+   {
+      mulle_thread_mutex_lock( &p->_mutex);
+      assert( NULL == _mulle_atomic_pointer_read( &p->_thread_id));
+      _mulle_atomic_pointer_write( &p->_thread_id, (void *) curr);
+   }
+   _mulle_atomic_pointer_increment( &p->_depth);
+}
+
+
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  mulle_thread_recursive_mutex_unlock( mulle_thread_recursive_mutex_t *p)
+{
+   assert( (mulle_thread_id_t) _mulle_atomic_pointer_read( &p->_thread_id) == mulle_thread_id());
+
+   if( (intptr_t) _mulle_atomic_pointer_decrement( &p->_depth) > 0x1)
+      return;
+
+   _mulle_atomic_pointer_write( &p->_thread_id, NULL);
+   mulle_thread_mutex_unlock( &p->_mutex);
+}
+
+
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int   mulle_thread_recursive_mutex_trylock( mulle_thread_recursive_mutex_t *p)
+{
+   mulle_thread_id_t   curr;
+   mulle_thread_id_t   owner;
+
+   curr  = mulle_thread_id();
+   owner = (mulle_thread_id_t) _mulle_atomic_pointer_read( &p->_thread_id);
+
+   if( owner != curr)
+   {
+      if( mulle_thread_mutex_trylock( &p->_mutex))
+         return( -1);  // EBUSY or error
+      _mulle_atomic_pointer_write( &p->_thread_id, (void *) curr);
+   }
+   _mulle_atomic_pointer_increment( &p->_depth);
+   return( 0);
+}
+
+
 // we include mintomic, if we need it
 //
 // if we are building with mulle-core this file is in "src/mulle-thread" and
