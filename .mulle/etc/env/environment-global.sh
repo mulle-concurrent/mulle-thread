@@ -1,2 +1,8 @@
 export MULLE_MATCH_TO_CMAKE_SOURCES_FILE="NONE"
 
+#
+#
+#
+export vibecoding="off"
+
+
