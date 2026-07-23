@@ -2,11 +2,6 @@
 
 #### 🔠 Cross-platform thread/mutex/tss/atomic operations in C
 
-
-# mulle-thread
-
-#### 🔠 Cross-platform thread/mutex/tss/atomic operations in C
-
 **mulle-thread** is a set of **C** wrapper headers for a simplified
 subset of thread functions and for a limited range of atomic operations that
 strongly mimics the thread standard, even if thread is not available. On Windows it
