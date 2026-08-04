@@ -46,6 +46,12 @@ it will not.
 
 
 
+## Documentation & Guides
+
+* [API Summary](asset/dox/api/toc)
+* [Coder Guide](asset/howto/coder/mulle-thread)
+
+
 
 ## Convenience macro for mutex
 

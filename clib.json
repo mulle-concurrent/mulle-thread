@@ -6,7 +6,7 @@
    "license" : "BSD-3-Clause",
    "repo" : "mulle-concurrent/mulle-thread",
    "src" : [
-      "asset/dox/TOC.md",
+      "asset/dox/api/toc/index.md",
       "src/generic/include-private.h",
       "src/generic/include.h",
       "src/mulle-atomic-c11.h",

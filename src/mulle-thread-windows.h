@@ -1,9 +1,10 @@
 //
-//  mulle_thread_windows.h
+//  mulle-thread-windows.h
 //  mulle-thread
 //
-//  Created by Nat! on 25/08/16.
-//  Copyright (c) 2016 Mulle kybernetiK. All rights reserved.
+//  Copyright (c) 2018 Nat! - Mulle kybernetiK.
+//  All rights reserved.
+//
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -31,7 +32,6 @@
 //  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //  POSSIBILITY OF SUCH DAMAGE.
 //
-
 #ifndef mulle_thread_windows_h__
 #define mulle_thread_windows_h__
 

@@ -1,9 +1,10 @@
 //
-//  mulle_atomic_c11.h
+//  mulle-atomic-c11.h
 //  mulle-thread
 //
-//  Created by Nat! on 09/10/15.
-//  Copyright © 2015 Mulle kybernetiK. All rights reserved.
+//  Copyright (c) 2018 Nat! - Mulle kybernetiK.
+//  All rights reserved.
+//
 //
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -31,7 +32,6 @@
 //  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //  POSSIBILITY OF SUCH DAMAGE.
 //
-
 #ifndef mulle_atomic_c11_h__
 #define mulle_atomic_c11_h__
 
