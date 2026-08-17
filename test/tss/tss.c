@@ -16,7 +16,7 @@ static void   destruktor( void *p)
 }
 
 
-static mulle_thread_rval_t   thread_main( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   thread_main( void *arg)
 {
    // destruktor may only run if tss has been set in current thread
    printf( "thread set\n");

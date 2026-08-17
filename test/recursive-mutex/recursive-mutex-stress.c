@@ -37,7 +37,7 @@ static void   run_with_depth( struct shared *s, unsigned int depth)
 }
 
 
-static mulle_thread_rval_t   thread_fn( struct shared *s)
+static mulle_thread_rval_t MULLE_THREAD_CALL   thread_fn( struct shared *s)
 {
    unsigned int   i;
 

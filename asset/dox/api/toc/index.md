@@ -97,14 +97,14 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
 ```
 
 - `mulle_thread_once_recursive`: convenience wrapper around `mulle_thread_once_call_recursive` with no userinfo.
-- `mulle_thread_once_noblock`: old behavior — calls init only if the once was not already started; otherwise skips. Uses CAS without spinning.
+- `mulle_thread_once_noblock`: calls init only if the once was not already started; otherwise skips. Uses CAS without spinning. The winning thread publishes `MULLE_THREAD_ONCE_DONE` after init, so mixing with a blocking once on the same flag cannot hang.
 - `mulle_thread_once_call_noblock`: same as `_noblock` but with userinfo parameter.
 
 #### Once-init Convenience Macros
 
 - `mulle_thread_once_do(name)` — Block-scoped once: declares a static `mulle_thread_once_t`, blocks contending threads (spin-yield), runs the block body exactly once. `break` exits; `return` must not be used. Other threads spin-yield until the once completes.
 - `mulle_thread_once_do_recursive(name)` — Recursive variant: same thread can re-enter and immediately succeed without blocking. Uses `mulle_thread_once_recursive_t`. Tracks thread-ID.
-- `mulle_thread_once_do_noblock(name)` — Non-blocking variant: only runs the block if the once was not already started; otherwise skips. Old behavior.
+- `mulle_thread_once_do_noblock(name)` — Non-blocking variant: only runs the block if the once was not already started; otherwise skips. Published `MULLE_THREAD_ONCE_DONE` after the block ran.
 
 #### Mutex Convenience Macro
 
@@ -162,7 +162,7 @@ When `MULLE_TEST` is defined (and `NO_MULLE_THREAD_UNPLEASANT_RACE_YIELD` is not
 
 ### 3.2. Backend Headers — Thread, Mutex, Cond, TSS API
 
-All three backends (pthreads, c11, windows) expose the same API. Return semantics: 0 for success, non-zero for error.
+All three backends (pthreads, c11, windows) expose the same API. Status is returned directly; the `errno` variable is never set. Return semantics are `0` for success, `-1` for generic failure, and selected standard constants such as `EBUSY` and `ETIMEDOUT` where they carry useful meaning. Thread return values are backend-dependent: portable thread functions should return only small nonnegative integer values representable by all backends; pointer, large, and negative values are not portable. The legacy `mulle_thread_join` returns `(mulle_thread_rval_t) -1` on join failure.
 
 #### Thread
 
@@ -319,7 +319,7 @@ void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *address, intptr_t diff
 void  mulle_atomic_memory_barrier( void);
 ```
 
-On C11 this is `atomic_signal_fence(memory_order_seq_cst)`. On mintomic it is `mint_thread_fence_seq_cst()`.
+On C11 this is `atomic_thread_fence(memory_order_seq_cst)` — a real hardware fence, required by the once publish protocol on weakly ordered CPUs. On mintomic it is `mint_thread_fence_seq_cst()`.
 
 ### 3.4. mulle-thread.c — Out-of-line Implementations
 

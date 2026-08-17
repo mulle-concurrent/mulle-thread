@@ -13,7 +13,7 @@
 static mulle_thread_id_t     memo[ 4];
 
 
-static mulle_thread_rval_t   thread_main( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   thread_main( void *arg)
 {
    intptr_t   i;
 

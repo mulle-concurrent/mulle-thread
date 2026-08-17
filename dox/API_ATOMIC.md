@@ -154,7 +154,7 @@ int   decrement_was_zero( mulle_atomic_pointer_t *pointer)
    void   *previous;
 
    previous = _mulle_atomic_pointer_decrement( pointer);
-   return( (intptr_t) previous == 0):
+   return( (intptr_t) previous == 0);
 }
 ```
 

@@ -61,7 +61,29 @@ typedef DWORD    mulle_thread_native_rval_t;
 
 typedef uintptr_t   mulle_thread_id_t;
 
-typedef mulle_thread_rval_t   mulle_thread_function_t( void *);
+//
+// Thread entry functions must use the __stdcall calling convention on
+// 32-bit x86 Windows: that is what _beginthreadex() expects, and calling a
+// cdecl function through a __stdcall pointer (or vice versa) is undefined
+// behavior there because caller and callee disagree on who pops the
+// arguments. On 64-bit Windows (and everywhere else) there is only one
+// calling convention, so MULLE_THREAD_CALL expands to nothing.
+//
+// Declare your thread functions like this to be portable:
+//
+//    static mulle_thread_rval_t MULLE_THREAD_CALL  my_thread( void *arg);
+//
+#if defined( _M_IX86) || defined( __i386__)
+# define MULLE_THREAD_CALL   __stdcall
+#else
+# define MULLE_THREAD_CALL
+#endif
+
+// the parens are load-bearing: MULLE_THREAD_CALL must sit inside the
+// declarator, so that on 32-bit Windows the typedef becomes
+//   unsigned int (__stdcall mulle_thread_function_t)( void *)
+// Do not "simplify" this to `mulle_thread_rval_t MULLE_THREAD_CALL ...`.
+typedef mulle_thread_rval_t  (MULLE_THREAD_CALL mulle_thread_function_t)( void *);
 typedef void                  mulle_thread_callback_t( void *);
 
 
@@ -110,6 +132,17 @@ static inline mulle_thread_id_t   mulle_thread_get_id( mulle_thread_t thread)
 }
 
 
+// compare two thread handles for equality
+// (GetThreadId works with the GetCurrentThread pseudo handle too)
+MULLE_C_CONST_RETURN
+MULLE_C_NO_INSTRUMENT_FUNCTION
+static inline int   mulle_thread_equal( mulle_thread_t thread1,
+                                        mulle_thread_t thread2)
+{
+   return( mulle_thread_get_id( thread1) == mulle_thread_get_id( thread2));
+}
+
+
 // parameters different to pthreads!
 static inline int   mulle_thread_create( mulle_thread_function_t *f,
                                          void *arg,
@@ -118,9 +151,12 @@ static inline int   mulle_thread_create( mulle_thread_function_t *f,
    unsigned   threadId;   /* not strictly needed, but shows parameter use */
    HANDLE     handle;
 
+   // mulle_thread_function_t already carries MULLE_THREAD_CALL, which
+   // matches _beginthreadex_proc_type on 32-bit Windows, so no cast is
+   // needed (and a cast would be UB on 32-bit x86 for cdecl functions).
    handle = (HANDLE) _beginthreadex( NULL,
                                      0,
-                                     (_beginthreadex_proc_type) f,
+                                     f,
                                      arg,
                                      0,
                                      &threadId);
@@ -174,6 +210,27 @@ static inline int   mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
    mulle_thread_id_t   self_id;
 
    self_id = mulle_thread_id();
+
+   //
+   // A CRITICAL_SECTION is recursive on Windows, but a pthread mutex (and
+   // the documented mulle_thread_mutex_lock semantics) is not. Without this
+   // check, re-locking an already owned mutex would silently succeed here
+   // while deadlocking on the other backends. Emulate the pthreads behavior:
+   // re-locking from the owning thread is a self-deadlock.
+   //
+   // Note: the owner is always cleared *before* the critical section is
+   // released (see mulle_thread_mutex_unlock and mulle_thread_cond_wait), so
+   // a non-owning thread can never observe a stale owner here.
+   //
+   if( _mulle_atomic_pointer_read( &lock->owner) == (void *) self_id)
+   {
+      // self-reentry is a programming error: point it out in debug builds,
+      // deadlock like pthreads in release builds
+      assert( 0 && "recursive lock of non-recursive mutex");
+      while( 1)
+         mulle_thread_yield();
+   }
+
    EnterCriticalSection( &lock->section);
    _mulle_atomic_pointer_write( &lock->owner, (void *) self_id);
 

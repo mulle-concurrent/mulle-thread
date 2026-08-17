@@ -11,7 +11,7 @@ static mulle_thread_cond_t    cond;
 static int                    queue = 0;
 static int                    done = 0;
 
-static mulle_thread_rval_t   producer_thread( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   producer_thread( void *arg)
 {
    int   i;
    
@@ -28,7 +28,7 @@ static mulle_thread_rval_t   producer_thread( void *arg)
    mulle_thread_return();
 }
 
-static mulle_thread_rval_t   consumer_thread( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   consumer_thread( void *arg)
 {
    int   consumed = 0;
    

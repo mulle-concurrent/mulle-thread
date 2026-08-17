@@ -5,7 +5,7 @@ An easy way to get a locked code region is to use:
 ``` c
 void   foo( mulle_thread_mutex_t *mutex)
 {
-   mulle_thread_mutex_do( mutex)
+   mulle_thread_mutex_do( *mutex)
    {
       // code block is now executed with mutex locked
    }
@@ -13,7 +13,41 @@ void   foo( mulle_thread_mutex_t *mutex)
 }
 ```
 
-`break` and `continue` will exit the block and unlock the mutex. But when you
-use `return` the function exists and the mutex remains locked.
+The macro takes the address of its argument, so pass the mutex variable itself
+(or `*mutex` if you only hold a pointer to it). `break` and `continue` will
+exit the block and unlock the mutex. But when you use `return` the function
+exits and the mutex remains locked.
+
+
+## ThreadSanitizer requires the pthreads backend
+
+By default mulle-thread uses the C11 `<threads.h>` backend when it is
+available, so `mulle_thread_create` calls `thrd_create`. ThreadSanitizer
+intercepts `pthread_create`, but not `thrd_create`: on glibc `thrd_create`
+creates the thread through a libc-internal call that bypasses interposition.
+The new thread therefore starts with no tsan thread state and crashes as soon
+as it executes any instrumented code:
+
+```
+ThreadSanitizer:DEADLYSIGNAL
+ERROR: ThreadSanitizer: SEGV on unknown address 0x000000000018 ...
+```
+
+The backtrace points at `__tsan_func_entry` at the top of the thread function,
+which makes it look like a bug in your code. It is not. Force the pthreads
+backend for sanitizer builds:
+
+``` sh
+cc -fsanitize=thread -DMULLE_THREAD_USE_PTHREADS ...
+```
+
+Reproduced with both gcc libtsan and clang, and fixed by the flag in both.
+Note that a trivial thread function may survive, because with optimization
+there is nothing left in it to instrument, so a smoke test can be misleading.
+
+`MULLE_THREAD_USE_PTHREADS` is checked in `mulle-thread.h` before the backend
+header is included, so use a compiler flag rather than a `#define` in a source
+file. Use the same flag for any sanitizer or race detector that needs to
+observe thread creation.
 
 

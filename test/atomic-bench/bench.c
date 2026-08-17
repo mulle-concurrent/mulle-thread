@@ -165,7 +165,7 @@ struct thread_info
 };
 
 
-static mulle_thread_rval_t   run_test( struct thread_info *info)
+static mulle_thread_rval_t MULLE_THREAD_CALL   run_test( struct thread_info *info)
 {
 #ifndef MULLE_TEST_VALGRIND
    mulle_thread_tss_set( name_thread_key, strdup( info->name));
