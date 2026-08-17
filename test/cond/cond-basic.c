@@ -6,7 +6,7 @@ static mulle_thread_mutex_t   mutex;
 static mulle_thread_cond_t    cond;
 static int                    ready = 0;
 
-static mulle_thread_rval_t   waiter_thread( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   waiter_thread( void *arg)
 {
    mulle_thread_mutex_lock( &mutex);
    

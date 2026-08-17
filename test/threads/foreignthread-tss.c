@@ -10,7 +10,7 @@ static void   tss_destructor( void *value)
    free( value);
 }
 
-static mulle_thread_rval_t   thread_function( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   thread_function( void *arg)
 {
    void   *data;
 

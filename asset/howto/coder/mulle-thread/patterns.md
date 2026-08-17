@@ -222,7 +222,12 @@ mulle_thread_detach( thread);               // fire-and-forget alternative to jo
 ```
 
 `mulle_thread_create` returns 0 on success. The thread handle `p_thread` is the
-**last** parameter — unlike pthreads where it is the second argument.
+**last** parameter — unlike pthreads where it is the second argument. Status is
+returned directly; the `errno` variable is never set. Generic failures return
+-1, while selected standard constants such as `EBUSY` and `ETIMEDOUT` retain
+their meaning. Portable thread functions should return only small nonnegative
+integer values; pointer, large, and negative return values are not portable.
+The legacy `mulle_thread_join` returns `(mulle_thread_rval_t) -1` on failure.
 
 Other thread utilities:
 - `mulle_thread_exit( int rval)` — terminate the calling thread.
@@ -237,7 +242,7 @@ Other thread utilities:
 mulle_atomic_memory_barrier();
 ```
 
-Implemented as `atomic_signal_fence(memory_order_seq_cst)` on C11. Use after
+Implemented as `atomic_thread_fence(memory_order_seq_cst)` on C11. Use after
 stores that must be visible to other threads before subsequent operations.
 
 ## 9. Nonatomic init before threaded use

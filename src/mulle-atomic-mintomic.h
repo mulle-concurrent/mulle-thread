@@ -101,6 +101,7 @@ void  *
    void   *result;
 
    result = mint_load_ptr_relaxed( address);
+   mint_thread_fence_seq_cst();
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
@@ -112,11 +113,78 @@ void  *
 }
 
 
+//
+// Use when the loaded value gates access to other shared memory that was
+// published by the writing thread with a release-store. Synchronizes-with
+// the release, so all writes before the release are visible after this load.
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
+   _mulle_atomic_pointer_read_acquire( mulle_atomic_pointer_t *address)
+{
+   void   *result;
+
+   result = mint_load_ptr_relaxed( address);
+   mint_thread_fence_acquire();
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+
+      fprintf( stderr, "%s: read_acquire %p -> %p\n", pthread_name(), address, result);
+   }
+#endif
+   return( result);
+}
+
+
+//
+// Use for disconnected values only: diagnostic counters, statistics,
+// flags that never gate access to other memory. Do NOT use when
+// the value read or written controls access to a shared data structure
+// (e.g. array lengths, queue indices, publication flags).
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
+   _mulle_atomic_pointer_read_relaxed( mulle_atomic_pointer_t *address)
+{
+   void   *result;
+
+   result = mint_load_ptr_relaxed( address);
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+
+      fprintf( stderr, "%s: read_relaxed %p -> %p\n", pthread_name(), address, result);
+   }
+#endif
+   return( result);
+}
+
+
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
 void
    _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address,
                               void *value)
+{
+   mint_thread_fence_seq_cst();
+   mint_store_ptr_relaxed( address, value);
+}
+
+
+//
+// Use for disconnected values only: diagnostic counters, statistics,
+// flags that never gate access to other memory. Do NOT use when
+// the value read or written controls access to a shared data structure
+// (e.g. array lengths, queue indices, publication flags).
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
+   _mulle_atomic_pointer_write_relaxed( mulle_atomic_pointer_t *address,
+                                        void *value)
 {
    mint_store_ptr_relaxed( address, value);
 }
@@ -149,6 +217,19 @@ void   *
 }
 
 
+// mintomic CAS is always seq_cst on supported platforms; the relaxed
+// variant is identical but named for API consistency
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
+   __mulle_atomic_pointer_cas_relaxed( mulle_atomic_pointer_t *address,
+                                       void *value,
+                                       void *expect)
+{
+   return( mint_compare_exchange_strong_ptr_relaxed( address, expect, value));
+}
+
+
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
 void   *
@@ -163,11 +244,33 @@ void   *
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
 void   *
+   __mulle_atomic_pointer_cas_weak_relaxed( mulle_atomic_pointer_t *address,
+                                            void *value,
+                                            void *expect)
+{
+   return( __mulle_atomic_pointer_cas_relaxed( address, value, expect));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
    __mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
                                    void *value,
                                    void *expect)
 {
    return( __mulle_atomic_pointer_cas( address, value, expect));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
+   __mulle_atomic_pointer_weakcas_relaxed( mulle_atomic_pointer_t *address,
+                                           void *value,
+                                           void *expect)
+{
+   return( __mulle_atomic_pointer_cas_relaxed( address, value, expect));
 }
 
 
@@ -189,6 +292,20 @@ int
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
 int
+   _mulle_atomic_pointer_cas_relaxed( mulle_atomic_pointer_t *address,
+                                      void *value,
+                                      void *expect)
+{
+   void  *result;
+
+   result = __mulle_atomic_pointer_cas_relaxed( address, value, expect);
+   return( result == expect);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
    _mulle_atomic_pointer_cas_weak( mulle_atomic_pointer_t *address,
                                    void *value,
                                    void *expect)
@@ -200,11 +317,33 @@ int
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
 int
+   _mulle_atomic_pointer_cas_weak_relaxed( mulle_atomic_pointer_t *address,
+                                           void *value,
+                                           void *expect)
+{
+   return( _mulle_atomic_pointer_cas_relaxed( address, value, expect));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
    _mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address,
                                   void *value,
                                   void *expect)
 {
    return( _mulle_atomic_pointer_cas( address, value, expect));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
+   _mulle_atomic_pointer_weakcas_relaxed( mulle_atomic_pointer_t *address,
+                                          void *value,
+                                          void *expect)
+{
+   return( _mulle_atomic_pointer_cas_relaxed( address, value, expect));
 }
 
 
@@ -271,6 +410,28 @@ mulle_functionpointer_t
 
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
+   _mulle_atomic_functionpointer_read_acquire( mulle_atomic_functionpointer_t *address)
+{
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
+
+   return( (mulle_functionpointer_t) _mulle_atomic_pointer_read_acquire( (mulle_atomic_pointer_t *) address));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
+   _mulle_atomic_functionpointer_read_relaxed( mulle_atomic_functionpointer_t *address)
+{
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
+
+   return( (mulle_functionpointer_t) _mulle_atomic_pointer_read_relaxed( (mulle_atomic_pointer_t *) address));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
 void
    _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address,
                                         mulle_functionpointer_t value)
@@ -278,6 +439,18 @@ void
    MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
 
    _mulle_atomic_pointer_write( (mulle_atomic_pointer_t *) address, (void *) value);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
+   _mulle_atomic_functionpointer_write_relaxed( mulle_atomic_functionpointer_t *address,
+                                                mulle_functionpointer_t value)
+{
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
+
+   _mulle_atomic_pointer_write_relaxed( (mulle_atomic_pointer_t *) address, (void *) value);
 }
 
 
@@ -299,6 +472,21 @@ mulle_functionpointer_t
 
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
+   __mulle_atomic_functionpointer_cas_relaxed( mulle_atomic_functionpointer_t *address,
+                                               mulle_functionpointer_t value,
+                                               mulle_functionpointer_t expect)
+{
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
+
+   return( (mulle_functionpointer_t) __mulle_atomic_pointer_cas_relaxed( (mulle_atomic_pointer_t *) address,
+                                                                         (void *) value,
+                                                                         (void *) expect));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
 int
    _mulle_atomic_functionpointer_cas( mulle_atomic_functionpointer_t *address,
                                       mulle_functionpointer_t value,
@@ -309,6 +497,21 @@ int
    return( _mulle_atomic_pointer_cas( (mulle_atomic_pointer_t *) address,
                                       (void *) value,
                                       (void *) expect));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
+   _mulle_atomic_functionpointer_cas_relaxed( mulle_atomic_functionpointer_t *address,
+                                              mulle_functionpointer_t value,
+                                              mulle_functionpointer_t expect)
+{
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
+
+   return( _mulle_atomic_pointer_cas_relaxed( (mulle_atomic_pointer_t *) address,
+                                              (void *) value,
+                                              (void *) expect));
 }
 
 
@@ -328,6 +531,19 @@ int
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
 int
+   _mulle_atomic_functionpointer_cas_weak_relaxed( mulle_atomic_functionpointer_t *address,
+                                                   mulle_functionpointer_t value,
+                                                   mulle_functionpointer_t expect)
+{
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
+
+   return( _mulle_atomic_pointer_weakcas_relaxed( (mulle_atomic_pointer_t *) address, value, expect));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
    _mulle_atomic_functionpointer_weakcas( mulle_atomic_functionpointer_t *address,
                                           mulle_functionpointer_t value,
                                           mulle_functionpointer_t expect)
@@ -337,6 +553,18 @@ int
    return( _mulle_atomic_pointer_weakcas( (mulle_atomic_pointer_t *) address, value, expect));
 }
 
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
+   _mulle_atomic_functionpointer_weakcas_relaxed( mulle_atomic_functionpointer_t *address,
+                                                  mulle_functionpointer_t value,
+                                                  mulle_functionpointer_t expect)
+{
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
+
+   return( _mulle_atomic_pointer_weakcas_relaxed( (mulle_atomic_pointer_t *) address, value, expect));
+}
 
 
 MULLE_C_STATIC_ALWAYS_INLINE
@@ -357,6 +585,21 @@ mulle_functionpointer_t
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
 mulle_functionpointer_t
+	__mulle_atomic_functionpointer_cas_weak_relaxed( mulle_atomic_functionpointer_t *address,
+                                                    mulle_functionpointer_t value,
+                                                    mulle_functionpointer_t expect)
+{
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
+
+   return( (mulle_functionpointer_t) __mulle_atomic_pointer_weakcas_relaxed( (mulle_atomic_pointer_t *) address,
+   																						value,
+   																						expect));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
    __mulle_atomic_functionpointer_weakcas( mulle_atomic_functionpointer_t *address,
                                            mulle_functionpointer_t value,
                                            mulle_functionpointer_t expect)
@@ -369,12 +612,44 @@ mulle_functionpointer_t
 }
 
 
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
+   __mulle_atomic_functionpointer_weakcas_relaxed( mulle_atomic_functionpointer_t *address,
+                                                   mulle_functionpointer_t value,
+                                                   mulle_functionpointer_t expect)
+{
+   MULLE_C_ASSERT( sizeof( void *) == sizeof( mulle_functionpointer_t));
+
+   return( (mulle_functionpointer_t) __mulle_atomic_pointer_weakcas_relaxed( (mulle_atomic_pointer_t *) address,
+                                                                             value,
+                                                                             expect));
+}
+
+
 #pragma mark - atomic arithmetic
 
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
 void   *
    _mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
+{
+   void   *result;
+
+   result = mint_fetch_add_ptr_relaxed( address, 1);
+   mint_thread_fence_seq_cst();
+   return( result);
+}
+
+
+//
+// Use for disconnected counters only: statistics, diagnostics, values
+// that never gate access to other memory.
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
+   _mulle_atomic_pointer_increment_relaxed( mulle_atomic_pointer_t *address)
 {
    return( mint_fetch_add_ptr_relaxed( address, 1));
 }
@@ -385,6 +660,19 @@ MULLE_C_NO_INSTRUMENT_FUNCTION
 void  *
    _mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *address)
 {
+   void   *result;
+
+   result = mint_fetch_add_ptr_relaxed( address, -1);
+   mint_thread_fence_seq_cst();
+   return( result);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
+   _mulle_atomic_pointer_decrement_relaxed( mulle_atomic_pointer_t *address)
+{
    return( mint_fetch_add_ptr_relaxed( address, -1));
 }
 
@@ -394,6 +682,19 @@ MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
 void  *
    _mulle_atomic_pointer_add( mulle_atomic_pointer_t *address, intptr_t diff)
+{
+   void   *result;
+
+   result = (void *) ((intptr_t) mint_fetch_add_ptr_relaxed( address, diff) + diff);
+   mint_thread_fence_seq_cst();
+   return( result);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
+   _mulle_atomic_pointer_add_relaxed( mulle_atomic_pointer_t *address, intptr_t diff)
 {
    return( (void *) ((intptr_t) mint_fetch_add_ptr_relaxed( address, diff) + diff));
 }

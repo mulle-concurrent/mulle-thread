@@ -48,13 +48,19 @@ mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
 
    rval   = (mulle_thread_native_rval_t) -1;
    status = WaitForSingleObject( thread, INFINITE);
+
+   //
+   // Close the handle on all paths, like mulle_thread_detach does.
+   // Otherwise every joined thread leaks a kernel handle.
+   //
    if( status)
    {
-      errno = EINVAL;
+      CloseHandle( thread);
       return( (mulle_thread_rval_t) rval);
    }
 
    GetExitCodeThread( thread, &rval);
+   CloseHandle( thread);
    return( (mulle_thread_rval_t) rval);
 }
 

@@ -103,7 +103,7 @@ mulle_functionpointer_t
 {
    mulle_functionpointer_t   result;
 
-   result = atomic_load_explicit( address, memory_order_relaxed);
+   result = atomic_load_explicit( address, memory_order_seq_cst);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
@@ -117,9 +117,69 @@ mulle_functionpointer_t
 
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
+   _mulle_atomic_functionpointer_read_acquire( mulle_atomic_functionpointer_t *address)
+{
+   mulle_functionpointer_t   result;
+
+   result = atomic_load_explicit( address, memory_order_acquire);
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+
+      fprintf( stderr, "%s: read_acquire %p -> %p\n", pthread_name(), address, result);
+   }
+#endif
+   return( result);
+}
+
+
+//
+// Use for disconnected values only: diagnostic counters, statistics,
+// flags that never gate access to other memory. Do NOT use when
+// the value read or written controls access to a shared data structure
+// (e.g. array lengths, queue indices, publication flags).
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
+   _mulle_atomic_functionpointer_read_relaxed( mulle_atomic_functionpointer_t *address)
+{
+   mulle_functionpointer_t   result;
+
+   result = atomic_load_explicit( address, memory_order_relaxed);
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+
+      fprintf( stderr, "%s: read_relaxed %p -> %p\n", pthread_name(), address, result);
+   }
+#endif
+   return( result);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
 void
    _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address,
                                         mulle_functionpointer_t value)
+{
+   atomic_store_explicit( address, value, memory_order_seq_cst);
+}
+
+
+//
+// Use for disconnected values only: diagnostic counters, statistics,
+// flags that never gate access to other memory. Do NOT use when
+// the value read or written controls access to a shared data structure
+// (e.g. array lengths, queue indices, publication flags).
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
+   _mulle_atomic_functionpointer_write_relaxed( mulle_atomic_functionpointer_t *address,
+                                                mulle_functionpointer_t value)
 {
    atomic_store_explicit( address, value, memory_order_relaxed);
 }
@@ -147,8 +207,8 @@ mulle_functionpointer_t
       result = atomic_compare_exchange_weak_explicit( address,
                                                       &actual,
                                                       value,
-                                                      memory_order_relaxed,
-                                                      memory_order_relaxed);
+                                                      memory_order_seq_cst,
+                                                      memory_order_seq_cst);
       decor = "";
       if( ! result)
       {
@@ -161,10 +221,29 @@ mulle_functionpointer_t
    atomic_compare_exchange_weak_explicit( address,
                                           &actual,
                                           value,
-                                          memory_order_relaxed,
-                                          memory_order_relaxed);
+                                          memory_order_seq_cst,
+                                          memory_order_seq_cst);
 #endif
    // https://stackoverflow.com/questions/20179315/why-does-stdatomic-compare-exchange-update-the-expected-value
+   return( actual);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
+   __mulle_atomic_functionpointer_weakcas_relaxed( mulle_atomic_functionpointer_t *address,
+                                                   mulle_functionpointer_t value,
+                                                   mulle_functionpointer_t expect)
+{
+   mulle_functionpointer_t   actual;
+
+   actual = expect;
+   atomic_compare_exchange_weak_explicit( address,
+                                          &actual,
+                                          value,
+                                          memory_order_relaxed,
+                                          memory_order_relaxed);
    return( actual);
 }
 
@@ -191,8 +270,8 @@ int
       result = (int) atomic_compare_exchange_weak_explicit( address,
                                                             &actual,
                                                             value,
-                                                            memory_order_relaxed,
-                                                            memory_order_relaxed);
+                                                            memory_order_seq_cst,
+                                                            memory_order_seq_cst);
       decor = "";
       if( ! result)
          decor = "FAILED to";
@@ -203,10 +282,29 @@ int
    result = atomic_compare_exchange_weak_explicit( address,
                                                    &actual,
                                                    value,
-                                                   memory_order_relaxed,
-                                                   memory_order_relaxed);
+                                                   memory_order_seq_cst,
+                                                   memory_order_seq_cst);
 #endif
    return( result);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
+   _mulle_atomic_functionpointer_weakcas_relaxed( mulle_atomic_functionpointer_t *address,
+                                                  mulle_functionpointer_t value,
+                                                  mulle_functionpointer_t expect)
+{
+   mulle_functionpointer_t    actual;
+
+   assert( value != expect);
+   actual = expect;
+   return( (int) atomic_compare_exchange_weak_explicit( address,
+                                                        &actual,
+                                                        value,
+                                                        memory_order_relaxed,
+                                                        memory_order_relaxed));
 }
 
 
@@ -229,8 +327,8 @@ mulle_functionpointer_t
       result = atomic_compare_exchange_strong_explicit( address,
                                                         &actual,
                                                         value,
-                                                        memory_order_relaxed,
-                                                        memory_order_relaxed);
+                                                        memory_order_seq_cst,
+                                                        memory_order_seq_cst);
       decor = "";
       if( ! result)
          decor = "FAILED to";
@@ -241,9 +339,28 @@ mulle_functionpointer_t
    atomic_compare_exchange_strong_explicit( address,
                                             &actual,
                                             value,
+                                            memory_order_seq_cst,
+                                            memory_order_seq_cst);
+#endif
+   return( actual);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+mulle_functionpointer_t
+   __mulle_atomic_functionpointer_cas_relaxed( mulle_atomic_functionpointer_t *address,
+                                               mulle_functionpointer_t value,
+                                               mulle_functionpointer_t expect)
+{
+   mulle_functionpointer_t   actual;
+
+   actual = expect;
+   atomic_compare_exchange_strong_explicit( address,
+                                            &actual,
+                                            value,
                                             memory_order_relaxed,
                                             memory_order_relaxed);
-#endif
    return( actual);
 }
 
@@ -270,8 +387,8 @@ int
       result = (int) atomic_compare_exchange_strong_explicit( address,
                                                               &actual,
                                                               value,
-                                                              memory_order_relaxed,
-                                                              memory_order_relaxed);
+                                                              memory_order_seq_cst,
+                                                              memory_order_seq_cst);
       decor = "";
       if( ! result)
          decor = "FAILED to";
@@ -282,10 +399,29 @@ int
    result = atomic_compare_exchange_strong_explicit( address,
                                                      &actual,
                                                      value,
-                                                     memory_order_relaxed,
-                                                     memory_order_relaxed);
+                                                     memory_order_seq_cst,
+                                                     memory_order_seq_cst);
 #endif
    return( result);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
+   _mulle_atomic_functionpointer_cas_relaxed( mulle_atomic_functionpointer_t *address,
+                                              mulle_functionpointer_t value,
+                                              mulle_functionpointer_t expect)
+{
+   mulle_functionpointer_t    actual;
+
+   assert( value != expect);
+   actual = expect;
+   return( (int) atomic_compare_exchange_strong_explicit( address,
+                                                          &actual,
+                                                          value,
+                                                          memory_order_relaxed,
+                                                          memory_order_relaxed));
 }
 
 
@@ -336,7 +472,7 @@ void  *
 {
    void   *result;
 
-   result = atomic_load_explicit( address, memory_order_relaxed);
+   result = atomic_load_explicit( address, memory_order_seq_cst);
 #if MULLE_ATOMIC_TRACE
    {
       extern char   *pthread_name( void);
@@ -349,10 +485,77 @@ void  *
 }
 
 
+//
+// Use when the loaded value gates access to other shared memory that was
+// published by the writing thread with a release-store. Synchronizes-with
+// the release, so all writes before the release are visible after this load.
+// Same cost as a plain load on x86; one `ldar` on ARM64.
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
+   _mulle_atomic_pointer_read_acquire( mulle_atomic_pointer_t *address)
+{
+   void   *result;
+
+   result = atomic_load_explicit( address, memory_order_acquire);
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+
+      fprintf( stderr, "%s: read_acquire %p -> %p\n", pthread_name(), address, result);
+   }
+#endif
+
+   return( result);
+}
+
+
+//
+// Use for disconnected values only: diagnostic counters, statistics,
+// flags that never gate access to other memory. Do NOT use when
+// the value read or written controls access to a shared data structure
+// (e.g. array lengths, queue indices, publication flags).
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
+   _mulle_atomic_pointer_read_relaxed( mulle_atomic_pointer_t *address)
+{
+   void   *result;
+
+   result = atomic_load_explicit( address, memory_order_relaxed);
+#if MULLE_ATOMIC_TRACE
+   {
+      extern char   *pthread_name( void);
+
+      fprintf( stderr, "%s: read_relaxed %p -> %p\n", pthread_name(), address, result);
+   }
+#endif
+
+   return( result);
+}
+
+
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
 void
    _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address, void *value)
+{
+   atomic_store_explicit( address, value, memory_order_seq_cst);
+}
+
+
+//
+// Use for disconnected values only: diagnostic counters, statistics,
+// flags that never gate access to other memory. Do NOT use when
+// the value read or written controls access to a shared data structure
+// (e.g. array lengths, queue indices, publication flags).
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
+   _mulle_atomic_pointer_write_relaxed( mulle_atomic_pointer_t *address, void *value)
 {
    atomic_store_explicit( address, value, memory_order_relaxed);
 }
@@ -380,8 +583,8 @@ void   *
       result = (int) atomic_compare_exchange_weak_explicit( address,
                                                             &actual,
                                                             value,
-                                                            memory_order_relaxed,
-                                                            memory_order_relaxed);
+                                                            memory_order_seq_cst,
+                                                            memory_order_seq_cst);
       decor = "";
       if( ! result)
          decor = "FAILED to";
@@ -392,10 +595,29 @@ void   *
    atomic_compare_exchange_weak_explicit( address,
                                           &actual,
                                           value,
-                                          memory_order_relaxed,
-                                          memory_order_relaxed);
+                                          memory_order_seq_cst,
+                                          memory_order_seq_cst);
 #endif
 
+   return( actual);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
+   __mulle_atomic_pointer_cas_weak_relaxed( mulle_atomic_pointer_t *address,
+                                            void *value,
+                                            void *expect)
+{
+   void    *actual;
+
+   actual = expect;
+   atomic_compare_exchange_weak_explicit( address,
+                                          &actual,
+                                          value,
+                                          memory_order_relaxed,
+                                          memory_order_relaxed);
    return( actual);
 }
 
@@ -408,6 +630,17 @@ void   *
                                    void *expect)
 {
    return( __mulle_atomic_pointer_cas_weak( address, value, expect));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void   *
+   __mulle_atomic_pointer_weakcas_relaxed( mulle_atomic_pointer_t *address,
+                                           void *value,
+                                           void *expect)
+{
+   return( __mulle_atomic_pointer_cas_weak_relaxed( address, value, expect));
 }
 
 
@@ -433,8 +666,8 @@ int
       result = (int) atomic_compare_exchange_weak_explicit( address,
                                                             &actual,
                                                             value,
-                                                            memory_order_relaxed,
-                                                            memory_order_relaxed);
+                                                            memory_order_seq_cst,
+                                                            memory_order_seq_cst);
       decor = "";
       if( ! result)
          decor = "FAILED to";
@@ -445,11 +678,30 @@ int
    result = atomic_compare_exchange_weak_explicit( address,
                                                    &actual,
                                                    value,
-                                                   memory_order_relaxed,
-                                                   memory_order_relaxed);
+                                                   memory_order_seq_cst,
+                                                   memory_order_seq_cst);
 #endif
 
    return( result);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
+   _mulle_atomic_pointer_cas_weak_relaxed( mulle_atomic_pointer_t *address,
+                                           void *value,
+                                           void *expect)
+{
+   void    *actual;
+
+   assert( value != expect);
+   actual = expect;
+   return( (int) atomic_compare_exchange_weak_explicit( address,
+                                                        &actual,
+                                                        value,
+                                                        memory_order_relaxed,
+                                                        memory_order_relaxed));
 }
 
 
@@ -461,6 +713,17 @@ int
                                   void *expect)
 {
    return( _mulle_atomic_pointer_cas_weak( address, value, expect));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+int
+   _mulle_atomic_pointer_weakcas_relaxed( mulle_atomic_pointer_t *address,
+                                          void *value,
+                                          void *expect)
+{
+   return( _mulle_atomic_pointer_cas_weak_relaxed( address, value, expect));
 }
 
 
@@ -485,8 +748,8 @@ void  *
       result = (int) atomic_compare_exchange_strong_explicit( address,
                                                               &actual,
                                                               value,
-                                                              memory_order_relaxed,
-                                                              memory_order_relaxed);
+                                                              memory_order_seq_cst,
+                                                              memory_order_seq_cst);
       decor = "";
       if( ! result)
          decor = "FAILED to";
@@ -497,10 +760,29 @@ void  *
    atomic_compare_exchange_strong_explicit( address,
                                             &actual,
                                             value,
-                                            memory_order_relaxed,
-                                            memory_order_relaxed);
+                                            memory_order_seq_cst,
+                                            memory_order_seq_cst);
 #endif
 
+   return( actual);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
+   __mulle_atomic_pointer_cas_relaxed( mulle_atomic_pointer_t *address,
+                                       void *value,
+                                       void *expect)
+{
+   void    *actual;
+
+   actual = expect;
+   atomic_compare_exchange_strong_explicit( address,
+                                            &actual,
+                                            value,
+                                            memory_order_relaxed,
+                                            memory_order_relaxed);
    return( actual);
 }
 
@@ -528,8 +810,8 @@ int
       result = (int) atomic_compare_exchange_strong_explicit( address,
                                                               &actual,
                                                               value,
-                                                              memory_order_relaxed,
-                                                              memory_order_relaxed);
+                                                              memory_order_seq_cst,
+                                                              memory_order_seq_cst);
       decor = "";
       if( ! result)
          decor = "FAILED to";
@@ -540,8 +822,8 @@ int
    result = atomic_compare_exchange_strong_explicit( address,
                                                      &actual,
                                                      value,
-                                                     memory_order_relaxed,
-                                                     memory_order_relaxed);
+                                                     memory_order_seq_cst,
+                                                     memory_order_seq_cst);
 #endif
 
    return( result);
@@ -550,8 +832,53 @@ int
 
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
+int
+   _mulle_atomic_pointer_cas_relaxed( mulle_atomic_pointer_t *address,
+                                      void *value,
+                                      void *expect)
+{
+   void    *actual;
+
+   assert( value != expect);
+   actual = expect;
+   return( (int) atomic_compare_exchange_strong_explicit( address,
+                                                          &actual,
+                                                          value,
+                                                          memory_order_relaxed,
+                                                          memory_order_relaxed));
+}
+
+
+//
+// The arithmetic helpers below access a _Atomic( void *) as an
+// _Atomic( intptr_t). This is a deliberate type-pun, inherited from the
+// mintomic API: C11 has no atomic pointer arithmetic, so the pointer-sized
+// atomic is reinterpreted as a pointer-sized integer atomic. Both types have
+// identical size, alignment and lock-free status on all supported
+// platforms, so this is only sound while the values stored in the atomic
+// are plain pointer-sized integers (as mulle-thread's once states, TSS
+// refcounts etc. guarantee). Do not store actual pointers in an atomic that
+// is later passed to these functions.
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
 void *
    _mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address)
+{
+   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) address,
+                                               1,
+                                               memory_order_seq_cst));
+}
+
+
+//
+// Use for disconnected counters only: statistics, diagnostics, values
+// that never gate access to other memory.
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void *
+   _mulle_atomic_pointer_increment_relaxed( mulle_atomic_pointer_t *address)
 {
    return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) address,
                                                1,
@@ -566,15 +893,38 @@ void  *
 {
    return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) address,
                                                -1,
+                                               memory_order_seq_cst));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
+   _mulle_atomic_pointer_decrement_relaxed( mulle_atomic_pointer_t *address)
+{
+   return( (void *) atomic_fetch_add_explicit( (atomic_intptr_t *) address,
+                                               -1,
                                                memory_order_relaxed));
 }
 
 
 // returns the result, not the previous value like increment/decrement
+// (see the comment on _mulle_atomic_pointer_increment about the cast)
 MULLE_C_STATIC_ALWAYS_INLINE
 MULLE_C_NO_INSTRUMENT_FUNCTION
 void  *
    _mulle_atomic_pointer_add( mulle_atomic_pointer_t *address, intptr_t diff)
+{
+   return( (void *) ((intptr_t) atomic_fetch_add_explicit( (atomic_intptr_t *) address,
+                                                            diff,
+                                                            memory_order_seq_cst) + diff));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void  *
+   _mulle_atomic_pointer_add_relaxed( mulle_atomic_pointer_t *address, intptr_t diff)
 {
    return( (void *) ((intptr_t) atomic_fetch_add_explicit( (atomic_intptr_t *) address,
                                                             diff,
@@ -587,7 +937,27 @@ MULLE_C_NO_INSTRUMENT_FUNCTION
 void
    mulle_atomic_memory_barrier( void)
 {
-   atomic_signal_fence( memory_order_seq_cst);
+   //
+   // MEMO: this must be a *thread* fence, not a signal fence.
+   //
+   // atomic_signal_fence() only orders operations between a thread and a
+   // signal handler executing in the same thread. It is purely a compiler
+   // barrier and provides no ordering between threads.
+   //
+   // mulle_thread_once()/mulle_thread_once_call() and the recursive variants
+   // rely on this barrier to publish the data written by the init function
+   // before other threads may observe the state as MULLE_THREAD_ONCE_DONE.
+   // With a signal fence and memory_order_relaxed atomics, that guarantee
+   // only holds on strongly ordered CPUs (x86/TSO); on ARM/ARM64/PPC another
+   // thread could observe DONE and still read stale init data.
+   //
+   // atomic_thread_fence( memory_order_seq_cst) is the correct choice: it
+   // keeps all compiler ordering of the signal fence and adds the hardware
+   // fence on weakly ordered CPUs (a no-op on x86). It also matches the
+   // mintomic backend (mint_thread_fence_seq_cst), so both atomic backends
+   // behave identically.
+   //
+   atomic_thread_fence( memory_order_seq_cst);
 }
 
 

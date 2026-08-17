@@ -22,9 +22,17 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
       list( APPEND OS_SPECIFIC_LIBRARIES "stdthreads")
    else()
       if( NOT STDTHREADS_LIBRARY)
-         find_library( STDTHREADS_LIBRARY NAMES
-            stdthreads
-         )
+         foreach( _TMP_STDTHREADS_LIBRARY_TARGET stdthreads)
+            if( TARGET ${_TMP_STDTHREADS_LIBRARY_TARGET})
+               set( STDTHREADS_LIBRARY ${_TMP_STDTHREADS_LIBRARY_TARGET})
+               break()
+            endif()
+         endforeach()
+         if( NOT STDTHREADS_LIBRARY)
+            find_library( STDTHREADS_LIBRARY NAMES
+               stdthreads
+            )
+         endif()
          message( STATUS "STDTHREADS_LIBRARY is ${STDTHREADS_LIBRARY}")
          #
          # The order looks ascending, but due to the way this file is read
@@ -57,10 +65,18 @@ if( NOT (${CMAKE_SYSTEM_NAME} MATCHES "Android" OR ${CMAKE_SYSTEM_NAME} MATCHES 
       list( APPEND OS_SPECIFIC_LIBRARIES "pthreads")
    else()
       if( NOT PTHREAD_LIBRARY)
-         find_library( PTHREAD_LIBRARY NAMES
-            pthreads
-            pthread
-         )
+         foreach( _TMP_PTHREAD_LIBRARY_TARGET pthreads pthread)
+            if( TARGET ${_TMP_PTHREAD_LIBRARY_TARGET})
+               set( PTHREAD_LIBRARY ${_TMP_PTHREAD_LIBRARY_TARGET})
+               break()
+            endif()
+         endforeach()
+         if( NOT PTHREAD_LIBRARY)
+            find_library( PTHREAD_LIBRARY NAMES
+               pthreads
+               pthread
+            )
+         endif()
          message( STATUS "PTHREAD_LIBRARY is ${PTHREAD_LIBRARY}")
          #
          # The order looks ascending, but due to the way this file is read

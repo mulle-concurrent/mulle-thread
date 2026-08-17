@@ -92,7 +92,7 @@ struct thread_info
 };
 
 
-static mulle_thread_rval_t   run_test( struct thread_info *info)
+static mulle_thread_rval_t MULLE_THREAD_CALL   run_test( struct thread_info *info)
 {
    _wait_around( info->n_threads);
    multi_threaded_test_each_thread();

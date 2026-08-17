@@ -10,14 +10,14 @@
 #endif
 
 
-static mulle_thread_rval_t   quick_thread( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   quick_thread( void *arg)
 {
    (void) arg;
    return( (mulle_thread_rval_t) 42);
 }
 
 
-static mulle_thread_rval_t   slow_thread( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   slow_thread( void *arg)
 {
    (void) arg;
    sleep_ms( 2000);  // 2 seconds

@@ -17,7 +17,7 @@ static mulle_atomic_pointer_t  init_count[ NUM_ONCE_CALLS];
       values[ i] = i + 1;                                \
    }
 
-static mulle_thread_rval_t   once_thread( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   once_thread( void *arg)
 {
    int   i;
    int   val;

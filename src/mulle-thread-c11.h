@@ -55,7 +55,13 @@ typedef int         mulle_thread_native_rval_t;
 typedef uintptr_t   mulle_thread_id_t;
 
 
-typedef mulle_thread_rval_t   mulle_thread_function_t( void *);
+// calling convention for thread entry functions; only meaningful on
+// 32-bit x86 Windows, where _beginthreadex requires __stdcall. On all
+// other platforms it expands to nothing, so declaring thread functions
+// with MULLE_THREAD_CALL is portable.
+#define MULLE_THREAD_CALL
+
+typedef mulle_thread_rval_t  (MULLE_THREAD_CALL mulle_thread_function_t)( void *);
 typedef void                  mulle_thread_callback_t( void *);
 
 // MEMO: windows can't do static initializes for CRITICAL_SECTION
@@ -88,6 +94,16 @@ MULLE_C_CONST_RETURN
 static inline mulle_thread_id_t   mulle_thread_get_id( mulle_thread_t thread)
 {
    return( (mulle_thread_id_t) thread);
+}
+
+
+// compare two thread handles for equality
+MULLE_C_CONST_RETURN
+MULLE_C_NO_INSTRUMENT_FUNCTION
+static inline int   mulle_thread_equal( mulle_thread_t thread1,
+                                        mulle_thread_t thread2)
+{
+   return( mulle_thread_get_id( thread1) == mulle_thread_get_id( thread2));
 }
 
 
@@ -165,7 +181,7 @@ static inline int   mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
    {
    case thrd_success : return( 0) ;
    case thrd_busy    : return( EBUSY);
-   default           : return( EINVAL);
+   default           : return( -1);
    }
 }
 

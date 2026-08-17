@@ -39,6 +39,16 @@ endif()
 
 include( Library)
 
+#
+# The shared Library.cmake defines "${LIBRARY_UPCASE_IDENTIFIER}_BUILD"
+# (single underscore) on the compile target, but the mulle convention used
+# by src/generic/include.h is the double underscore variant
+# "MULLE__THREAD_BUILD" (cf. MULLE__CORE_BUILD, MULLE__C11_VERSION).
+# Define it here so that MULLE__THREAD_GLOBAL resolves to MULLE_C_GLOBAL
+# while compiling the library (visibility / dllexport on Windows).
+#
+target_compile_definitions( "${LIBRARY_COMPILE_TARGET}" PRIVATE MULLE__THREAD_BUILD)
+
 # use LIBRARY_COMPILE_TARGET for compiler options
 target_compile_definitions( "${LIBRARY_COMPILE_TARGET}" PUBLIC)
 target_compile_options( "${LIBRARY_COMPILE_TARGET}" PUBLIC)

@@ -17,7 +17,7 @@ static void   init_value( void *arg)
    MULLE_THREAD_UNPLEASANT_RACE_YIELD();
 }
 
-static mulle_thread_rval_t   once_thread( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   once_thread( void *arg)
 {
    int   i;
    int   val;

@@ -55,7 +55,13 @@ typedef void              *mulle_thread_native_rval_t;
 
 typedef uintptr_t         mulle_thread_id_t;
 
-typedef mulle_thread_rval_t   mulle_thread_function_t( void *);
+// calling convention for thread entry functions; only meaningful on
+// 32-bit x86 Windows, where _beginthreadex requires __stdcall. On all
+// other platforms it expands to nothing, so declaring thread functions
+// with MULLE_THREAD_CALL is portable.
+#define MULLE_THREAD_CALL
+
+typedef mulle_thread_rval_t  (MULLE_THREAD_CALL mulle_thread_function_t)( void *);
 typedef void                  mulle_thread_callback_t( void *);
 
 // MEMO: windows can't do static initializes for CRITICAL_SECTION
@@ -85,6 +91,17 @@ MULLE_C_CONST_RETURN
 static inline mulle_thread_id_t   mulle_thread_get_id( mulle_thread_t thread)
 {
    return( (mulle_thread_id_t) thread);
+}
+
+
+// compare two thread handles for equality
+// (use the ids, pthread_t is not guaranteed to be comparable)
+MULLE_C_CONST_RETURN
+MULLE_C_NO_INSTRUMENT_FUNCTION
+static inline int   mulle_thread_equal( mulle_thread_t thread1,
+                                        mulle_thread_t thread2)
+{
+   return( mulle_thread_get_id( thread1) == mulle_thread_get_id( thread2));
 }
 
 
@@ -118,14 +135,13 @@ static inline mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
    if( ! rval)
       return( (mulle_thread_rval_t) (intptr_t) storage);
 
-   errno = rval;
    return( (mulle_thread_rval_t) -1);
 }
 
 
 static inline int   mulle_thread_detach( mulle_thread_t thread)
 {
-   return( pthread_detach( thread));
+   return( pthread_detach( thread) == 0 ? 0 : -1);
 }
 
 
@@ -170,14 +186,14 @@ static inline void   mulle_thread_yield( void)
 // parameters different to pthreads!
 static inline int  mulle_thread_mutex_init( mulle_thread_mutex_t *lock)
 {
-   return( pthread_mutex_init( lock, NULL));
+   return( pthread_mutex_init( lock, NULL) == 0 ? 0 : -1);
 }
 
 
 // mutexes already put up mem barriers
 static inline int  mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 {
-   return( pthread_mutex_lock( lock));
+   return( pthread_mutex_lock( lock) == 0 ? 0 : -1);
 }
 
 
@@ -188,19 +204,24 @@ static inline int  mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 //
 static inline int  mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
 {
-   return( pthread_mutex_trylock( lock));
+   int   rval;
+
+   rval = pthread_mutex_trylock( lock);
+   if( rval == 0 || rval == EBUSY)
+      return( rval);
+   return( -1);
 }
 
 
 static inline int  mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock)
 {
-   return( pthread_mutex_unlock( lock));
+   return( pthread_mutex_unlock( lock) == 0 ? 0 : -1);
 }
 
 
 static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 {
-   return( pthread_mutex_destroy( lock));
+   return( pthread_mutex_destroy( lock) == 0 ? 0 : -1);
 }
 
 
@@ -208,32 +229,32 @@ static inline int  mulle_thread_mutex_done( mulle_thread_mutex_t *lock)
 
 static inline int  mulle_thread_cond_init( mulle_thread_cond_t *cond)
 {
-   return( pthread_cond_init( cond, NULL));
+   return( pthread_cond_init( cond, NULL) == 0 ? 0 : -1);
 }
 
 
 static inline int  mulle_thread_cond_done( mulle_thread_cond_t *cond)
 {
-   return( pthread_cond_destroy( cond));
+   return( pthread_cond_destroy( cond) == 0 ? 0 : -1);
 }
 
 
 static inline int  mulle_thread_cond_wait( mulle_thread_cond_t *cond,
                                             mulle_thread_mutex_t *mutex)
 {
-   return( pthread_cond_wait( cond, mutex));
+   return( pthread_cond_wait( cond, mutex) == 0 ? 0 : -1);
 }
 
 
 static inline int  mulle_thread_cond_signal( mulle_thread_cond_t *cond)
 {
-   return( pthread_cond_signal( cond));
+   return( pthread_cond_signal( cond) == 0 ? 0 : -1);
 }
 
 
 static inline int  mulle_thread_cond_broadcast( mulle_thread_cond_t *cond)
 {
-   return( pthread_cond_broadcast( cond));
+   return( pthread_cond_broadcast( cond) == 0 ? 0 : -1);
 }
 
 
@@ -241,7 +262,12 @@ static inline int  mulle_thread_cond_timedwait( mulle_thread_cond_t *cond,
                                                  mulle_thread_mutex_t *mutex,
                                                  struct timespec *abstime)
 {
-   return( pthread_cond_timedwait( cond, mutex, abstime));
+   int   rval;
+
+   rval = pthread_cond_timedwait( cond, mutex, abstime);
+   if( rval == 0 || rval == ETIMEDOUT)
+      return( rval);
+   return( -1);
 }
 
 
@@ -254,7 +280,7 @@ MULLE_C_STATIC_ALWAYS_INLINE
 int   mulle_thread_tss_create( mulle_thread_callback_t *f,
                                              mulle_thread_tss_t *key)
 {
-   return( pthread_key_create( key, f));
+   return( pthread_key_create( key, f) == 0 ? 0 : -1);
 }
 
 
@@ -279,7 +305,7 @@ MULLE_C_NO_INSTRUMENT_FUNCTION
 int  mulle_thread_tss_set( mulle_thread_tss_t key,
                                          void *value)
 {
-   return( pthread_setspecific( key, value));
+   return( pthread_setspecific( key, value) == 0 ? 0 : -1);
 }
 
 #endif

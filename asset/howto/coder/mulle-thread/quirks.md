@@ -1,6 +1,33 @@
-<!-- Keywords: do-not-return-unsafe do-not-access-internals return-semantics tss-zero-key main-thread-destructor cas-assert-eq noblock-is-if -->
+<!-- Keywords: do-not-return-unsafe do-not-access-internals return-semantics tss-zero-key main-thread-destructor cas-assert-eq noblock-is-if tsan-needs-pthreads sanitizer -->
 
 # Quirks
+
+## ThreadSanitizer needs `-DMULLE_THREAD_USE_PTHREADS`
+
+`mulle_thread_create` uses C11 `thrd_create` whenever `<threads.h>` is
+available. ThreadSanitizer intercepts `pthread_create`, but not `thrd_create`,
+which glibc implements through a libc-internal call that bypasses interposition.
+The thread then starts with no tsan thread state and segfaults as soon as it
+executes instrumented code:
+
+```
+ThreadSanitizer:DEADLYSIGNAL
+ERROR: ThreadSanitizer: SEGV on unknown address 0x000000000018
+```
+
+The backtrace shows `__tsan_func_entry` at the first line of the thread
+function, which looks like a bug in the code under test. It is not. Build
+sanitizer targets with:
+
+``` sh
+cc -fsanitize=thread -DMULLE_THREAD_USE_PTHREADS ...
+```
+
+The macro is checked in `src/mulle-thread.h` before the backend header is
+included, so it has to be a compiler flag, not a `#define` in a `.c` file.
+Reproduced with both gcc libtsan and clang. A thread function with nothing
+left to instrument after optimization may pass, so do not conclude from a
+trivial smoke test that tsan works.
 
 ## Macros: no `return` from `_do` blocks
 
@@ -89,6 +116,10 @@ the initialization block entirely if another thread is already initializing.
 They do not wait. Callers that enter the once_do body must not assume
 initialization was actually performed by prior callers.
 
+The winning thread publishes `MULLE_THREAD_ONCE_DONE` after init, so a later
+blocking `mulle_thread_once`/`mulle_thread_once_do` on the same flag returns
+immediately instead of spinning forever.
+
 ## `mulle_thread_once_do_noblock` does not guarantee execution
 
 If a thread sees the once as BUSY or DONE, the body is skipped without error.
@@ -97,9 +128,11 @@ body.
 
 ## Memory barrier scope
 
-`mulle_atomic_memory_barrier()` is `atomic_signal_fence(memory_order_seq_cst)`,
-not a full hardware `atomic_thread_fence`. It is a compiler barrier, not a
-CPU memory fence.
+`mulle_atomic_memory_barrier()` is `atomic_thread_fence(memory_order_seq_cst)`
+on the C11 backend and `mint_thread_fence_seq_cst()` on mintomic — a full
+hardware fence, not just a compiler barrier. This is required by the
+`mulle_thread_once*` publish protocol: init writes must be visible to other
+threads before they can observe `MULLE_THREAD_ONCE_DONE`.
 
 ## `_cas`/`_weakcas` assert value != expect
 
@@ -107,12 +140,20 @@ Both strong and weak CAS functions assert `value != expect`
 (`src/mulle-atomic-c11.h:519,424`). Passing equal pointers triggers an abort in
 debug builds. Use `_set` or `_write` instead when the old value is not needed.
 
-## `mulle_thread_once_do_noblock` is an `if`, not a `for` loop
+## `mulle_thread_once_do_noblock` is a `for` loop, like `mulle_thread_once_do`
 
-Unlike the blocking `mulle_thread_once_do` which is a two-level `for` loop, the
-`_noblock` variant expands to a single `if` statement. `break` has no effect — if
-you need early exit, wrap the block body in a do-while(0) or restructure the
-caller.
+Since the DONE-publishing fix, the `_noblock` variant expands to the same
+two-level `for` loop shape as the blocking `mulle_thread_once_do` (the outer
+loop publishes `MULLE_THREAD_ONCE_DONE`). `break` inside the body exits the
+block cleanly and still publishes DONE; `continue` does the same (it jumps to
+the hidden inner-loop increment, then the outer loop publishes DONE and the
+once exits). The difference to the blocking variant is only that a thread
+which did not win the CAS does not wait — it skips the body entirely.
+
+Note that `break`/`continue` no longer target an *enclosing* user loop — they
+are captured by the macro's own loops, exactly as in `mulle_thread_once_do`.
+That is a behavior change vs. the pre-fix `if` form (where they fell through to
+the surrounding loop).
 
 ## `mulle_thread_tss_create` param order: destructor first, key last
 

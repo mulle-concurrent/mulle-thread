@@ -18,7 +18,7 @@ static void   init_value( void *arg)
    values[ index] = index + 1;
 }
 
-static mulle_thread_rval_t   once_thread( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   once_thread( void *arg)
 {
    int   i;
    int   val;

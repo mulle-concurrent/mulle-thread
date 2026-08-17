@@ -156,6 +156,13 @@ static inline void   mulle_thread_once_recursive( mulle_thread_once_recursive_t 
 }
 
 // non-blocking variants (old behavior)
+//
+// These do NOT wait: if another thread is already initializing (BUSY) or the
+// once is already done (DONE), init is skipped. But unlike the old behavior,
+// the winning thread now publishes MULLE_THREAD_ONCE_DONE after init (like
+// the blocking variants do), so a later blocking mulle_thread_once() on the
+// same flag terminates instead of spinning forever.
+//
 MULLE_C_NO_INSTRUMENT_FUNCTION
 static inline void   mulle_thread_once_noblock( mulle_thread_once_t  *once,
                                                  void (*init)( void))
@@ -165,7 +172,11 @@ static inline void   mulle_thread_once_noblock( mulle_thread_once_t  *once,
                                                (void *) MULLE_THREAD_ONCE_INIT))
    {
       (*init)();
+      // fear of delayed write before swap
       mulle_atomic_memory_barrier();
+      _mulle_atomic_pointer_compare_and_swap( once,
+                                              (void *) MULLE_THREAD_ONCE_DONE,
+                                              (void *) MULLE_THREAD_ONCE_BUSY);
    }
 }
 
@@ -179,7 +190,11 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
                                                (void *) MULLE_THREAD_ONCE_INIT))
    {
       (*init)( userinfo);
+      // fear of delayed write before swap
       mulle_atomic_memory_barrier();
+      _mulle_atomic_pointer_compare_and_swap( once,
+                                              (void *) MULLE_THREAD_ONCE_DONE,
+                                              (void *) MULLE_THREAD_ONCE_BUSY);
    }
 }
 
@@ -242,12 +257,31 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
             if( (_mulle_atomic_pointer_write( &name._thread_id,                                     \
                                              (void *) mulle_thread_once_do_recursive__tid), 1))
 
-// convenient non-blocking interface (old behavior)
+// convenient non-blocking interface
+//
+// Unlike the blocking mulle_thread_once_do, this does not wait for a thread
+// that is currently initializing: the body is only entered by the thread that
+// wins the CAS. The for-loop shape (instead of a plain if) lets the increment
+// publish MULLE_THREAD_ONCE_DONE after the body ran, so mixing this with a
+// blocking once on the same flag cannot hang. `break` inside the body still
+// publishes DONE (the hidden break-protection loop), matching
+// mulle_thread_once_do.
+//
 #define mulle_thread_once_do_noblock( name)                                             \
    static mulle_thread_once_t   name = MULLE_THREAD_ONCE_INIT;                          \
-   if( _mulle_atomic_pointer_compare_and_swap( &name,                                   \
-                                               (void *) MULLE_THREAD_ONCE_BUSY,         \
-                                               (void *) MULLE_THREAD_ONCE_INIT))
+   for( void *actual = __mulle_atomic_pointer_compare_and_swap( &name,                  \
+                                                                (void *) MULLE_THREAD_ONCE_BUSY,   \
+                                                                (void *) MULLE_THREAD_ONCE_INIT);  \
+        actual == (void *) MULLE_THREAD_ONCE_INIT;                                       \
+        actual = ( mulle_atomic_memory_barrier(),                                        \
+                   _mulle_atomic_pointer_compare_and_swap( &name,                        \
+                                                          (void *) MULLE_THREAD_ONCE_DONE, \
+                                                          (void *) MULLE_THREAD_ONCE_BUSY), \
+                  (void *) MULLE_THREAD_ONCE_DONE))                                      \
+      MULLE_C_CONFINED_LOOP                                                             \
+      for( int  mulle_thread_once_do_noblock__j = 0; /* break protection */             \
+           mulle_thread_once_do_noblock__j < 1;                                         \
+           mulle_thread_once_do_noblock__j++)
 
 //
 // You can't have another mulle_thread_mutex_do inside a mulle_thread_mutex_do.
@@ -320,20 +354,34 @@ int   mulle_thread_recursive_mutex_trylock( mulle_thread_recursive_mutex_t *p); 
  */
 #if defined( MULLE_TEST) && ! defined( NO_MULLE_THREAD_UNPLEASANT_RACE_YIELD)
 
-#include "include.h"
 #include <stdlib.h>
-//#define _XOPEN_SOURCE  // user should define this not us
 #include <time.h>
+
+
+# if defined( __GNUC__) || defined( __clang__)
+#  define MULLE_THREAD_RACE_TLS   __thread
+# else
+#  define MULLE_THREAD_RACE_TLS   /* shared, still lock free, good enough */
+# endif
 
 
 static inline void  MULLE_THREAD_UNPLEASANT_RACE_YIELD()
 {
    extern void   mulle_thread_yield( void);
 
-   if( (rand() & 0xF) == 0xA)  // 1:16 chance of yield
+   static MULLE_THREAD_RACE_TLS uint32_t   x;
+
+   if( ! x)
+      x = (uint32_t) (uintptr_t) &x | 1;   // distinct per thread, never 0
+
+   x ^= x << 13;
+   x ^= x >> 17;
+   x ^= x << 5;
+
+   if( (x & 0x3) == 0x1)
    {
 #ifndef _WIN32
-      if( (rand() & 0x7) == 0x4)  // 1:64 chance of nanosleep
+      if( (x & 0x7) == 0x4)  // 1:64 chance of nanosleep
       {
 #ifdef __linux  // as we don't want to #define _XOPEN_SOURCE
          int nanosleep( const struct timespec *req, struct timespec *rem);

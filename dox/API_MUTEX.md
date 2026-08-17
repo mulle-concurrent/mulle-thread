@@ -32,7 +32,7 @@ int  mulle_thread_mutex_lock( mulle_thread_mutex_t *lock)
 
 Lock the mutex. A thread will deadlock if it tries to lock the mutex again.
 
-Returns 0 on success. A negative value indicates that you set up the mutex wrong.
+Returns 0 on success. Returns -1 on failure.
 
 See: [pthread_mutex_lock](https://linux.die.net/man/3/pthread_mutex_lock)
 
@@ -43,7 +43,8 @@ See: [pthread_mutex_lock](https://linux.die.net/man/3/pthread_mutex_lock)
 int  mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock)
 ```
 
-Returns 0 on success. Returns 1 if busy. Returns -1 on failure.
+Returns 0 on success. Returns `EBUSY` if the mutex is already locked (by any
+thread, including this one). Returns -1 on other failures.
 
 See: [pthread_mutex_trylock](https://linux.die.net/man/3/pthread_mutex_trylock)
 
@@ -70,5 +71,5 @@ Destroy the mutex. You should not destroy a locked mutex.
 
 Returns 0 on success.
 
-See: [pthread_mutex_done](https://linux.die.net/man/3/pthread_mutex_done)
+See: [pthread_mutex_destroy](https://linux.die.net/man/3/pthread_mutex_destroy)
 

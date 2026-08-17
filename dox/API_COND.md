@@ -28,7 +28,7 @@ Initialize a condition variable.
 
 **Returns:**
 - `0` on success
-- Non-zero on error
+- `-1` on failure
 
 **Example:**
 ```c
@@ -55,7 +55,7 @@ Destroy a condition variable and release associated resources.
 
 **Returns:**
 - `0` on success
-- Non-zero on error
+- `-1` on failure
 
 **Note:** On Windows, this is a no-op as condition variables don't require cleanup.
 
@@ -76,7 +76,7 @@ Wait for a condition variable to be signaled. The mutex must be locked before ca
 
 **Returns:**
 - `0` on success
-- Non-zero on error
+- `-1` on failure
 
 **Important:** This function can return spuriously (without being signaled). Always use it in a loop that checks the actual condition:
 
@@ -87,6 +87,20 @@ while( ! condition_is_true)
 // condition is now true and mutex is locked
 mulle_thread_mutex_unlock( &mutex);
 ```
+
+---
+
+### `mulle_thread_cond_timedwait`
+
+```c
+int mulle_thread_cond_timedwait( mulle_thread_cond_t *cond,
+                                 mulle_thread_mutex_t *mutex,
+                                 struct timespec *abstime);
+```
+
+The timed wait has the same status convention: it returns `0` on success, `-1`
+on failure, and `ETIMEDOUT` when the absolute deadline expires. The mutex must
+be locked before calling it and is locked again before it returns.
 
 ---
 
@@ -103,7 +117,7 @@ Wake up one thread waiting on the condition variable. If no threads are waiting,
 
 **Returns:**
 - `0` on success
-- Non-zero on error
+- `-1` on failure
 
 **Example:**
 ```c
@@ -128,7 +142,7 @@ Wake up all threads waiting on the condition variable. If no threads are waiting
 
 **Returns:**
 - `0` on success
-- Non-zero on error
+- `-1` on failure
 
 **Example:**
 ```c

@@ -43,13 +43,13 @@
 
 
 #if DEBUG_PRINT
-extern void   mulle_aba_print( void);
+extern void   mulle_thread_print( void);
 #else
-# define mulle_aba_print()
+# define mulle_thread_print()
 #endif
 
 static mulle_thread_tss_t   timestamp_thread_key;
-char  *mulle_aba_thread_name( void);
+char  *mulle_thread_name( void);
 
 
 static mulle_atomic_pointer_t    central;
@@ -101,7 +101,7 @@ struct thread_info
 };
 
 
-static mulle_thread_rval_t   run_test( struct thread_info *info)
+static mulle_thread_rval_t MULLE_THREAD_CALL   run_test( struct thread_info *info)
 {
 #ifndef MULLE_TEST_VALGRIND
    mulle_thread_tss_set( timestamp_thread_key, strdup( info->name));
@@ -126,7 +126,7 @@ void  multi_threaded_test( intptr_t n)
    struct thread_info   *info;
    mulle_atomic_pointer_t   n_threads;
 
-#if MULLE_ABA_TRACE
+#if MULLE_THREAD_TRACE
    fprintf( stderr, "////////////////////////////////\n");
    fprintf( stderr, "multi_threaded_test( %ld) starts\n", n);
 #endif
@@ -163,13 +163,13 @@ void  multi_threaded_test( intptr_t n)
 
    finish_test();
 
-#if MULLE_ABA_TRACE
-   fprintf( stderr, "%s: multi_threaded_test( %ld) ends\n", mulle_aba_thread_name(), n);
+#if MULLE_THREAD_TRACE
+   fprintf( stderr, "%s: multi_threaded_test( %ld) ends\n", mulle_thread_name(), n);
 #endif
 }
 
 
-char  *mulle_aba_thread_name( void)
+char  *mulle_thread_name( void)
 {
    return( mulle_thread_tss_get( timestamp_thread_key));
 }
@@ -205,13 +205,12 @@ int   _main(int argc, const char * argv[])
    assert( ! rval);
 #endif
 
-#if MULLE_ABA_TRACE
-   fprintf( stderr, "%s\n", mulle_aba_thread_name());
+#if MULLE_THREAD_TRACE
+   fprintf( stderr, "%s\n", mulle_thread_name());
 #endif
 
    //
-   // if there are leaks anywhere, it will assert in
-   // _mulle_aba_storage_done which is called by reset_memory
+   // if there are leaks anywhere, the test/runtime cleanup should report them
    // eventually
    //
 

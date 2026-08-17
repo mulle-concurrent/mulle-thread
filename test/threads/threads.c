@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 
-static mulle_thread_rval_t   thread_main( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL   thread_main( void *arg)
 {
    if( arg != (void *) 0x1847)
       printf( "mistaken arg\n");
