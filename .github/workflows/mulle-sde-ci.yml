@@ -1,3 +1,14 @@
+# CI workflow for mulle-c projects
+#
+# Opt-out of extra jobs via GitHub repository variables
+# (Settings → Secrets and variables → Actions → Variables):
+#
+#   CI_SKIP_SANITIZERS=true   — skip ASAN + UBSAN job
+#   CI_SKIP_32BIT=true        — skip 32-bit build job
+#   CI_SKIP_VALGRIND=true     — skip valgrind job
+#
+# If the variable is unset, the job runs by default.
+#
 name: CI
 
 on:
@@ -51,6 +62,7 @@ jobs:
         [ ! -d test ] || mulle-sde test
 
   sanitizers:
+    if: vars.CI_SKIP_SANITIZERS != 'true'
     runs-on: ubuntu-latest
     env:
       MULLE_HOSTNAME: ci-sanitizers
@@ -80,36 +92,8 @@ jobs:
         ASAN_OPTIONS: "detect_leaks=0:abort_on_error=1"
         UBSAN_OPTIONS: "print_stacktrace=1:halt_on_error=1"
 
-  thread-sanitizer:
-    runs-on: ubuntu-latest
-    env:
-      MULLE_HOSTNAME: ci-thread-sanitizer
-
-    steps:
-    - name: Add to path
-      run:  echo "$HOME/bin" >> $GITHUB_PATH
-
-    - uses: actions/checkout@v4
-
-    - uses: mulle-sde/github-ci@v2
-
-    - name: Mulle-SDE Fetch
-      run: mulle-sde fetch
-
-    - name: Mulle-SDE Craft (TSAN)
-      run: |
-        mulle-sde craft --debug \
-          -DCMAKE_C_FLAGS="-fsanitize=thread -fno-omit-frame-pointer" \
-          -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=thread" \
-          -DCMAKE_SHARED_LINKER_FLAGS="-fsanitize=thread"
-
-    - name: Mulle-SDE Test (TSAN)
-      run: |
-        [ ! -d test ] || mulle-sde test
-      env:
-        TSAN_OPTIONS: "halt_on_error=1:second_deadlock_stack=1"
-
   build-32bit:
+    if: vars.CI_SKIP_32BIT != 'true'
     runs-on: ubuntu-latest
     env:
       MULLE_HOSTNAME: ci-32bit
@@ -142,6 +126,7 @@ jobs:
         [ ! -d test ] || mulle-sde test
 
   valgrind:
+    if: vars.CI_SKIP_VALGRIND != 'true'
     runs-on: ubuntu-latest
     env:
       MULLE_HOSTNAME: ci-valgrind

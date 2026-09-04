@@ -34,21 +34,19 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
             )
          endif()
          message( STATUS "STDTHREADS_LIBRARY is ${STDTHREADS_LIBRARY}")
-         #
-         # The order looks ascending, but due to the way this file is read
-         # it ends up being descending, which is what we need.
-         #
-         if( STDTHREADS_LIBRARY)
+      endif()
+      if( STDTHREADS_LIBRARY)
             #
             # Add STDTHREADS_LIBRARY to OS_SPECIFIC_LIBRARIES list.
             # Disable with: `mulle-sourcetree mark stdthreads no-cmake-add`
             #
-            list( APPEND OS_SPECIFIC_LIBRARIES ${STDTHREADS_LIBRARY})
+            if( NOT ${STDTHREADS_LIBRARY} IN_LIST OS_SPECIFIC_LIBRARIES)
+               list( APPEND OS_SPECIFIC_LIBRARIES ${STDTHREADS_LIBRARY})
+            endif()
             # intentionally left blank
-         else()
-            # Disable with: `mulle-sourcetree mark stdthreads no-require-link`
-            message( SEND_ERROR "STDTHREADS_LIBRARY was not found in stdthreads")
-         endif()
+      else()
+         # Disable with: `mulle-sourcetree mark stdthreads no-require-link`
+         message( SEND_ERROR "STDTHREADS_LIBRARY was not found in stdthreads")
       endif()
    endif()
 endif()
@@ -78,16 +76,15 @@ if( NOT (${CMAKE_SYSTEM_NAME} MATCHES "Android" OR ${CMAKE_SYSTEM_NAME} MATCHES 
             )
          endif()
          message( STATUS "PTHREAD_LIBRARY is ${PTHREAD_LIBRARY}")
-         #
-         # The order looks ascending, but due to the way this file is read
-         # it ends up being descending, which is what we need.
-         #
-         if( PTHREAD_LIBRARY)
+      endif()
+      if( PTHREAD_LIBRARY)
             #
             # Add PTHREAD_LIBRARY to OS_SPECIFIC_LIBRARIES list.
             # Disable with: `mulle-sourcetree mark pthread no-cmake-add`
             #
-            list( APPEND OS_SPECIFIC_LIBRARIES ${PTHREAD_LIBRARY})
+            if( NOT ${PTHREAD_LIBRARY} IN_LIST OS_SPECIFIC_LIBRARIES)
+               list( APPEND OS_SPECIFIC_LIBRARIES ${PTHREAD_LIBRARY})
+            endif()
             #
             # Inherit information from dependency.
             # Encompasses: no-cmake-searchpath,no-cmake-dependency,no-cmake-loader
@@ -130,10 +127,9 @@ if( NOT (${CMAKE_SYSTEM_NAME} MATCHES "Android" OR ${CMAKE_SYSTEM_NAME} MATCHES 
                   message( STATUS "${_TMP_PTHREAD_DIR} not found")
                endif()
             endforeach()
-         else()
-            # Enable with: `mulle-sourcetree mark pthread require`
-            message( STATUS "PTHREAD_LIBRARY is missing but it is marked as \"no-require\"")
-         endif()
+      else()
+         # Enable with: `mulle-sourcetree mark pthread require`
+         message( STATUS "PTHREAD_LIBRARY is missing but it is marked as \"no-require\"")
       endif()
    endif()
 endif()
