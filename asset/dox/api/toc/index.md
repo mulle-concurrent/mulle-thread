@@ -175,9 +175,11 @@ void  mulle_thread_yield( void);
 mulle_thread_t      mulle_thread_self( void);
 mulle_thread_id_t   mulle_thread_id( void);
 mulle_thread_id_t   mulle_thread_get_id( mulle_thread_t thread);
+int                 mulle_thread_equal( mulle_thread_t thread1, mulle_thread_t thread2);
 ```
 
 - `mulle_thread_create` returns the created thread via `p_thread` (last parameter) — different from pthreads where the thread pointer is the second argument.
+- `mulle_thread_equal` compares two thread handles for equality via their IDs (portable; `pthread_t`/`HANDLE` are not directly comparable).
 - `mulle_thread_return()` macro: returns from a thread function portably (`return( NULL)` on pthreads, `return( 0)` on C11, and on Windows it also destroys TSS before returning).
 
 #### Mutex
@@ -200,10 +202,10 @@ int   mulle_thread_cond_done( mulle_thread_cond_t *cond);
 int   mulle_thread_cond_wait( mulle_thread_cond_t *cond, mulle_thread_mutex_t *mutex);
 int   mulle_thread_cond_signal( mulle_thread_cond_t *cond);
 int   mulle_thread_cond_broadcast( mulle_thread_cond_t *cond);
-int   mulle_thread_cond_timedwait( mulle_thread_cond_t *cond, mulle_thread_mutex_t *mutex, struct timespec *abstime);
+int   mulle_thread_cond_timedwait( mulle_thread_cond_t *cond, mulle_thread_mutex_t *mutex, const struct timespec *abstime);
 ```
 
-- `cond_timedwait` uses `struct timespec *abstime` (absolute time, same as pthreads). Returns `ETIMEDOUT` on timeout.
+- `cond_timedwait` uses `const struct timespec *abstime` (absolute time, same as pthreads). Returns `ETIMEDOUT` on timeout.
 - On Windows, `cond_wait` and `cond_timedwait` are not inlineable (declared `MULLE__THREAD_GLOBAL`).
 
 #### Thread-Local Storage (TSS)
