@@ -39,6 +39,7 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>   // for struct timespec (MSVC does not pull it in transitively)
 
 
 mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread)
