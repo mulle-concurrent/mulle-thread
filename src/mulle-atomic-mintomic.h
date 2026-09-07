@@ -50,6 +50,11 @@
 
 typedef mint_atomicPtr_t   mulle_atomic_pointer_t;
 
+// static initializer for a mulle_atomic_pointer_t. With the mintomic backend
+// the type is a struct (mint_atomicPtr_t), so it needs a braced initializer;
+// MSVC rejects `= 0` for a struct (C2074).
+#define MULLE_ATOMIC_POINTER_INIT   { 0 }
+
 // wrong, but it just for a couple more years...
 typedef mint_atomicPtr_t   mulle_atomic_functionpointer_t;
 typedef void   (*mulle_functionpointer_t)();

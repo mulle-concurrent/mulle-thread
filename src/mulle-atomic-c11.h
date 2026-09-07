@@ -51,6 +51,11 @@ typedef void   (*mulle_functionpointer_t)( void);
 typedef _Atomic( void *)                    mulle_atomic_pointer_t;
 typedef _Atomic( mulle_functionpointer_t)   mulle_atomic_functionpointer_t;
 
+// static initializer for a mulle_atomic_pointer_t. With C11 atomics the type
+// is a scalar (_Atomic(void *)), so a plain scalar initializer is required
+// (a braced initializer is rejected by clang for _Atomic scalar types).
+#define MULLE_ATOMIC_POINTER_INIT   0
+
 # pragma mark -
 # pragma mark function pointer set and get
 
