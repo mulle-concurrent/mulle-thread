@@ -130,7 +130,11 @@ typedef struct
    mulle_atomic_pointer_t   _thread_id;
 } mulle_thread_once_recursive_t;
 
-#define MULLE_THREAD_ONCE_RECURSIVE_INIT   ((mulle_thread_once_recursive_t) { MULLE_THREAD_ONCE_INIT, MULLE_ATOMIC_POINTER_INIT })
+// NOTE: use a plain brace-initializer (no compound-literal cast) so this works
+//       as a `static` aggregate initializer on MSVC too. MSVC rejects
+//       `((type){ ... })` in a static initializer (C2099 "initializer is not a
+//       constant"), whereas GCC/Clang accept the compound literal as an extension.
+#define MULLE_THREAD_ONCE_RECURSIVE_INIT   { MULLE_THREAD_ONCE_INIT, MULLE_ATOMIC_POINTER_INIT }
 
 
 // the old, not so useful interface
