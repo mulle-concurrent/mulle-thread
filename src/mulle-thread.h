@@ -109,12 +109,18 @@
 //
 typedef mulle_atomic_pointer_t   mulle_thread_once_t;
 
+// Raw scalar values a once slot holds during its lifecycle. These are used as
+// plain integers cast to (void *) in the atomic compare-and-swaps below.
 #define MULLE_THREAD_ONCE_DATA   0
 #define MULLE_THREAD_ONCE_BUSY   1848
 #define MULLE_THREAD_ONCE_DONE   1
 
-// old name
-#define MULLE_THREAD_ONCE_INIT   MULLE_THREAD_ONCE_DATA
+// Static initializer for a mulle_thread_once_t. This must be backend-aware:
+// with C11 atomics mulle_atomic_pointer_t is a scalar (`= 0`), with the
+// mintomic backend it is a struct (`= { 0 }`). MULLE_ATOMIC_POINTER_INIT
+// carries the correct form (see mulle-atomic-c11.h / mulle-atomic-mintomic.h).
+// Its zero value corresponds to the MULLE_THREAD_ONCE_DATA state.
+#define MULLE_THREAD_ONCE_INIT   MULLE_ATOMIC_POINTER_INIT
 
 
 // recursive once: tracks thread ID to allow same thread to proceed
@@ -124,7 +130,7 @@ typedef struct
    mulle_atomic_pointer_t   _thread_id;
 } mulle_thread_once_recursive_t;
 
-#define MULLE_THREAD_ONCE_RECURSIVE_INIT   ((mulle_thread_once_recursive_t) { MULLE_THREAD_ONCE_INIT, 0 })
+#define MULLE_THREAD_ONCE_RECURSIVE_INIT   ((mulle_thread_once_recursive_t) { MULLE_THREAD_ONCE_INIT, MULLE_ATOMIC_POINTER_INIT })
 
 
 // the old, not so useful interface
@@ -169,7 +175,7 @@ static inline void   mulle_thread_once_noblock( mulle_thread_once_t  *once,
 {
    if( _mulle_atomic_pointer_compare_and_swap( once,
                                                (void *) MULLE_THREAD_ONCE_BUSY,
-                                               (void *) MULLE_THREAD_ONCE_INIT))
+                                               (void *) MULLE_THREAD_ONCE_DATA))
    {
       (*init)();
       // fear of delayed write before swap
@@ -187,7 +193,7 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
 {
    if( _mulle_atomic_pointer_compare_and_swap( once,
                                                (void *) MULLE_THREAD_ONCE_BUSY,
-                                               (void *) MULLE_THREAD_ONCE_INIT))
+                                               (void *) MULLE_THREAD_ONCE_DATA))
    {
       (*init)( userinfo);
       // fear of delayed write before swap
@@ -203,7 +209,7 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
    static mulle_thread_once_t   name = MULLE_THREAD_ONCE_INIT;                                      \
    for( void *actual = __mulle_atomic_pointer_compare_and_swap( &name,                              \
                                                                  (void *) MULLE_THREAD_ONCE_BUSY,   \
-                                                                 (void *) MULLE_THREAD_ONCE_INIT);  \
+                                                                 (void *) MULLE_THREAD_ONCE_DATA);  \
         actual != (void *) MULLE_THREAD_ONCE_DONE;                                                  \
         actual = ( mulle_atomic_memory_barrier(),                                                   \
                    _mulle_atomic_pointer_compare_and_swap( &name,                                   \
@@ -214,7 +220,7 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
       for( int  mulle_thread_once_do__j = 0; /* break protection */                                 \
            mulle_thread_once_do__j < 1;                                                             \
            mulle_thread_once_do__j++)                                                               \
-         if( actual != MULLE_THREAD_ONCE_INIT)                                                      \
+         if( actual != (void *) MULLE_THREAD_ONCE_DATA)                                                      \
          {                                                                                          \
             do                                                                                      \
                mulle_thread_yield();                                                                \
@@ -233,7 +239,7 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
                        ? (void *) MULLE_THREAD_ONCE_DONE                                            \
                        : __mulle_atomic_pointer_compare_and_swap( &name._state,                     \
                                                                  (void *) MULLE_THREAD_ONCE_BUSY,   \
-                                                                 (void *) MULLE_THREAD_ONCE_INIT);  \
+                                                                 (void *) MULLE_THREAD_ONCE_DATA);  \
         actual != (void *) MULLE_THREAD_ONCE_DONE;                                                  \
         actual = ( _mulle_atomic_pointer_write( &name._thread_id, NULL),                            \
                    mulle_atomic_memory_barrier(),                                                   \
@@ -245,7 +251,7 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
       for( int  mulle_thread_once_do_recursive__j = 0; /* break protection */                       \
            mulle_thread_once_do_recursive__j < 1;                                                   \
            mulle_thread_once_do_recursive__j++)                                                     \
-         if( actual != MULLE_THREAD_ONCE_INIT)                                                      \
+         if( actual != (void *) MULLE_THREAD_ONCE_DATA)                                                      \
          {                                                                                          \
             do                                                                                      \
                mulle_thread_yield();                                                                \
@@ -271,8 +277,8 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
    static mulle_thread_once_t   name = MULLE_THREAD_ONCE_INIT;                          \
    for( void *actual = __mulle_atomic_pointer_compare_and_swap( &name,                  \
                                                                 (void *) MULLE_THREAD_ONCE_BUSY,   \
-                                                                (void *) MULLE_THREAD_ONCE_INIT);  \
-        actual == (void *) MULLE_THREAD_ONCE_INIT;                                       \
+                                                                (void *) MULLE_THREAD_ONCE_DATA);  \
+        actual == (void *) MULLE_THREAD_ONCE_DATA;                                       \
         actual = ( mulle_atomic_memory_barrier(),                                        \
                    _mulle_atomic_pointer_compare_and_swap( &name,                        \
                                                           (void *) MULLE_THREAD_ONCE_DONE, \
