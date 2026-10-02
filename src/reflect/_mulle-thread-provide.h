@@ -13,8 +13,8 @@
 #define _mulle__thread__provide_h__
 
 
-#include "mulle-atomic-c11.h"
 #include "mulle-atomic.h"
+#include "mulle-atomic-c11.h"
 #include "mulle-atomic-mintomic.h"
 #include "mulle-thread-c11.h"
 #include "mulle-thread-pthreads.h"

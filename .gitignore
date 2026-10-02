@@ -71,3 +71,11 @@ environment-user-*.sh
 .kiro/
 TODO.md
 REVIEW.md
+
+run-on-ipad/
+.vscode/
+.touch
+*.orig
+*.workspace
+*.*-workspace
+research/
