@@ -5,14 +5,14 @@
 #
 # Disable generation of this file with:
 #
-# mulle-sde environment set MULLE_SOURCETREE_TO_CMAKE_LIBRARIES_FILE DISABLE
+# mulle-sde environment --global set MULLE_SOURCETREE_TO_CMAKE_LIBRARIES_FILE DISABLE
 #
 if( MULLE_TRACE_INCLUDE)
    message( STATUS "# Include \"${CMAKE_CURRENT_LIST_FILE}\"" )
 endif()
 
 #
-# Generated from sourcetree: 91a3a06c-669f-4cd4-9060-562b3d0b6315;stdthreads;no-all-load,no-build,no-cmake-inherit,no-delete,no-dependency,no-fs,no-import,no-update,only-platform-freebsd;
+# Generated from sourcetree: 91a3a06c-669f-4cd4-9060-562b3d0b6315;stdthreads;no-all-load,no-build,no-delete,no-dependency,no-fs,no-header,no-import,no-update,only-platform-freebsd;
 # Disable with : `mulle-sourcetree mark stdthreads `
 # Disable for this platform: `mulle-sourcetree mark stdthreads no-cmake-platform-${MULLE_UNAME}`
 # Disable for a sdk: `mulle-sourcetree mark stdthreads no-cmake-sdk-<name>`
@@ -43,7 +43,48 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
             if( NOT ${STDTHREADS_LIBRARY} IN_LIST OS_SPECIFIC_LIBRARIES)
                list( APPEND OS_SPECIFIC_LIBRARIES ${STDTHREADS_LIBRARY})
             endif()
-            # intentionally left blank
+            #
+            # Inherit information from dependency.
+            # Encompasses: no-cmake-searchpath,no-cmake-dependency,no-cmake-loader
+            # Disable with: `mulle-sourcetree mark stdthreads no-cmake-inherit`
+            #
+            # temporarily expand CMAKE_MODULE_PATH
+            get_filename_component( _TMP_STDTHREADS_ROOT "${STDTHREADS_LIBRARY}" DIRECTORY)
+            get_filename_component( _TMP_STDTHREADS_ROOT "${_TMP_STDTHREADS_ROOT}" DIRECTORY)
+            #
+            #
+            # Search for "Definitions.cmake" and "DependenciesAndLibraries.cmake" to include.
+            # Disable with: `mulle-sourcetree mark stdthreads no-cmake-dependency`
+            #
+            foreach( _TMP_STDTHREADS_NAME "stdthreads")
+               set( _TMP_STDTHREADS_DIR "${_TMP_STDTHREADS_ROOT}/include/${_TMP_STDTHREADS_NAME}/cmake")
+               # use explicit path to avoid "surprises"
+               if( IS_DIRECTORY "${_TMP_STDTHREADS_DIR}")
+                  list( INSERT CMAKE_MODULE_PATH 0 "${_TMP_STDTHREADS_DIR}")
+                  # we only want top level INHERIT_OBJC_DEPS, so disable them
+                  if( NOT NO_INHERIT_OBJC_DEPS)
+                     set( NO_INHERIT_OBJC_DEPS OFF)
+                  endif()
+                  list( APPEND _TMP_INHERIT_OBJC_DEPS ${NO_INHERIT_OBJC_DEPS})
+                  set( NO_INHERIT_OBJC_DEPS ON)
+                  #
+                  include( "${_TMP_STDTHREADS_DIR}/DependenciesAndLibraries.cmake" OPTIONAL)
+                  #
+                  list( GET _TMP_INHERIT_OBJC_DEPS -1 NO_INHERIT_OBJC_DEPS)
+                  list( REMOVE_AT _TMP_INHERIT_OBJC_DEPS -1)
+                  list( REMOVE_ITEM CMAKE_MODULE_PATH "${_TMP_STDTHREADS_DIR}")
+                  #
+                  unset( STDTHREADS_DEFINITIONS)
+                  unset( STDTHREADS_RENDEZVOUS_GLOBALS)
+                  include( "${_TMP_STDTHREADS_DIR}/Definitions.cmake" OPTIONAL)
+                  list( APPEND INHERITED_DEFINITIONS ${STDTHREADS_DEFINITIONS})
+                  include( "${_TMP_STDTHREADS_DIR}/Definitions.cmake" OPTIONAL)
+                  list( APPEND RENDEZVOUS_GLOBALS ${STDTHREADS_RENDEZVOUS_GLOBALS})
+                  break()
+               else()
+                  message( STATUS "${_TMP_STDTHREADS_DIR} not found")
+               endif()
+            endforeach()
       else()
          # Disable with: `mulle-sourcetree mark stdthreads no-require-link`
          message( SEND_ERROR "STDTHREADS_LIBRARY was not found in stdthreads")

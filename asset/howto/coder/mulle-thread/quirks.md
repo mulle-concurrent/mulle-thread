@@ -1,8 +1,8 @@
-<!-- Keywords: do-not-return-unsafe do-not-access-internals return-semantics tss-zero-key main-thread-destructor cas-assert-eq noblock-is-if tsan-needs-pthreads sanitizer -->
+<!-- Keywords: do-not-return-unsafe do-not-access-internals return-semantics tss-zero-key main-thread-destructor cas-assert-eq noblock-is-if tsan-needs-pthreads sanitizer missing-amp silent-load atomic-intptr -->
 
 # Quirks
 
-## ThreadSanitizer needs `-DMULLE_THREAD_USE_PTHREADS`
+## ThreadSanitizer
 
 `mulle_thread_create` uses C11 `thrd_create` whenever `<threads.h>` is
 available. ThreadSanitizer intercepts `pthread_create`, but not `thrd_create`,
@@ -16,18 +16,20 @@ ERROR: ThreadSanitizer: SEGV on unknown address 0x000000000018
 ```
 
 The backtrace shows `__tsan_func_entry` at the first line of the thread
-function, which looks like a bug in the code under test. It is not. Build
-sanitizer targets with:
+function, which looks like a bug in the code under test. It is not.
 
-``` sh
-cc -fsanitize=thread -DMULLE_THREAD_USE_PTHREADS ...
-```
+`mulle-atomic.h` detects a TSan build (GCC `__SANITIZE_THREAD__`, clang
+`__has_feature(thread_sanitizer)`) and `mulle-thread.h` then selects the
+pthreads backend automatically, so `-fsanitize=thread` just works. Passing
+`-DMULLE_THREAD_USE_PTHREADS` explicitly still works too.
 
-The macro is checked in `src/mulle-thread.h` before the backend header is
-included, so it has to be a compiler flag, not a `#define` in a `.c` file.
-Reproduced with both gcc libtsan and clang. A thread function with nothing
-left to instrument after optimization may pass, so do not conclude from a
-trivial smoke test that tsan works.
+TSan also cannot model the standalone `atomic_thread_fence` in
+`mulle_atomic_memory_barrier()`. GCC warns `-Wtsan` there; that is expected and
+is silenced in a TSan build, because the ordering TSan needs is carried by the
+`seq_cst` CAS on the once word. The real fence is still emitted.
+
+A thread function with nothing left to instrument after optimization may pass,
+so do not conclude from a trivial smoke test that TSan works.
 
 ## Macros: no `return` from `_do` blocks
 
@@ -48,6 +50,25 @@ mulle_thread_create( func, arg, &thread);   // thread handle is LAST
 
 This is the **reverse** of pthreads (`pthread_create( &thread, attr, func, arg)`).
 The thread handle goes last.
+
+## A forgotten `&` on an atomic pointer is not diagnosed
+
+`mulle_atomic_pointer_t` is `_Atomic(void *)` on the C11 backend. Using such an
+lvalue as a function argument performs an implicit load, and the loaded value is
+a `void *`, which C silently converts to any object pointer type. So this
+compiles without a diagnostic:
+
+```c
+_mulle_atomic_pointer_read( counter);     /* BUG: missing & */
+```
+
+The counter's *value* is passed where a pointer to the counter was expected. If
+the value is 2, the helper dereferences address `0x2` and crashes — far from the
+typo and looking like memory corruption. `-Wall -Wextra` does not catch it.
+
+Use `mulle_atomic_intptr_t` for integer counters instead: `_Atomic(intptr_t)`
+does not convert to a pointer, so the same typo is a hard `-Wint-conversion`
+error (gcc and clang, on by default).
 
 ## Atomic return-value semantics differ by function
 

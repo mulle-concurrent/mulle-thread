@@ -38,6 +38,27 @@
 #include "include.h"
 
 
+//
+// ThreadSanitizer cannot intercept the C11 <threads.h> API (thrd_create and
+// friends), so a TSan build using the C11 thread backend dies with a SEGV on
+// the first instrumented access in the new thread. It also cannot model a
+// standalone atomic_thread_fence. MULLE_THREAD_TSAN records that a TSan build
+// is active: mulle-thread.h then selects the pthreads thread backend, and
+// mulle-atomic-c11.h silences the (unavoidable) fence warning.
+//
+// Detection: GCC defines __SANITIZE_THREAD__, clang answers __has_feature.
+//
+#ifndef MULLE_THREAD_TSAN
+# if defined( __SANITIZE_THREAD__)
+#  define MULLE_THREAD_TSAN  1
+# elif defined( __has_feature)
+#  if __has_feature( thread_sanitizer)
+#   define MULLE_THREAD_TSAN  1
+#  endif
+# endif
+#endif
+
+
 #ifndef HAVE_C11_STDATOMIC
 # ifdef __clang__
 #  if __has_include(<stdatomic.h>)
@@ -105,6 +126,90 @@ MULLE_C_STATIC_ALWAYS_INLINE mulle_functionpointer_t
          return( previous);
       expect = previous;
    }
+}
+
+
+#pragma mark - intptr API
+
+//
+// Integer counters stored in a mulle_atomic_intptr_t. These forward to the
+// pointer atomics: both are pointer-sized with the same alignment and
+// lock-free status, so the cast is sound as long as only plain integers are
+// stored. The distinct type is the point - passing the atomic itself where a
+// pointer is expected is a compile error for _Atomic(intptr_t), whereas
+// _Atomic(void *) would silently load and pass the value.
+//
+// Everything here is relaxed on purpose: this type is for disconnected
+// counters and statistics. Keep refcounts and anything that gates access to
+// other memory on mulle_atomic_pointer_t with its stronger orderings.
+//
+// All accessors return the previous value, for consistency.
+//
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+intptr_t
+   _mulle_atomic_intptr_read_relaxed( mulle_atomic_intptr_t *address)
+{
+   return( (intptr_t) _mulle_atomic_pointer_read_relaxed( (mulle_atomic_pointer_t *) address));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+intptr_t
+   _mulle_atomic_intptr_read_nonatomic( mulle_atomic_intptr_t *address)
+{
+   return( (intptr_t) _mulle_atomic_pointer_read_nonatomic( (mulle_atomic_pointer_t *) address));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
+   _mulle_atomic_intptr_write_relaxed( mulle_atomic_intptr_t *address, intptr_t value)
+{
+   _mulle_atomic_pointer_write_relaxed( (mulle_atomic_pointer_t *) address, (void *) value);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+void
+   _mulle_atomic_intptr_write_nonatomic( mulle_atomic_intptr_t *address, intptr_t value)
+{
+   _mulle_atomic_pointer_write_nonatomic( (mulle_atomic_pointer_t *) address, (void *) value);
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+intptr_t
+   _mulle_atomic_intptr_increment_relaxed( mulle_atomic_intptr_t *address)
+{
+   return( (intptr_t) _mulle_atomic_pointer_increment_relaxed( (mulle_atomic_pointer_t *) address));
+}
+
+
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+intptr_t
+   _mulle_atomic_intptr_decrement_relaxed( mulle_atomic_intptr_t *address)
+{
+   return( (intptr_t) _mulle_atomic_pointer_decrement_relaxed( (mulle_atomic_pointer_t *) address));
+}
+
+
+//
+// Unlike _mulle_atomic_pointer_add, which returns the result, this returns
+// the previous value like the other accessors here.
+//
+MULLE_C_STATIC_ALWAYS_INLINE
+MULLE_C_NO_INSTRUMENT_FUNCTION
+intptr_t
+   _mulle_atomic_intptr_add_relaxed( mulle_atomic_intptr_t *address, intptr_t diff)
+{
+   return( (intptr_t) _mulle_atomic_pointer_add_relaxed( (mulle_atomic_pointer_t *) address, diff) - diff);
 }
 
 

@@ -6,8 +6,18 @@
 Type                             | Description
 ---------------------------------|------------------------------------------------
 `mulle_atomic_functionpointer_t` | `void (*)()` sized atomic function pointer storage type.
+`mulle_atomic_intptr_t`          | `intptr_t` sized atomic integer storage type, for counters.
 `mulle_atomic_pointer_t`         | `void *` sized atomic pointer storage type.
 `mulle_functionpointer_t`        | typedef of a non-atomic function pointer for readability.
+
+Static initializers: `MULLE_ATOMIC_POINTER_INIT` and `MULLE_ATOMIC_INTPTR_INIT`.
+
+Use `mulle_atomic_intptr_t` for counters, statistics and similar plain
+integers. Do not store counters in a `mulle_atomic_pointer_t`: because that
+type is `_Atomic(void *)` on the C11 backend, using the atomic itself where a
+pointer to it is expected (a forgotten `&`) silently loads and passes the
+value instead of being diagnosed. With `mulle_atomic_intptr_t` the same
+mistake is a compile error.
 
 
 ## Atomic Pointer Operations
@@ -168,6 +178,76 @@ void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *address,
 
 Returns the result, not the previous value like increment/decrement
 
+
+
+## Atomic Integer Operations
+
+These operate on `mulle_atomic_intptr_t` and return `intptr_t`. They are all
+`relaxed` and are intended for disconnected counters and statistics only. Keep
+refcounts and anything that gates access to other memory on
+`mulle_atomic_pointer_t` with its stronger orderings.
+
+All of them return the **previous** value, for consistency.
+
+#### `_mulle_atomic_intptr_read_relaxed`
+
+```
+intptr_t   _mulle_atomic_intptr_read_relaxed( mulle_atomic_intptr_t *address)
+```
+
+Read the counter.
+
+#### `_mulle_atomic_intptr_read_nonatomic`
+
+```
+intptr_t   _mulle_atomic_intptr_read_nonatomic( mulle_atomic_intptr_t *address)
+```
+
+Read the counter unsafely. For single-threaded setup and final verification only.
+
+#### `_mulle_atomic_intptr_write_relaxed`
+
+```
+void   _mulle_atomic_intptr_write_relaxed( mulle_atomic_intptr_t *address,
+                                           intptr_t value)
+```
+
+Write the counter.
+
+#### `_mulle_atomic_intptr_write_nonatomic`
+
+```
+void   _mulle_atomic_intptr_write_nonatomic( mulle_atomic_intptr_t *address,
+                                             intptr_t value)
+```
+
+Write the counter unsafely. For single-threaded setup only.
+
+#### `_mulle_atomic_intptr_increment_relaxed`
+
+```
+intptr_t   _mulle_atomic_intptr_increment_relaxed( mulle_atomic_intptr_t *address)
+```
+
+Returns the previous value (like a postincrement).
+
+#### `_mulle_atomic_intptr_decrement_relaxed`
+
+```
+intptr_t   _mulle_atomic_intptr_decrement_relaxed( mulle_atomic_intptr_t *address)
+```
+
+Returns the previous value (like a postdecrement).
+
+#### `_mulle_atomic_intptr_add_relaxed`
+
+```
+intptr_t   _mulle_atomic_intptr_add_relaxed( mulle_atomic_intptr_t *address,
+                                             intptr_t diff)
+```
+
+Returns the previous value. Note that `_mulle_atomic_pointer_add` instead
+returns the result; this integer variant is consistent with the rest here.
 
 
 ## Atomic Function Pointer Operations

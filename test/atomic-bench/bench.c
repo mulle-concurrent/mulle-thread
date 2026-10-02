@@ -240,7 +240,6 @@ mulle_relativetime_t   test( void (*f)( void))
 {
    unsigned long          i;
    unsigned int           j;
-   int                    rval;
    mulle_timeinterval_t   start;
    mulle_timeinterval_t   end;
 

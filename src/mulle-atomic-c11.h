@@ -51,10 +51,19 @@ typedef void   (*mulle_functionpointer_t)( void);
 typedef _Atomic( void *)                    mulle_atomic_pointer_t;
 typedef _Atomic( mulle_functionpointer_t)   mulle_atomic_functionpointer_t;
 
+//
+// An atomic pointer-sized integer, for counters, statistics and the like.
+// Unlike mulle_atomic_pointer_t it is not pointer-shaped, so using the atomic
+// itself where a pointer to it is expected (a forgotten `&`) is a hard
+// compile error instead of a silent load-and-pass.
+//
+typedef _Atomic( intptr_t)                  mulle_atomic_intptr_t;
+
 // static initializer for a mulle_atomic_pointer_t. With C11 atomics the type
 // is a scalar (_Atomic(void *)), so a plain scalar initializer is required
 // (a braced initializer is rejected by clang for _Atomic scalar types).
 #define MULLE_ATOMIC_POINTER_INIT   0
+#define MULLE_ATOMIC_INTPTR_INIT    0
 
 # pragma mark -
 # pragma mark function pointer set and get
@@ -962,7 +971,21 @@ void
    // mintomic backend (mint_thread_fence_seq_cst), so both atomic backends
    // behave identically.
    //
+   // ThreadSanitizer cannot model a standalone fence and gcc warns with
+   // -Wtsan. The ordering TSan needs is carried by the seq_cst CAS on the
+   // once word, so the warning is expected; silence it in a TSan build. The
+   // real fence is still emitted. (-Wpragmas first, so an older gcc that does
+   // not know -Wtsan does not warn about the unknown option.)
+   //
+#if defined( MULLE_THREAD_TSAN) && defined( __GNUC__) && ! defined( __clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpragmas"
+#pragma GCC diagnostic ignored "-Wtsan"
+#endif
    atomic_thread_fence( memory_order_seq_cst);
+#if defined( MULLE_THREAD_TSAN) && defined( __GNUC__) && ! defined( __clang__)
+#pragma GCC diagnostic pop
+#endif
 }
 
 

@@ -280,3 +280,25 @@ _mulle_atomic_functionpointer_set( &fp_slot, value);
 Types and naming mirror the pointer API exactly — substitute
 `mulle_atomic_functionpointer_t` for `mulle_atomic_pointer_t` and
 `_mulle_atomic_functionpointer_*` for `_mulle_atomic_pointer_*`.
+
+## 11. Integer counters with `mulle_atomic_intptr_t`
+
+For counters, statistics and other plain integers, use the integer type rather
+than smuggling an `intptr_t` through `mulle_atomic_pointer_t`:
+
+```c
+static mulle_atomic_intptr_t   total_lines = MULLE_ATOMIC_INTPTR_INIT;
+
+_mulle_atomic_intptr_increment_relaxed( &total_lines);
+count = _mulle_atomic_intptr_read_relaxed( &total_lines);
+```
+
+All accessors are `relaxed` and return the **previous** value (including
+`_mulle_atomic_intptr_add_relaxed`, which unlike the pointer variant does not
+return the result). Because the type is not pointer-shaped, a forgotten `&` is
+a compile error instead of a silent load. See `quirks.md` for why that matters.
+
+Do **not** use this type for refcounts or for values that gate access to other
+memory; relaxed ordering provides no synchronization. Use
+`mulle_atomic_pointer_t` with `acquire`/`seq_cst` orderings for those.
+

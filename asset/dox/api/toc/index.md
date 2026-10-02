@@ -241,9 +241,15 @@ Purpose: small set of atomic helpers for pointer and function-pointer operations
 typedef void   (*mulle_functionpointer_t)( void);
 typedef _Atomic( void *)                mulle_atomic_pointer_t;         // C11
 typedef _Atomic( mulle_functionpointer_t) mulle_atomic_functionpointer_t; // C11
+typedef _Atomic( intptr_t)              mulle_atomic_intptr_t;          // C11
 ```
 
-Under mintomic, both types are `mint_atomicPtr_t`.
+Under mintomic, all types are `mint_atomicPtr_t`. Static initializers are
+`MULLE_ATOMIC_POINTER_INIT` and `MULLE_ATOMIC_INTPTR_INIT`.
+
+`mulle_atomic_intptr_t` is for counters/statistics. Unlike
+`mulle_atomic_pointer_t` it is not pointer-shaped, so a forgotten `&` is a
+compile error instead of a silent load-and-pass.
 
 #### Atomic Read/Write (inline)
 
@@ -314,6 +320,26 @@ void  *_mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *address);
 // Returns the result (previous + diff), NOT the previous value
 void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *address, intptr_t diff);
 ```
+
+#### Atomic Integer Operations (inline, defined in mulle-atomic.h)
+
+For counters, statistics and other plain integers. All are `relaxed` and all
+return the **previous** value. Do not use for refcounts or anything that gates
+access to other memory (relaxed provides no synchronization).
+
+```c
+intptr_t  _mulle_atomic_intptr_read_relaxed( mulle_atomic_intptr_t *address);
+intptr_t  _mulle_atomic_intptr_read_nonatomic( mulle_atomic_intptr_t *address);
+void      _mulle_atomic_intptr_write_relaxed( mulle_atomic_intptr_t *address, intptr_t value);
+void      _mulle_atomic_intptr_write_nonatomic( mulle_atomic_intptr_t *address, intptr_t value);
+
+intptr_t  _mulle_atomic_intptr_increment_relaxed( mulle_atomic_intptr_t *address);
+intptr_t  _mulle_atomic_intptr_decrement_relaxed( mulle_atomic_intptr_t *address);
+intptr_t  _mulle_atomic_intptr_add_relaxed( mulle_atomic_intptr_t *address, intptr_t diff);
+```
+
+Note: `_mulle_atomic_intptr_add_relaxed` returns the previous value, unlike
+`_mulle_atomic_pointer_add`.
 
 #### Memory Barrier (inline)
 

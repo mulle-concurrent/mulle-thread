@@ -50,10 +50,16 @@
 
 typedef mint_atomicPtr_t   mulle_atomic_pointer_t;
 
+// An atomic pointer-sized integer, for counters, statistics and the like.
+// mintomic's atomics are structs, so a forgotten `&` is already a compile
+// error and the type can just alias the pointer-sized atomic.
+typedef mint_atomicPtr_t   mulle_atomic_intptr_t;
+
 // static initializer for a mulle_atomic_pointer_t. With the mintomic backend
 // the type is a struct (mint_atomicPtr_t), so it needs a braced initializer;
 // MSVC rejects `= 0` for a struct (C2074).
 #define MULLE_ATOMIC_POINTER_INIT   { 0 }
+#define MULLE_ATOMIC_INTPTR_INIT    { 0 }
 
 // wrong, but it just for a couple more years...
 typedef mint_atomicPtr_t   mulle_atomic_functionpointer_t;

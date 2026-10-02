@@ -38,7 +38,7 @@
 //
 // community version is always even
 //
-#define MULLE__THREAD_VERSION  ((4UL << 20) | (10 << 8) | 0)
+#define MULLE__THREAD_VERSION  ((4UL << 20) | (11 << 8) | 0)
 
 #include "include.h"
 
@@ -51,6 +51,19 @@
 // not sure how dragonflybsd manages to impress, that it really has
 // <threads.h>, but then doesn't. fine...
 #ifdef __DragonFly__
+# define MULLE_THREAD_USE_PTHREADS 1
+#endif
+
+// cosmopolitan has a <threads.h> but it only provides thrd_*, not the
+// mtx_t/tss_t types, so __has_include gives a false positive
+#if defined( __COSMOPOLITAN__) && ! defined( MULLE_THREAD_USE_PTHREADS)
+# define MULLE_THREAD_USE_PTHREADS 1
+#endif
+
+// ThreadSanitizer does not intercept thrd_create, so the C11 thread backend
+// would produce threads without TSan state and crash. MULLE_THREAD_TSAN is
+// set by mulle-atomic.h (included above) when a TSan build is detected.
+#if defined( MULLE_THREAD_TSAN) && ! defined( MULLE_THREAD_USE_PTHREADS)
 # define MULLE_THREAD_USE_PTHREADS 1
 #endif
 

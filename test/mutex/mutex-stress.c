@@ -58,8 +58,6 @@ struct
 static void    multi_threaded_test_each_thread( void)
 {
    unsigned long   i;
-   void            *value;
-   void            *expect;
 
    for( i = 0; i < LOOPS; i++)
    {
@@ -154,7 +152,6 @@ int   main(int argc, const char * argv[])
 {
    unsigned long  i;
    unsigned int   j;
-   int            rval;
 
   //  srand( (unsigned int) time( NULL));
 
