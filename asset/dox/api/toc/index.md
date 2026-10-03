@@ -1,61 +1,116 @@
 # mulle-thread Library Documentation for AI
-<!-- Keywords: thread, mutex, recursive-mutex, tss, atomic, condition-variable, portability -->
+<!-- Keywords: thread, mutex, recursive-mutex, condition-variable, tss, atomic, portable -->
 ## 1. Introduction & Purpose
 
-- mulle-thread is a small C wrapper API offering cross-platform thread, mutex, condition variable, thread-local-storage (TSS), and basic atomic operations.
-- Solves portability differences between C11 threads, POSIX pthreads, and Windows threads by providing a consistent, minimal API surface.
-- Key features: thread create/join/detach, mutex lock/unlock/trylock, recursive mutex, condition variables, TSS create/get/set, once-init utilities (including recursive once), and a compact atomic pointer/function-pointer helper API.
-- Relationship: component of mulle-core ecosystem; depends on mulle-c11 and optionally mintomic for atomics; falls back to pthreads or Windows native implementations.
+- mulle-thread is a small C wrapper library offering cross-platform thread,
+  mutex, recursive mutex, condition variable, thread-local-storage (TSS), and
+  a compact atomic (pointer/function-pointer/integer) operation API.
+- It solves the portability gap between C11 `<threads.h>`/`<stdatomic.h>`,
+  POSIX pthreads, and Windows native threads by exposing one consistent,
+  simplified API. On Windows it does considerably more work internally.
+- Key features: thread create/join/detach/exit, mutex lock/unlock/trylock,
+  a recursive mutex, condition variables, TSS with destructor callbacks,
+  blocking and non-blocking one-time initialization (including a recursive
+  variant), and C11/mintomic atomics.
+- Relationship: `mulle-thread` is a component of the `mulle-core` library and
+  is consumed through the umbrella header `<mulle-core/mulle-core.h>`. It
+  depends on `mulle-c11` and optionally uses the bundled `mintomic` backend
+  when C11 atomics are unavailable.
 
 ## 2. Key Concepts & Design Philosophy
 
-- Thin, explicit wrappers: public API lives in mulle-thread.h and mulle-atomic.h. Platform specifics are implemented in *_pthreads.h, *_c11.h, or *_windows.h (all selected automatically by mulle-thread.h).
-- Provide a stable, simplified interface even when underlying platform APIs differ.
-- Convenience macros (`mulle_thread_mutex_do`, `mulle_thread_recursive_mutex_do`, `mulle_thread_once_do`, etc.) encourage idiomatic usage but require care (see pitfalls).
-- Emphasis on portability and predictability rather than advanced features; small surface area for easier analysis and verification.
+- **Thin, explicit wrappers.** The public API is `mulle-thread.h` (threads,
+  mutex, cond, once, recursive mutex) and `mulle-atomic.h` (atomics). The
+  platform details live in one of three automatically-selected backends:
+  `mulle-thread-c11.h`, `mulle-thread-pthreads.h`, or
+  `mulle-thread-windows.h`.
+- **Automatic backend selection.** `mulle-thread.h` defines
+  `MULLE_THREAD_USE_PTHREADS` for contexts that lie about `<threads.h>`
+  (DragonFly BSD, Cosmopolitan, and ThreadSanitizer builds). Otherwise it uses
+  the C11 backend when `<threads.h>` is present, the Windows backend on
+  `_WIN32`, and pthreads everywhere else. Atomically, `mulle-atomic.h` uses
+  `mulle-atomic-c11.h` when `<stdatomic.h>` is available, else the mintomic
+  backend `mulle-atomic-mintomic.h`.
+- **Simplified/`0`-on-success convention.** Backend wrappers return `0` for
+  success and `-1` (or a meaningful errno such as `EBUSY`/`ETIMEDOUT`) for
+  failure; `errno` is not set. This is deliberately not the raw pthreads
+  convention.
+- **Consistent signatures across backends.** Parameter order is normalized
+  (for example `mulle_thread_create` takes the output thread handle last,
+  unlike pthreads).
+- **Macros for scoped usage.** `mulle_thread_mutex_do`,
+  `mulle_thread_recursive_mutex_do`, and the `mulle_thread_once_do` family
+  provide block-scoped locking and one-time init. They use `__LINE__` for
+  unique loop variables, so nested/different uses do not collide, but they
+  have strict rules (see pitfall about `return`).
+- **Recursive once by thread identity.** A once slot tracks the owning thread
+  id so the same thread may re-enter the init block instead of deadlocking.
 
 ## 3. Core API & Data Structures
 
-### 3.1. mulle-thread.h — Main Public Header
+### 3.1. `mulle-thread.h` — Main Public Header
 
-This is the single include header. It automatically selects the correct platform backend (C11, pthreads, or Windows), defines once-init primitives, the recursive mutex type, and convenience macros.
+Include this single header; it selects the backend and declares the portable
+types and the out-of-line once/recursive-mutex functions.
 
-#### Typedefs (platform-dependent; defined by backend headers)
-- `mulle_thread_t` — thread handle
-- `mulle_thread_tss_t` — TSS key handle
-- `mulle_thread_mutex_t` — mutex handle (on Windows this is a struct with a CRITICAL_SECTION and an atomic owner pointer; on pthreads/C11 it's the native type)
-- `mulle_thread_cond_t` — condition variable handle
-- `mulle_thread_id_t` — thread identifier (uintptr_t)
-- `mulle_thread_rval_t` — thread return value type
-- `mulle_thread_callback_t` — `void (*)(void *)` — TSS destructor callback type
-- `mulle_thread_function_t` — `mulle_thread_rval_t (*)(void *)` — thread entry function type
+```c
+#define MULLE__THREAD_VERSION  ((4UL << 20) | (11 << 8) | 0)
+```
 
 #### Compile-time configuration defines
 
 ```c
 #define MULLE_THREAD_MUTEX_NEEDS_DONE   1
-#define MULLE_THREAD_COND_NEEDS_DONE    1
+#define MULLE_THREAD_COND_NEEDS_DONE    1 // for the future
 ```
 
-Indicates that mutexes and condition variables require explicit `_done`/`_destroy` cleanup calls (true on all platforms via this API).
+Indicates mutexes (and, prospectively, condition variables) must be released
+with an explicit `_done` call.
+
+#### Typedefs (platform-dependent; declared by the selected backend)
+
+- `mulle_thread_t` — thread handle.
+- `mulle_thread_tss_t` — TSS key handle.
+- `mulle_thread_mutex_t` — mutex; native type on C11/pthreads, a struct with a
+  `CRITICAL_SECTION` and an atomic `owner` on Windows.
+- `mulle_thread_cond_t` — condition variable.
+- `mulle_thread_id_t` — thread identifier (`uintptr_t`).
+- `mulle_thread_rval_t` — thread return value type (`int` on C11, `void *` on
+  pthreads, `unsigned int` on Windows).
+- `mulle_thread_callback_t` — `void (*)(void *)` TSS destructor type.
+- `mulle_thread_function_t` — thread entry type, includes `MULLE_THREAD_CALL`.
+
+```c
+typedef mulle_thread_rval_t  (MULLE_THREAD_CALL mulle_thread_function_t)( void *);
+typedef void                  mulle_thread_callback_t( void *);
+```
+
+`MULLE_THREAD_CALL` expands to `__stdcall` only on 32-bit x86 Windows (where
+`_beginthreadex` requires it) and to nothing elsewhere. Declare your thread
+entry functions with it for portability.
 
 #### Once-init types and constants
 
 ```c
 typedef mulle_atomic_pointer_t   mulle_thread_once_t;
-```
 
-```c
+// Raw scalar values a once slot holds during its lifecycle. These are used as
+// plain integers cast to (void *) in the atomic compare-and-swaps below.
 #define MULLE_THREAD_ONCE_DATA   0
 #define MULLE_THREAD_ONCE_BUSY   1848
 #define MULLE_THREAD_ONCE_DONE   1
-#define MULLE_THREAD_ONCE_INIT   MULLE_THREAD_ONCE_DATA
+
+// Static initializer for a mulle_thread_once_t. This must be backend-aware:
+// with C11 atomics mulle_atomic_pointer_t is a scalar (`= 0`), with the
+// mintomic backend it is a struct (`= { 0 }`).
+#define MULLE_THREAD_ONCE_INIT   MULLE_ATOMIC_POINTER_INIT
 ```
 
+Do not confuse the runtime state value `MULLE_THREAD_ONCE_DATA` (which happens
+to be `0`) with the initializer macro `MULLE_THREAD_ONCE_INIT`; the latter
+expands to `MULLE_ATOMIC_POINTER_INIT` so it works on both atomic backends.
+
 #### `mulle_thread_once_recursive_t`
-- **Purpose:** Recursive once-init state — allows the same thread to call the init function again without deadlock (useful for re-entrant lazy initialization).
-- **Key Fields:** `_state` (mulle_atomic_pointer_t), `_thread_id` (mulle_atomic_pointer_t)
-- **Initializer:** `MULLE_THREAD_ONCE_RECURSIVE_INIT`
 
 ```c
 typedef struct
@@ -64,10 +119,15 @@ typedef struct
    mulle_atomic_pointer_t   _thread_id;
 } mulle_thread_once_recursive_t;
 
-#define MULLE_THREAD_ONCE_RECURSIVE_INIT   ((mulle_thread_once_recursive_t) { MULLE_THREAD_ONCE_INIT, 0 })
+#define MULLE_THREAD_ONCE_RECURSIVE_INIT   { MULLE_THREAD_ONCE_INIT, MULLE_ATOMIC_POINTER_INIT }
 ```
 
-#### Once-init Functions (declared in mulle-thread.h, defined in mulle-thread.c)
+- **Purpose:** one-time initialization that lets the same thread call the init
+  path again without deadlocking (re-entrant lazy init).
+- **Key fields:** `_state` (the DATA/BUSY/DONE slot) and `_thread_id` (the
+  thread currently running/owning init). Fields are private; do not touch.
+
+#### Once-init Functions (declared here, defined in `mulle-thread.c`)
 
 ```c
 void   mulle_thread_once( mulle_thread_once_t  *once,
@@ -82,7 +142,13 @@ void   mulle_thread_once_call_recursive( mulle_thread_once_recursive_t  *once,
                                          void *userinfo);
 ```
 
-#### Once-init Inline Convenience Functions (defined in mulle-thread.h)
+- `mulle_thread_once`: blocking init with no user data. Other callers
+  spin-yield until the slot reaches `DONE`.
+- `mulle_thread_once_call`: blocking init passing `userinfo` to `init`.
+- `mulle_thread_once_call_recursive`: same-thread re-entry returns immediately;
+  other threads wait. `init` must not be re-run by the owning thread.
+
+#### Once-init Inline Convenience Functions (defined in `mulle-thread.h`)
 
 ```c
 static inline void   mulle_thread_once_recursive( mulle_thread_once_recursive_t  *once,
@@ -96,15 +162,30 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
                                                       void *userinfo);
 ```
 
-- `mulle_thread_once_recursive`: convenience wrapper around `mulle_thread_once_call_recursive` with no userinfo.
-- `mulle_thread_once_noblock`: calls init only if the once was not already started; otherwise skips. Uses CAS without spinning. The winning thread publishes `MULLE_THREAD_ONCE_DONE` after init, so mixing with a blocking once on the same flag cannot hang.
-- `mulle_thread_once_call_noblock`: same as `_noblock` but with userinfo parameter.
+- `mulle_thread_once_recursive`: wrapper for
+  `mulle_thread_once_call_recursive` with `NULL` userinfo.
+- `mulle_thread_once_noblock` / `mulle_thread_once_call_noblock`: do **not**
+  wait. Only the thread that wins the CAS runs `init`; if init is BUSY or DONE
+  the call is skipped. The winner still publishes `MULLE_THREAD_ONCE_DONE`
+  afterwards, so mixing this with a blocking once on the same slot cannot hang.
 
 #### Once-init Convenience Macros
 
-- `mulle_thread_once_do(name)` — Block-scoped once: declares a static `mulle_thread_once_t`, blocks contending threads (spin-yield), runs the block body exactly once. `break` exits; `return` must not be used. Other threads spin-yield until the once completes.
-- `mulle_thread_once_do_recursive(name)` — Recursive variant: same thread can re-enter and immediately succeed without blocking. Uses `mulle_thread_once_recursive_t`. Tracks thread-ID.
-- `mulle_thread_once_do_noblock(name)` — Non-blocking variant: only runs the block if the once was not already started; otherwise skips. Published `MULLE_THREAD_ONCE_DONE` after the block ran.
+```c
+#define mulle_thread_once_do( name)
+#define mulle_thread_once_do_recursive( name)
+#define mulle_thread_once_do_noblock( name)
+```
+
+- `mulle_thread_once_do(name)` — declares `static mulle_thread_once_t name =
+  MULLE_THREAD_ONCE_INIT;` and runs the following block exactly once. Other
+  threads spin-yield until done. `break` terminates the block cleanly; do not
+  `return` from inside a body that must complete the protocol.
+- `mulle_thread_once_do_recursive(name)` — same, using
+  `mulle_thread_once_recursive_t`; the owning thread may re-enter and proceed
+  without blocking.
+- `mulle_thread_once_do_noblock(name)` — non-blocking; the block runs only if
+  this thread wins, otherwise it is skipped.
 
 #### Mutex Convenience Macro
 
@@ -113,35 +194,42 @@ static inline void   mulle_thread_once_call_noblock( mulle_thread_once_t  *once,
    _mulle_thread_mutex_do( mutex, __LINE__)
 ```
 
-Locks `mutex` (by address-of), executes block body, then unlocks. Uses `__LINE__` for unique loop variable names, preventing nesting conflicts. `break` and `continue` exit the block and unlock; `return` from inside the block does NOT unlock — the mutex will remain locked.
+Takes the address of `mutex` (pass the variable itself, or `*ptr`), locks,
+runs the block, then unlocks. `break`/`continue` exit and unlock. `return`
+from inside leaves the mutex locked; and a `mulle_thread_mutex_do` must not be
+nested inside another `mulle_thread_mutex_do`.
 
-#### Recursive Mutex
+#### `mulle_thread_recursive_mutex_t`
 
 ```c
 typedef struct
 {
    mulle_thread_mutex_t    _mutex;
-   mulle_atomic_pointer_t  _thread_id;
-   mulle_atomic_pointer_t  _depth;
+   mulle_atomic_pointer_t  _thread_id;  // owning thread id, or NULL
+   mulle_atomic_pointer_t  _depth;      // recursion depth (1-based when locked)
 } mulle_thread_recursive_mutex_t;
 ```
 
-- **Purpose:** A mutex that allows the owning thread to lock it multiple times without deadlock. Internally wraps a standard mutex and tracks owner thread ID and recursion depth with atomics.
-
-**Lifecycle Functions (defined in mulle-thread.c):**
+**Lifecycle Functions (defined in `mulle-thread.c`):**
 
 ```c
 int   mulle_thread_recursive_mutex_init( mulle_thread_recursive_mutex_t *p);
 int   mulle_thread_recursive_mutex_done( mulle_thread_recursive_mutex_t *p);
 ```
 
-**Core Operations (defined in mulle-thread.c):**
+**Core Operations (defined in `mulle-thread.c`):**
 
 ```c
 void  mulle_thread_recursive_mutex_lock( mulle_thread_recursive_mutex_t *p);
 void  mulle_thread_recursive_mutex_unlock( mulle_thread_recursive_mutex_t *p);
-int   mulle_thread_recursive_mutex_trylock( mulle_thread_recursive_mutex_t *p); // returns 0 on success
+int   mulle_thread_recursive_mutex_trylock( mulle_thread_recursive_mutex_t *p); // 0=acquired
 ```
+
+- The owning thread may lock repeatedly; each lock increments depth.
+  `unlock` decrements and only releases the underlying mutex at depth 1.
+- `trylock` returns `0` when acquired (including same-thread re-entry),
+  `-1` when busy/error.
+- Fields are private.
 
 **Convenience Macro:**
 
@@ -150,7 +238,7 @@ int   mulle_thread_recursive_mutex_trylock( mulle_thread_recursive_mutex_t *p); 
    _mulle_thread_recursive_mutex_do( mutex, __LINE__)
 ```
 
-Same semantics as `mulle_thread_mutex_do` but for recursive mutexes. Re-entrant by the same thread.
+Same block semantics as `mulle_thread_mutex_do`, but re-entrant.
 
 #### Test Helper Macro
 
@@ -158,178 +246,296 @@ Same semantics as `mulle_thread_mutex_do` but for recursive mutexes. Re-entrant 
 #define MULLE_THREAD_UNPLEASANT_RACE_YIELD()
 ```
 
-When `MULLE_TEST` is defined (and `NO_MULLE_THREAD_UNPLEASANT_RACE_YIELD` is not), this macro randomly yields (1:16 chance) or nanosleeps (1:64 chance on non-Windows) to expose race conditions during testing. When `MULLE_TEST` is not defined, it expands to a no-op.
+When `MULLE_TEST` is defined (and `NO_MULLE_THREAD_UNPLEASANT_RACE_YIELD` is
+not), randomly yields (and on non-Windows occasionally nanosleeps) to expose
+races during testing. Otherwise a no-op.
 
 ### 3.2. Backend Headers — Thread, Mutex, Cond, TSS API
 
-All three backends (pthreads, c11, windows) expose the same API. Status is returned directly; the `errno` variable is never set. Return semantics are `0` for success, `-1` for generic failure, and selected standard constants such as `EBUSY` and `ETIMEDOUT` where they carry useful meaning. Thread return values are backend-dependent: portable thread functions should return only small nonnegative integer values representable by all backends; pointer, large, and negative values are not portable. The legacy `mulle_thread_join` returns `(mulle_thread_rval_t) -1` on join failure.
+`mulle-thread-c11.h`, `mulle-thread-pthreads.h`, and `mulle-thread-windows.h`
+implement the same API. Return semantics: `0` success, `-1` generic failure,
+and meaningful errno values (`EBUSY`, `ETIMEDOUT`) where applicable.
+
+#### Backend type definitions
+
+C11:
+
+```c
+typedef int   mulle_thread_rval_t;
+#define mulle_thread_return()  return( 0)
+typedef mtx_t       mulle_thread_mutex_t;
+typedef cnd_t       mulle_thread_cond_t;
+typedef tss_t       mulle_thread_tss_t;
+typedef thrd_t      mulle_thread_t;
+typedef int         mulle_thread_native_rval_t;
+typedef uintptr_t   mulle_thread_id_t;
+typedef mulle_thread_rval_t  (MULLE_THREAD_CALL mulle_thread_function_t)( void *);
+typedef void                  mulle_thread_callback_t( void *);
+```
+
+pthreads:
+
+```c
+typedef void   *mulle_thread_rval_t;
+#define mulle_thread_return()  return( NULL)
+typedef pthread_mutex_t   mulle_thread_mutex_t;
+typedef pthread_cond_t    mulle_thread_cond_t;
+typedef pthread_key_t     mulle_thread_tss_t;
+typedef pthread_t         mulle_thread_t;
+typedef void              *mulle_thread_native_rval_t;
+typedef uintptr_t         mulle_thread_id_t;
+```
+
+Windows:
+
+```c
+typedef unsigned int   mulle_thread_rval_t;
+#define mulle_thread_return()  do { mulle_thread_windows_destroy_tss_if_needed(); return( 0); } while(0)
+typedef DWORD    mulle_thread_tss_t;
+typedef HANDLE   mulle_thread_t;
+typedef DWORD    mulle_thread_native_rval_t;
+typedef uintptr_t   mulle_thread_id_t;
+
+typedef struct
+{
+   CRITICAL_SECTION         section;
+   mulle_atomic_pointer_t   owner;
+} mulle_thread_mutex_t;
+
+typedef CONDITION_VARIABLE   mulle_thread_cond_t;
+```
+
+On Windows `MULLE_THREAD_CALL` is `__stdcall` on 32-bit x86 and empty
+otherwise.
 
 #### Thread
 
 ```c
-int   mulle_thread_create( mulle_thread_function_t *f, void *arg, mulle_thread_t *p_thread);
-mulle_thread_rval_t mulle_thread_join( mulle_thread_t thread);
-int   mulle_thread_detach( mulle_thread_t thread);
-void  mulle_thread_exit( int rval);
-void  mulle_thread_yield( void);
-mulle_thread_t      mulle_thread_self( void);
-mulle_thread_id_t   mulle_thread_id( void);
-mulle_thread_id_t   mulle_thread_get_id( mulle_thread_t thread);
-int                 mulle_thread_equal( mulle_thread_t thread1, mulle_thread_t thread2);
+static inline mulle_thread_t        mulle_thread_self( void);
+static inline mulle_thread_id_t     mulle_thread_id( void);
+static inline mulle_thread_id_t     mulle_thread_get_id( mulle_thread_t thread);
+static inline int                   mulle_thread_equal( mulle_thread_t thread1,
+                                                       mulle_thread_t thread2);
+static inline int                   mulle_thread_create( mulle_thread_function_t *f,
+                                                         void *arg,
+                                                         mulle_thread_t *p_thread);
+static inline mulle_thread_rval_t   mulle_thread_join( mulle_thread_t thread);
+static inline int                   mulle_thread_detach( mulle_thread_t thread);
+static inline void                  mulle_thread_exit( int rval);
+static inline void                  mulle_thread_yield( void);
 ```
 
-- `mulle_thread_create` returns the created thread via `p_thread` (last parameter) — different from pthreads where the thread pointer is the second argument.
-- `mulle_thread_equal` compares two thread handles for equality via their IDs (portable; `pthread_t`/`HANDLE` are not directly comparable).
-- `mulle_thread_return()` macro: returns from a thread function portably (`return( NULL)` on pthreads, `return( 0)` on C11, and on Windows it also destroys TSS before returning).
+- `mulle_thread_create` returns the handle through the last argument
+  `p_thread` — different from pthreads. Returns `0`/`-1`.
+- `mulle_thread_join` returns the thread function's value. Use
+  `mulle_thread_return()` inside the thread function rather than a bare
+  `return` (on Windows it also flushes TSS destructors).
+- `mulle_thread_self` / `mulle_thread_get_id` / `mulle_thread_equal` let you
+  identify and compare threads portably (`pthread_t`/`HANDLE` are not
+  guaranteed comparable).
+- Thread return values are not fully portable: small nonnegative integers are
+  safe across backends; pointers, large values, and negatives are not.
 
 #### Mutex
 
 ```c
-int   mulle_thread_mutex_init( mulle_thread_mutex_t *lock);
-int   mulle_thread_mutex_lock( mulle_thread_mutex_t *lock);
-int   mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock);
-int   mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock);
-int   mulle_thread_mutex_done( mulle_thread_mutex_t *lock);
+static inline int   mulle_thread_mutex_init( mulle_thread_mutex_t *lock);
+static inline int   mulle_thread_mutex_lock( mulle_thread_mutex_t *lock);
+static inline int   mulle_thread_mutex_trylock( mulle_thread_mutex_t *lock);
+static inline int   mulle_thread_mutex_unlock( mulle_thread_mutex_t *lock);
+static inline int   mulle_thread_mutex_done( mulle_thread_mutex_t *lock);
 ```
 
-On Windows, `mulle_thread_mutex_t` is a struct containing a `CRITICAL_SECTION` and an atomic `owner` pointer (used to prevent recursive locking like pthreads, since Windows CRITICAL_SECTION permits re-entry).
+- `0` success, `-1` error; `trylock` returns `EBUSY` when already held, `0`
+  when acquired.
+- The mutex is non-recursive on every backend. On Windows the recursive
+  `CRITICAL_SECTION` is tamed with an atomic owner pointer so that re-locking
+  from the owner self-deadlocks (asserting in debug builds) like pthreads.
+- Windows `mulle_thread_mutex_t` is a struct, not an opaque handle; never copy
+  or compare it.
 
 #### Condition Variable
 
 ```c
-int   mulle_thread_cond_init( mulle_thread_cond_t *cond);
-int   mulle_thread_cond_done( mulle_thread_cond_t *cond);
-int   mulle_thread_cond_wait( mulle_thread_cond_t *cond, mulle_thread_mutex_t *mutex);
-int   mulle_thread_cond_signal( mulle_thread_cond_t *cond);
-int   mulle_thread_cond_broadcast( mulle_thread_cond_t *cond);
-int   mulle_thread_cond_timedwait( mulle_thread_cond_t *cond, mulle_thread_mutex_t *mutex, const struct timespec *abstime);
+static inline int   mulle_thread_cond_init( mulle_thread_cond_t *cond);
+static inline int   mulle_thread_cond_done( mulle_thread_cond_t *cond);
+static inline int   mulle_thread_cond_wait( mulle_thread_cond_t *cond,
+                                            mulle_thread_mutex_t *mutex);
+static inline int   mulle_thread_cond_signal( mulle_thread_cond_t *cond);
+static inline int   mulle_thread_cond_broadcast( mulle_thread_cond_t *cond);
+static inline int   mulle_thread_cond_timedwait( mulle_thread_cond_t *cond,
+                                                 mulle_thread_mutex_t *mutex,
+                                                 const struct timespec *abstime);
 ```
 
-- `cond_timedwait` uses `const struct timespec *abstime` (absolute time, same as pthreads). Returns `ETIMEDOUT` on timeout.
-- On Windows, `cond_wait` and `cond_timedwait` are not inlineable (declared `MULLE__THREAD_GLOBAL`).
+- `cond_timedwait` takes an **absolute** `struct timespec` (same as pthreads)
+  and returns `ETIMEDOUT` on timeout.
+- Always wait inside a `while` loop that re-checks the predicate, because
+  spurious wakeups are possible.
+- On Windows `cond_wait` and `cond_timedwait` are out-of-line
+  (`MULLE__THREAD_GLOBAL`), not inline.
 
 #### Thread-Local Storage (TSS)
 
 ```c
-int   mulle_thread_tss_create( mulle_thread_callback_t *f, mulle_thread_tss_t *key);
-void  mulle_thread_tss_free( mulle_thread_tss_t key);
+int    mulle_thread_tss_create( mulle_thread_callback_t *f,
+                                mulle_thread_tss_t *key);
+void   mulle_thread_tss_free( mulle_thread_tss_t key);
 void  *mulle_thread_tss_get( mulle_thread_tss_t key);
-int   mulle_thread_tss_set( mulle_thread_tss_t key, void *value);
+int    mulle_thread_tss_set( mulle_thread_tss_t key, void *value);
 ```
 
-- `mulle_thread_callback_t` is `void (*)(void *)`. Pass a destructor callback to `tss_create` if per-thread cleanup is needed.
-- Returned TSS key of 0 is valid (unlike some platforms).
-- On Windows, `tss_create` and `tss_free` are not inlineable (declared `MULLE__THREAD_GLOBAL`), and the following additional functions exist for explicit TSS subsystem lifetime management:
+- `f` is an optional destructor invoked when a thread that has a value dies.
+- A returned key of `0` is valid.
+- Signature variance: the C11 backend takes the callback **by value**
+  (`mulle_thread_callback_t f`), while pthreads/Windows take a pointer
+  (`mulle_thread_callback_t *f`). Pass the function name in both cases.
+
+Windows-only TSS subsystem management (normally automatic):
 
 ```c
-// Windows-only: explicit TSS subsystem init/done
+MULLE__THREAD_GLOBAL
 void   mulle_thread_tss_init( void);
+MULLE__THREAD_GLOBAL
 void   mulle_thread_tss_done( void);
+MULLE__THREAD_GLOBAL
 void   mulle_thread_windows_destroy_tss_if_needed( void);
 ```
 
-- `mulle_thread_tss_init` / `mulle_thread_tss_done`: reference-counted init/done for the global TSS destructor table. Normally called automatically.
-- `mulle_thread_windows_destroy_tss_if_needed`: runs all TSS destructors for the current thread. Called automatically by `mulle_thread_return()` (Windows) and `mulle_thread_exit`.
+- `mulle_thread_tss_init` / `mulle_thread_tss_done` are reference-counted
+  init/cleanup of the global TSS destructor table. Do not call `_init` after
+  `_done` within the same thread (unless single-threaded).
+- `mulle_thread_windows_destroy_tss_if_needed` runs TSS destructors for the
+  current thread; it is called automatically by `mulle_thread_return()` and
+  `mulle_thread_exit`.
 
-### 3.3. mulle-atomic.h — Atomic Helpers
+### 3.3. `mulle-atomic.h` — Atomic Helpers
 
-Purpose: small set of atomic helpers for pointer and function-pointer operations, using C11 `stdatomic.h` or mintomic as available.
+Small atomic helpers for pointer, function-pointer, and pointer-sized integer
+operations. It selects `mulle-atomic-c11.h` or `mulle-atomic-mintomic.h`.
 
-#### Core Types
+#### Types (C11 backend; see `mulle-atomic-c11.h`)
 
 ```c
 typedef void   (*mulle_functionpointer_t)( void);
-typedef _Atomic( void *)                mulle_atomic_pointer_t;         // C11
-typedef _Atomic( mulle_functionpointer_t) mulle_atomic_functionpointer_t; // C11
-typedef _Atomic( intptr_t)              mulle_atomic_intptr_t;          // C11
+typedef _Atomic( void *)                    mulle_atomic_pointer_t;
+typedef _Atomic( mulle_functionpointer_t)   mulle_atomic_functionpointer_t;
+typedef _Atomic( intptr_t)                  mulle_atomic_intptr_t;
+
+#define MULLE_ATOMIC_POINTER_INIT   0
+#define MULLE_ATOMIC_INTPTR_INIT    0
 ```
 
-Under mintomic, all types are `mint_atomicPtr_t`. Static initializers are
-`MULLE_ATOMIC_POINTER_INIT` and `MULLE_ATOMIC_INTPTR_INIT`.
+With the mintomic backend the types are all `mint_atomicPtr_t` (a struct) and
+the initializers are `{ 0 }`. `mulle_atomic_intptr_t` is designed for counters
+and statistics: unlike `mulle_atomic_pointer_t` it is not pointer-shaped, so a
+forgotten `&` is a compile error instead of a silent load-and-pass.
 
-`mulle_atomic_intptr_t` is for counters/statistics. Unlike
-`mulle_atomic_pointer_t` it is not pointer-shaped, so a forgotten `&` is a
-compile error instead of a silent load-and-pass.
-
-#### Atomic Read/Write (inline)
+#### Read / Write (inline)
 
 ```c
 void  *_mulle_atomic_pointer_read( mulle_atomic_pointer_t *address);
-void  _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address, void *value);
-
+void  *_mulle_atomic_pointer_read_acquire( mulle_atomic_pointer_t *address);
+void  *_mulle_atomic_pointer_read_relaxed( mulle_atomic_pointer_t *address);
 void  *_mulle_atomic_pointer_read_nonatomic( mulle_atomic_pointer_t *p);
-void  _mulle_atomic_pointer_write_nonatomic( mulle_atomic_pointer_t *p, void *value);
-// Older aliases:
-void  *_mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *p);
-void  _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *p, void *value);
+void  *_mulle_atomic_pointer_nonatomic_read( mulle_atomic_pointer_t *p);   // old alias
+
+void   _mulle_atomic_pointer_write( mulle_atomic_pointer_t *address, void *value);
+void   _mulle_atomic_pointer_write_relaxed( mulle_atomic_pointer_t *address, void *value);
+void   _mulle_atomic_pointer_write_nonatomic( mulle_atomic_pointer_t *p, void *value);
+void   _mulle_atomic_pointer_nonatomic_write( mulle_atomic_pointer_t *p, void *value); // old alias
 
 mulle_functionpointer_t  _mulle_atomic_functionpointer_read( mulle_atomic_functionpointer_t *address);
-void                     _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address, mulle_functionpointer_t value);
-
-// Plus nonatomic variants and older aliases for function pointers
+mulle_functionpointer_t  _mulle_atomic_functionpointer_read_acquire( mulle_atomic_functionpointer_t *address);
+mulle_functionpointer_t  _mulle_atomic_functionpointer_read_relaxed( mulle_atomic_functionpointer_t *address);
 mulle_functionpointer_t  _mulle_atomic_functionpointer_read_nonatomic( mulle_atomic_functionpointer_t *p);
-void                     _mulle_atomic_functionpointer_write_nonatomic( mulle_atomic_functionpointer_t *p, mulle_functionpointer_t value);
-// (older _nonatomic_read / _nonatomic_write aliases also exist)
+mulle_functionpointer_t  _mulle_atomic_functionpointer_nonatomic_read( mulle_atomic_functionpointer_t *p);
+
+void   _mulle_atomic_functionpointer_write( mulle_atomic_functionpointer_t *address,
+                                            mulle_functionpointer_t value);
+void   _mulle_atomic_functionpointer_write_relaxed( mulle_atomic_functionpointer_t *address,
+                                                    mulle_functionpointer_t value);
+void   _mulle_atomic_functionpointer_write_nonatomic( mulle_atomic_functionpointer_t *p,
+                                                      mulle_functionpointer_t value);
 ```
 
-#### Atomic CAS (inline)
+- `_read`/`_write` use sequential consistency.
+- `_read_acquire` reads with acquire ordering: use it when the loaded value
+  gates access to other shared memory published by a release store.
+- `_relaxed` variants are for disconnected values only (diagnostic counters,
+  statistics, flags that never gate access to other memory).
+- `_nonatomic` variants are plain, unsynchronized accesses.
+
+#### Compare-and-Swap (inline)
 
 ```c
-// Returns the actual value at address after the attempt (strong CAS)
+// Returns the actual value at address after the attempt
 void  *__mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address, void *value, void *expect);
+void  *__mulle_atomic_pointer_cas_relaxed( mulle_atomic_pointer_t *address, void *value, void *expect);
 
-// Returns 1 if CAS succeeded, 0 otherwise (strong CAS)
-int   _mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address, void *value, void *expect);
+// Returns 1 if the CAS succeeded, 0 otherwise
+int    _mulle_atomic_pointer_cas( mulle_atomic_pointer_t *address, void *value, void *expect);
+int    _mulle_atomic_pointer_cas_relaxed( mulle_atomic_pointer_t *address, void *value, void *expect);
 
-// Deprecated aliases: _mulle_atomic_pointer_compare_and_swap, __mulle_atomic_pointer_compare_and_swap
-
-// Weak CAS variants (may spuriously fail)
+// Weak CAS (may fail spuriously)
 void  *__mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address, void *value, void *expect);
-int   _mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address, void *value, void *expect);
-// (also: __mulle_atomic_pointer_cas_weak, _mulle_atomic_pointer_cas_weak — same as weakcas)
+void  *__mulle_atomic_pointer_weakcas_relaxed( mulle_atomic_pointer_t *address, void *value, void *expect);
+int    _mulle_atomic_pointer_weakcas( mulle_atomic_pointer_t *address, void *value, void *expect);
+int    _mulle_atomic_pointer_weakcas_relaxed( mulle_atomic_pointer_t *address, void *value, void *expect);
+// also: __mulle_atomic_pointer_cas_weak / _cas_weak_relaxed and the int-returning equivalents
 
-// Function-pointer CAS variants
+// Function-pointer CAS / weak CAS (same naming scheme)
 mulle_functionpointer_t  __mulle_atomic_functionpointer_cas( mulle_atomic_functionpointer_t *address, mulle_functionpointer_t value, mulle_functionpointer_t expect);
 int                      _mulle_atomic_functionpointer_cas( mulle_atomic_functionpointer_t *address, mulle_functionpointer_t value, mulle_functionpointer_t expect);
-
-// Function-pointer weak CAS variants
 mulle_functionpointer_t  __mulle_atomic_functionpointer_weakcas( mulle_atomic_functionpointer_t *address, mulle_functionpointer_t value, mulle_functionpointer_t expect);
 int                      _mulle_atomic_functionpointer_weakcas( mulle_atomic_functionpointer_t *address, mulle_functionpointer_t value, mulle_functionpointer_t expect);
-// (also: __mulle_atomic_functionpointer_cas_weak, _mulle_atomic_functionpointer_cas_weak)
 ```
 
-Note: `__mulle_*` variants return the actual value (useful for CAS loops), `_mulle_*` variants return a boolean success flag. All CAS operations require `value != expect` (asserted).
+- `__mulle_*` return the actual (possibly updated) value — useful for CAS
+  loops; `_mulle_*` return a boolean success flag.
+- The parameter order is `(address, value, expect)`, i.e. the **new** value
+  precedes the expected one. All CAS calls assert `value != expect`.
 
-#### Atomic Set (spin-loop CAS; inline, defined in mulle-atomic.h)
+#### Atomic Set (spin-loop CAS; defined in `mulle-atomic.h`)
 
 ```c
-void  *_mulle_atomic_pointer_set( mulle_atomic_pointer_t *address, void *value);
+void  *_mulle_atomic_pointer_set( mulle_atomic_pointer_t *address,
+                                  void  *value);
 
-mulle_functionpointer_t  _mulle_atomic_functionpointer_set( mulle_atomic_functionpointer_t *address, mulle_functionpointer_t value);
+mulle_functionpointer_t
+   _mulle_atomic_functionpointer_set( mulle_atomic_functionpointer_t *address,
+                                      mulle_functionpointer_t value);
 ```
 
-Spins in a CAS loop until the value is set. Returns the previous value.
+Spins in a CAS loop until the store succeeds; returns the previous value.
 
 #### Atomic Arithmetic (inline)
 
 ```c
-// Returns the previous value (before increment/decrement)
+// Return the value before increment/decrement
 void  *_mulle_atomic_pointer_increment( mulle_atomic_pointer_t *address);
+void  *_mulle_atomic_pointer_increment_relaxed( mulle_atomic_pointer_t *address);
 void  *_mulle_atomic_pointer_decrement( mulle_atomic_pointer_t *address);
+void  *_mulle_atomic_pointer_decrement_relaxed( mulle_atomic_pointer_t *address);
 
-// Returns the result (previous + diff), NOT the previous value
+// Return the result (previous + diff), NOT the previous value
 void  *_mulle_atomic_pointer_add( mulle_atomic_pointer_t *address, intptr_t diff);
+void  *_mulle_atomic_pointer_add_relaxed( mulle_atomic_pointer_t *address, intptr_t diff);
 ```
 
-#### Atomic Integer Operations (inline, defined in mulle-atomic.h)
+The arithmetic helpers type-pun the pointer atomic as `atomic_intptr_t`; only
+store plain pointer-sized integers in an atomic used with these.
 
-For counters, statistics and other plain integers. All are `relaxed` and all
-return the **previous** value. Do not use for refcounts or anything that gates
-access to other memory (relaxed provides no synchronization).
+#### Atomic Integer Operations (defined in `mulle-atomic.h`)
+
+For counters, statistics, and other plain integers. All are relaxed and all
+return the **previous** value. Do not use them for reference counts or
+anything that gates access to other memory.
 
 ```c
 intptr_t  _mulle_atomic_intptr_read_relaxed( mulle_atomic_intptr_t *address);
 intptr_t  _mulle_atomic_intptr_read_nonatomic( mulle_atomic_intptr_t *address);
+
 void      _mulle_atomic_intptr_write_relaxed( mulle_atomic_intptr_t *address, intptr_t value);
 void      _mulle_atomic_intptr_write_nonatomic( mulle_atomic_intptr_t *address, intptr_t value);
 
@@ -338,101 +544,142 @@ intptr_t  _mulle_atomic_intptr_decrement_relaxed( mulle_atomic_intptr_t *address
 intptr_t  _mulle_atomic_intptr_add_relaxed( mulle_atomic_intptr_t *address, intptr_t diff);
 ```
 
-Note: `_mulle_atomic_intptr_add_relaxed` returns the previous value, unlike
-`_mulle_atomic_pointer_add`.
+`_mulle_atomic_intptr_add_relaxed` returns the previous value (unlike
+`_mulle_atomic_pointer_add`).
 
 #### Memory Barrier (inline)
 
 ```c
-void  mulle_atomic_memory_barrier( void);
+void   mulle_atomic_memory_barrier( void);
 ```
 
-On C11 this is `atomic_thread_fence(memory_order_seq_cst)` — a real hardware fence, required by the once publish protocol on weakly ordered CPUs. On mintomic it is `mint_thread_fence_seq_cst()`.
+A **thread** fence: `atomic_thread_fence( memory_order_seq_cst)` on C11,
+`mint_thread_fence_seq_cst()` on mintomic. It is required by the once publish
+protocol on weakly ordered CPUs (ARM/ARM64/PPC). Under ThreadSanitizer the
+gcc `-Wtsan` warning for a standalone fence is suppressed, but the fence is
+still emitted. Detection of a TSan build (`MULLE_THREAD_TSAN`) also forces the
+pthreads thread backend, because TSan cannot intercept `thrd_create`.
 
-### 3.4. mulle-thread.c — Out-of-line Implementations
+#### Deprecated / old API (defined in `mulle-atomic.h`)
 
-Functions defined here (not inline in headers):
+```c
+int   _mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
+                                              void *value, void *expect);
+void *__mulle_atomic_pointer_compare_and_swap( mulle_atomic_pointer_t *address,
+                                               void *value, void *expect);
 
-- `mulle_thread_once` — blocking once-init with spin-yield wait.
-- `mulle_thread_once_call` — same with userinfo parameter.
-- `mulle_thread_once_call_recursive` — recursive once-init tracking thread ID.
-- `mulle_thread_recursive_mutex_init` / `_done` / `_lock` / `_unlock` / `_trylock`
-- Mintomic `mintomic_gcc.c` is included here when C11 atomics are unavailable.
+mulle_functionpointer_t
+   __mulle_atomic_functionpointer_compare_and_swap( mulle_atomic_functionpointer_t *address,
+                                                    mulle_functionpointer_t value,
+                                                    mulle_functionpointer_t expect);
+int
+   _mulle_atomic_functionpointer_compare_and_swap( mulle_atomic_functionpointer_t *address,
+                                                   mulle_functionpointer_t value,
+                                                   mulle_functionpointer_t expect);
+```
 
-### 3.5. mulle-thread-windows.c — Windows-specific Implementations
+Prefer the `_cas` / `_weakcas` names in new code.
 
-Functions defined here (Windows only):
+### 3.4. Out-of-line Implementations
 
-- `mulle_thread_join` — uses WaitForSingleObject + GetExitCodeThread.
-- `mulle_thread_exit` — calls TSS destructors then _endthreadex.
-- `mulle_thread_tss_init` / `mulle_thread_tss_done` — reference-counted global TSS destructor table init/cleanup.
-- `mulle_thread_tss_create` / `mulle_thread_tss_free` — TlsAlloc/TlsFree with destructor table management.
-- `mulle_thread_cond_wait` / `mulle_thread_cond_timedwait` — SleepConditionVariableCS with manual owner tracking.
-- `mulle_thread_windows_destroy_tss_if_needed` — runs TSS destructors for the current thread.
+`mulle-thread.c` defines: `mulle_thread_once`, `mulle_thread_once_call`,
+`mulle_thread_once_call_recursive`, and the five
+`mulle_thread_recursive_mutex_*` functions. It also includes
+`mintomic_gcc.c` when C11 atomics are unavailable.
+
+`mulle-thread-windows.c` defines (Windows only): `mulle_thread_join`,
+`mulle_thread_exit`, `mulle_thread_tss_init`/`_done`,
+`mulle_thread_tss_create`/`_free`, `mulle_thread_cond_wait`/`_timedwait`, and
+`mulle_thread_windows_destroy_tss_if_needed`.
 
 ## 4. Performance Characteristics
 
-- Atomics: O(1) per operation (hardware CAS / atomic primitives). Intended for pointer/function-pointer CAS, set, increment/decrement operations.
-- Mutex operations: O(1) for lock/unlock, but blocking cost depends on scheduler and number of contending threads.
-- Recursive Mutex: O(1) per lock/unlock; additional cost of atomic pointer read for owner-check on every lock. Re-entrant lock/unlock is a simple atomic increment/decrement (cheap).
-- Condition variables: waiting is O(1) (per wait), signaling is O(1) but waking cost depends on contention.
-- Thread creation/join: relatively expensive (OS cost). Prefer worker pools for high-rate tasks.
-- Once-init: first caller pays init cost + CAS; other threads spin-yield wait (or skip for non-blocking variants). Recursive once adds a thread-ID read for re-entrancy check.
-- Thread-safety: API is thread-safe where appropriate (atomics, mutex, cond); data structures and object lifecycles are the caller's responsibility. The library provides primitives, not higher-level synchronized containers.
+- Atomics: O(1) per operation (hardware CAS/atomic primitives). `_relaxed`
+  variants avoid fences for disconnected counters; `_read`/`_write` and the
+  CAS primitives are sequentially consistent.
+- Mutex lock/unlock: O(1) plus scheduling cost under contention.
+- Recursive mutex: O(1); each lock/unlock performs an extra atomic read of the
+  owner id. Same-thread re-entry is a cheap atomic increment/decrement.
+- Condition variables: O(1) per wait/signal; wakeup cost depends on the number
+  of waiters and the OS scheduler.
+- Thread create/join: dominated by OS cost; use worker pools where threads are
+  created frequently.
+- Once-init: the winner pays the init cost plus a CAS; other threads
+  spin-yield. Non-blocking variants skip instead of waiting. Recursive once
+  adds a thread-id read on each call.
+- Thread-safety: the primitives are thread-safe. Higher-level object
+  lifecycles and shared data remain the caller's responsibility.
 
 ## 5. AI Usage Recommendations & Patterns
 
-- **Best Practices:**
-  - Use the public lifecycle functions (init/done) for mutexes, condvars, and recursive mutexes; do not manipulate platform internals.
-  - Use `mulle_thread_mutex_do(mutex)` or `mulle_thread_recursive_mutex_do(mutex)` for scoped locking. `break` and `continue` will exit the block and unlock. Do NOT use `return` inside these blocks — the mutex will remain locked.
-  - Use `mulle_thread_recursive_mutex_t` when a single thread may need to lock the same mutex multiple times (e.g., recursive function calls, nested callbacks).
-  - Prefer `mulle_thread_once_call` over `mulle_thread_once` when user data is needed. Use `mulle_thread_once_call_recursive` when re-entrant lazy init is possible.
-  - Use `mulle_thread_once_do(name)` for module-level lazy init. Use `mulle_thread_once_do_recursive(name)` when the init path may re-enter the same once.
-  - Use TSS (`mulle_thread_tss_create`/`get`/`set`) for per-thread state to avoid global locks.
-  - Provide a destructor callback when creating TSS if per-thread cleanup is needed.
-- **Common Pitfalls:**
-  - `mulle_thread_mutex_do` and `mulle_thread_recursive_mutex_do` will NOT unlock on function return from inside the block. Avoid `return` inside these macro blocks.
-  - When using non-blocking once variants (`mulle_thread_once_do_noblock`, `mulle_thread_once_call_noblock`), initialization may be skipped if another thread is already initializing.
-  - Mixing different backends' raw types (e.g., using pthread APIs directly) can break portability — always use the wrapper API.
-  - `mulle_thread_once` does not guarantee that exceptions or thread cancellation within the init function will clear the once flag for a second run.
-  - The recursive mutex's internal fields (`_mutex`, `_thread_id`, `_depth`) are private; do not access them directly.
-  - On Windows, `mulle_thread_mutex_t` is a struct (not an opaque handle). Do not copy or compare it; only use via the API.
-- **Idiomatic Usage:**
-  - Use `mulle_thread_once_do(name)` for module-level lazy init.
-  - Use TSS to avoid global locks when each thread needs its own state.
-  - Use `mulle_thread_recursive_mutex_t` for re-entrant locking patterns.
-  - Use `mulle_thread_return()` (not bare `return`) in thread functions for portable thread exit.
+- **Best practices**
+  - Always use the lifecycle functions: `_init`/`_done` for mutexes and
+    condition variables, `mulle_thread_recursive_mutex_init`/`_done` for the
+    recursive mutex, `mulle_thread_tss_create`/`_free` for TSS keys.
+  - Use `mulle_thread_mutex_do(mutex)` and
+    `mulle_thread_recursive_mutex_do(mutex)` for scoped locking.
+  - Use `mulle_thread_once_call` (not the old `mulle_thread_once`) when you
+    need to pass data; use `mulle_thread_once_call_recursive` or
+    `mulle_thread_once_do_recursive` when the init path may re-enter.
+  - Use TSS plus a destructor callback for per-thread state and cleanup.
+  - Prefer `_read_acquire`/release-aware operations when a loaded value gates
+    access to other shared memory; reserve `_relaxed` for counters/statistics.
+  - Call `mulle_thread_return()` (or on Windows rely on it to flush TSS)
+    instead of a bare `return` from a thread function.
+- **Common pitfalls**
+  - `return` inside a `mulle_thread_mutex_do` /
+    `mulle_thread_recursive_mutex_do` block does **not** unlock; use `break`.
+  - Never nest `mulle_thread_mutex_do` on the same (non-recursive) mutex.
+  - Non-blocking once variants (`_do_noblock`, `_call_noblock`) may skip
+    initialization entirely if another thread won.
+  - `mulle_thread_once` does not clear the once flag if init throws or the
+    thread is cancelled; a later re-run is not guaranteed.
+  - Do not access the `_`-prefixed fields of `mulle_thread_once_recursive_t`
+    or `mulle_thread_recursive_mutex_t`.
+  - On Windows `mulle_thread_mutex_t` is a struct; do not copy or compare it.
+  - Do not mix raw backend calls (pthreads/Win32/`<threads.h>`) with the
+    wrapper API; especially `mulle_thread_create`'s argument order differs.
+- **Idiomatic usage**
+  - Module-level lazy init: `mulle_thread_once_do(name)`.
+  - Re-entrant lazy init: `mulle_thread_once_do_recursive(name)`.
+  - Per-thread scratch/session state: TSS with a destructor.
+  - Re-entrant locking of a shared structure: `mulle_thread_recursive_mutex_t`.
 
 ## 6. Integration Examples
 
-### Example 1: Creating and Joining a Thread
+### Example 1: Creating, Running and Joining a Thread
 
 ```c
 #include <mulle-thread/mulle-thread.h>
+#include <stdio.h>
 
-static mulle_thread_rval_t
-worker( void *arg)
+static mulle_thread_rval_t MULLE_THREAD_CALL
+thread_main( void *arg)
 {
-   (void) arg;
-   mulle_thread_return();
+   if( arg != (void *) 0x1847)
+      printf( "mistaken arg\n");
+
+   printf( "thread done\n");
+   return( (mulle_thread_rval_t) 1848);
 }
 
-int
-main( void)
+int   main( void)
 {
-   mulle_thread_t   thread;
-   int              rval;
+   mulle_thread_t         thread;
+   mulle_thread_rval_t    rval;
 
-   rval = mulle_thread_create( worker, NULL, &thread);
-   if( rval)
+   if( mulle_thread_create( thread_main, (void *) 0x1847, &thread))
       return( 1);
 
-   (void) mulle_thread_join( thread);
+   rval = mulle_thread_join( thread);
+   if( rval == (mulle_thread_rval_t) -1)
+      return( 1);
+
    return( 0);
 }
 ```
 
-### Example 2: Mutex Scoped Block
+### Example 2: Mutex with the Scoped Macro
 
 ```c
 #include <mulle-thread/mulle-thread.h>
@@ -452,7 +699,7 @@ increment_shared( mulle_thread_mutex_t *m, int *shared)
 ```c
 #include <mulle-thread/mulle-thread.h>
 
-static mulle_thread_recursive_mutex_t  s_lock;
+static mulle_thread_recursive_mutex_t   s_lock;
 
 static void
 do_stuff( unsigned int depth)
@@ -464,46 +711,51 @@ do_stuff( unsigned int depth)
    }
 }
 
-int
-main( void)
+int   main( void)
 {
-   mulle_thread_recursive_mutex_init( &s_lock);
+   if( mulle_thread_recursive_mutex_init( &s_lock))
+      return( 1);
+
    do_stuff( 3);
+
    mulle_thread_recursive_mutex_done( &s_lock);
    return( 0);
 }
 ```
 
-### Example 4: Atomic CAS (Compare-and-Swap)
+### Example 4: One-time Initialization
 
 ```c
 #include <mulle-thread/mulle-thread.h>
+#include <stdio.h>
 
-int
-main( void)
+static int   value;
+
+static void
+init_value( void)
 {
-   mulle_atomic_pointer_t   value = (void *) 0;
-   void                     *actual;
+   value = 42;
+}
 
-   // __mulle_* returns actual value — useful for CAS loops
-   actual = __mulle_atomic_pointer_cas( &value, (void *) 1, (void *) 0);
-   // actual == 0 (CAS succeeded, value is now 1)
-
-   // _mulle_* returns success flag
-   if( _mulle_atomic_pointer_cas( &value, (void *) 2, (void *) 1))
+int   main( void)
+{
+   mulle_thread_once_do( value_once)
    {
-      // value was 1, CAS succeeded, value is now 2
+      init_value();
    }
 
+   printf( "value is %d\n", value);
    return( 0);
 }
 ```
 
-### Example 5: TSS Key with Destructor
+### Example 5: TSS with a Destructor
 
 ```c
 #include <mulle-thread/mulle-thread.h>
 #include <stdlib.h>
+
+static mulle_thread_tss_t   s_key;
 
 static void
 free_thread_storage( void *p)
@@ -511,18 +763,40 @@ free_thread_storage( void *p)
    free( p);
 }
 
-static void
-setup_tls( void)
+static mulle_thread_rval_t MULLE_THREAD_CALL
+worker( void *arg)
 {
-   mulle_thread_tss_t   key;
+   void   *storage;
 
-   if( ! mulle_thread_tss_create( free_thread_storage, &key))
+   (void) arg;
+
+   storage = malloc( 128);
+   if( mulle_thread_tss_set( s_key, storage))
    {
-      void   *storage;
-
-      storage = malloc( 128);
-      mulle_thread_tss_set( key, storage);
+      free( storage);
+      return( (mulle_thread_rval_t) 1);
    }
+
+   if( mulle_thread_tss_get( s_key) != storage)
+      return( (mulle_thread_rval_t) 2);
+
+   mulle_thread_return();
+}
+
+int   main( void)
+{
+   mulle_thread_t   thread;
+
+   if( mulle_thread_tss_create( free_thread_storage, &s_key))
+      return( 1);
+
+   if( mulle_thread_create( worker, NULL, &thread))
+      return( 1);
+
+   mulle_thread_join( thread);
+   mulle_thread_tss_free( s_key);
+
+   return( 0);
 }
 ```
 
@@ -530,22 +804,19 @@ setup_tls( void)
 
 ```c
 #include <mulle-thread/mulle-thread.h>
-#include <stdio.h>
 
-static mulle_thread_mutex_t  s_mutex;
-static mulle_thread_cond_t   s_cond;
-static int                   s_data      = 0;
-static int                   s_available = 0;
+static mulle_thread_mutex_t   s_mutex;
+static mulle_thread_cond_t    s_cond;
+static int                    s_data      = 0;
+static int                    s_available = 0;
 
 static void
 produce( int value)
 {
    mulle_thread_mutex_lock( &s_mutex);
-   {
-      s_data      = value;
-      s_available = 1;
-      mulle_thread_cond_signal( &s_cond);
-   }
+   s_data      = value;
+   s_available = 1;
+   mulle_thread_cond_signal( &s_cond);
    mulle_thread_mutex_unlock( &s_mutex);
 }
 
@@ -555,20 +826,54 @@ consume( void)
    int   value;
 
    mulle_thread_mutex_lock( &s_mutex);
-   {
-      while( ! s_available)
-         mulle_thread_cond_wait( &s_cond, &s_mutex);
-      value       = s_data;
-      s_available = 0;
-   }
+   while( ! s_available)
+      mulle_thread_cond_wait( &s_cond, &s_mutex);
+   value       = s_data;
+   s_available = 0;
    mulle_thread_mutex_unlock( &s_mutex);
+
    return( value);
+}
+```
+
+### Example 7: Atomic CAS and Relaxed Counter
+
+```c
+#include <mulle-thread/mulle-thread.h>
+
+static mulle_atomic_pointer_t   s_slot;
+static mulle_atomic_intptr_t    s_count = MULLE_ATOMIC_INTPTR_INIT;
+
+static void
+install( void *value)
+{
+   void   *actual;
+
+   // __mulle_* returns the actual value (use in a CAS loop)
+   actual = __mulle_atomic_pointer_cas( &s_slot, value, (void *) 0);
+   if( actual == (void *) 0)
+   {
+      // we installed the value
+   }
+
+   // _mulle_* returns a success flag
+   if( _mulle_atomic_pointer_cas( &s_slot, value, (void *) 0))
+   {
+      // success
+   }
+
+   // relaxed counter: previous value is returned, ignored here
+   (void) _mulle_atomic_intptr_increment_relaxed( &s_count);
 }
 ```
 
 ## 7. Dependencies
 
-- Direct mulle-sde / library dependencies:
-  - `mulle-c11` — Cross-platform C compiler glue (required)
-  - `mintomic` — Optional; used when C11 atomics are unavailable
-  - POSIX pthreads (on Unix backends) or Windows API (on Windows backends)
+- `mulle-c11` — required; cross-platform C compiler glue and preprocessor
+  conveniences (`MULLE_C_*` macros used throughout the headers).
+- `mintomic` — optional atomic backend used when C11 `<stdatomic.h>` is not
+  available; its `mintomic_gcc.c` is compiled into `mulle-thread` in that case.
+- Platform thread facilities (selected by `mulle-thread.h`): C11
+  `<threads.h>`, POSIX pthreads, or the Windows API. The sourcetree config
+  also declares `stdthreads` (FreeBSD only) and `pthread` as platform
+  dependencies.
