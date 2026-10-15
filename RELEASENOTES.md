@@ -2,6 +2,7 @@
 
 
 
+
 * document automatic backend selection (C11, pthreads, Windows) and when pthreads is forced (DragonFly, Cosmopolitan, ThreadSanitizer)
 * clarify the 0-on-success/`-1`-on-failure convention and normalized argument order across backends
 * document the scoped ``mulle_thread_mutex_do`` / ``recursive_mutex_do`` / ``once_do`` macros and their `return`/nesting pitfalls
