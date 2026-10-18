@@ -10,7 +10,6 @@
       repo="mulle-thread";
       homepage="https://github.com/mulle-concurrent/mulle-thread";
       license="BSD-3-Clause";
-      version="4.11.0";
    };
    dependencies =
    (

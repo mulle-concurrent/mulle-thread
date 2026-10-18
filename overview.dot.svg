@@ -27,8 +27,8 @@
 <!-- mulle&#45;thread&#45;&gt;mintomic -->
 <g id="edge1" class="edge">
 <title>mulle&#45;thread&#45;&gt;mintomic</title>
-<path fill="none" stroke="black" d="M79.77,-71.7C73.96,-63.73 66.95,-54.1 60.51,-45.26"/>
-<polygon fill="black" stroke="black" points="63.45,-43.35 54.73,-37.33 57.79,-47.47 63.45,-43.35"/>
+<path fill="none" stroke="#666666" d="M79.77,-71.7C73.53,-63.14 65.9,-52.66 59.08,-43.3"/>
+<ellipse fill="#666666" stroke="#666666" cx="56.49" cy="-39.74" rx="4" ry="4"/>
 </g>
 <!-- mulle&#45;c11 -->
 <g id="node3" class="node">
